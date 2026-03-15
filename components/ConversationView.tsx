@@ -14,14 +14,6 @@ const EMPLOYMENT_OPTIONS = [
   "retired",
   "other",
 ];
-const INCOME_RANGES = [
-  "Under $25k",
-  "$25-50k",
-  "$50-75k",
-  "$75-100k",
-  "$100-150k",
-  "$150k+",
-];
 
 function AssistantMessage({ content, fadeIn }: { content: string; fadeIn: boolean }) {
   const sentences = content.match(/[^.!?]+[.!?]+/g) || [content];
@@ -82,7 +74,6 @@ function DemographicsSection({
   const [gender, setGender] = useState("");
   const [ageRange, setAgeRange] = useState("");
   const [employmentStatus, setEmploymentStatus] = useState("");
-  const [incomeRange, setIncomeRange] = useState("");
   const [demographicsSubmitted, setDemographicsSubmitted] = useState(false);
 
   async function handleDemographicsSubmit() {
@@ -94,7 +85,6 @@ function DemographicsSection({
         gender: gender || undefined,
         ageRange: ageRange || undefined,
         employmentStatus: employmentStatus || undefined,
-        incomeRange: incomeRange || undefined,
         categories,
       }),
     });
@@ -106,9 +96,7 @@ function DemographicsSection({
         <p className="text-neutral-500 text-xs">Thank you.</p>
         {submissionId && (
           <p className="text-neutral-700 text-xs mt-4">
-            Your submission ID: <span className="font-mono text-neutral-600">{submissionId}</span>
-            <br />
-            Save this if you ever need to request removal.
+            Submission ID: <span className="font-mono text-neutral-600">{submissionId}</span>
           </p>
         )}
       </div>
@@ -182,26 +170,6 @@ function DemographicsSection({
           </div>
         </div>
 
-        <div>
-          <label className="text-xs text-neutral-500 uppercase tracking-wider block mb-2">
-            Income range
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {INCOME_RANGES.map((r) => (
-              <button
-                key={r}
-                onClick={() => setIncomeRange(incomeRange === r ? "" : r)}
-                className={`px-3 py-1 text-sm rounded transition-colors ${
-                  incomeRange === r
-                    ? "bg-neutral-200 text-neutral-900"
-                    : "bg-neutral-800/50 text-neutral-400 hover:text-neutral-200 border border-neutral-700"
-                }`}
-              >
-                {r}
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
 
       <div className="text-center mt-6">
@@ -215,9 +183,7 @@ function DemographicsSection({
 
       {submissionId && (
         <p className="text-neutral-700 text-xs mt-6 text-center">
-          Your submission ID: <span className="font-mono text-neutral-600">{submissionId}</span>
-          <br />
-          Save this if you ever need to request removal.
+          Submission ID: <span className="font-mono text-neutral-600">{submissionId}</span>
         </p>
       )}
     </div>
@@ -323,7 +289,8 @@ export function ConversationView() {
           </p>
           <p className="text-neutral-500">
             Please don&apos;t include anything personal you wouldn&apos;t want
-            shown. No names, locations, or identifying details. This is on you.
+            shown. No names, locations, or identifying details. You can&apos;t
+            edit it after the fact.
           </p>
         </div>
         <button
@@ -337,7 +304,7 @@ export function ConversationView() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-6 pt-24 pb-12 flex flex-col min-h-screen">
+    <div className="max-w-2xl mx-auto px-6 pt-36 pb-12 flex flex-col min-h-screen">
       <div className="flex-1 space-y-6 mb-8">
         {messages.map((m, i) => {
           if (m.role === "assistant") {
@@ -367,6 +334,20 @@ export function ConversationView() {
               Transmission received. Your words are part of the record now.
             </p>
             <DemographicsSection categories={categories} submissionId={submissionId} />
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center text-sm">
+              <a
+                href="/explore"
+                className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] rounded transition-colors text-center"
+              >
+                explore what others said
+              </a>
+              <a
+                href="/"
+                className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] rounded transition-colors text-center"
+              >
+                back to the beginning
+              </a>
+            </div>
           </div>
         )}
 
@@ -374,7 +355,7 @@ export function ConversationView() {
       </div>
 
       {!conversationComplete && (
-        <div className="sticky bottom-0 pb-8">
+        <div className="sticky bottom-0 pb-16">
           <div className="flex gap-3">
             <textarea
               className="flex-1 bg-neutral-800/50 border border-neutral-700 rounded px-4 py-3 text-neutral-100 text-lg placeholder-neutral-600 resize-none focus:outline-none focus:border-neutral-500"
