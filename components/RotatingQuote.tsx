@@ -16,7 +16,7 @@ export function RotatingQuote({ quotes }: { quotes: ConversationItem[] }) {
         setIndex((i) => (i + 1) % quotes.length);
         setVisible(true);
       }, 600);
-    }, 6000);
+    }, 9000);
 
     return () => clearInterval(interval);
   }, [quotes.length]);

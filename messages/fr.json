@@ -18,6 +18,36 @@
     "backToBeginning": "retour au début",
     "submissionId": "ID de soumission"
   },
+  "explore": {
+    "voices": "Ce que les gens disent",
+    "all": "tous",
+    "noTransmissions": "Aucune transmission pour le moment.",
+    "totalVoices": "voix enregistrées",
+    "byFeeling": "Par ressenti",
+    "byRegion": "Par région",
+    "categories": {
+      "fear": "peur",
+      "hope": "espoir",
+      "grief": "deuil",
+      "excitement": "enthousiasme",
+      "anger": "colère",
+      "uncertainty": "incertitude",
+      "wonder": "émerveillement",
+      "other": "autre"
+    },
+    "areasAffected": "Domaines de vie touchés",
+    "countries": "pays",
+    "continents": "continents",
+    "feelings": "ressentis",
+    "filterCountry": "Pays",
+    "filterGender": "Genre",
+    "filterAge": "Âge",
+    "filterEmployment": "Emploi",
+    "allCountries": "Tous les pays",
+    "allGenders": "Tous les genres",
+    "allAges": "Tous les âges",
+    "allEmployment": "Tous les emplois"
+  },
   "demographics": {
     "heading": "Aidez-nous à comprendre qui ressent cela.",
     "subheading": "Entièrement facultatif. Rien ici n'est jamais lié à votre conversation.",

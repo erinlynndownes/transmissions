@@ -18,6 +18,36 @@
     "backToBeginning": "zurück zum Anfang",
     "submissionId": "Einreichungs-ID"
   },
+  "explore": {
+    "voices": "Was die Menschen sagen",
+    "all": "alle",
+    "noTransmissions": "Noch keine Übertragungen.",
+    "totalVoices": "Stimmen aufgezeichnet",
+    "byFeeling": "Nach Gefühl",
+    "byRegion": "Nach Region",
+    "categories": {
+      "fear": "Angst",
+      "hope": "Hoffnung",
+      "grief": "Trauer",
+      "excitement": "Begeisterung",
+      "anger": "Wut",
+      "uncertainty": "Unsicherheit",
+      "wonder": "Staunen",
+      "other": "Sonstiges"
+    },
+    "areasAffected": "Betroffene Lebensbereiche",
+    "countries": "Länder",
+    "continents": "Kontinente",
+    "feelings": "Gefühle",
+    "filterCountry": "Land",
+    "filterGender": "Geschlecht",
+    "filterAge": "Alter",
+    "filterEmployment": "Beschäftigung",
+    "allCountries": "Alle Länder",
+    "allGenders": "Alle Geschlechter",
+    "allAges": "Alle Alter",
+    "allEmployment": "Alle Beschäftigungen"
+  },
   "demographics": {
     "heading": "Helfen Sie uns zu verstehen, wer das empfindet.",
     "subheading": "Völlig freiwillig. Nichts hier wird jemals mit Ihrem Gespräch verknüpft.",

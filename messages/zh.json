@@ -18,6 +18,36 @@
     "backToBeginning": "回到开始",
     "submissionId": "提交ID"
   },
+  "explore": {
+    "voices": "人们在说什么",
+    "all": "全部",
+    "noTransmissions": "还没有传输。",
+    "totalVoices": "已记录的声音",
+    "byFeeling": "按感受",
+    "byRegion": "按地区",
+    "categories": {
+      "fear": "恐惧",
+      "hope": "希望",
+      "grief": "悲伤",
+      "excitement": "兴奋",
+      "anger": "愤怒",
+      "uncertainty": "不确定",
+      "wonder": "惊叹",
+      "other": "其他"
+    },
+    "areasAffected": "受影响的生活领域",
+    "countries": "个国家",
+    "continents": "大洲",
+    "feelings": "种感受",
+    "filterCountry": "国家",
+    "filterGender": "性别",
+    "filterAge": "年龄",
+    "filterEmployment": "就业",
+    "allCountries": "所有国家",
+    "allGenders": "所有性别",
+    "allAges": "所有年龄",
+    "allEmployment": "所有就业"
+  },
   "demographics": {
     "heading": "帮助我们了解谁在感受这些。",
     "subheading": "完全自愿。这里的任何信息都不会与你的对话关联。",

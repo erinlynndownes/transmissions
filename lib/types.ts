@@ -10,7 +10,6 @@ export type Category =
   | "excitement"
   | "anger"
   | "uncertainty"
-  | "displacement"
   | "wonder"
   | "other";
 

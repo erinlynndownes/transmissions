@@ -18,6 +18,36 @@
     "backToBeginning": "back to the beginning",
     "submissionId": "Submission ID"
   },
+  "explore": {
+    "voices": "What people are saying",
+    "all": "all",
+    "noTransmissions": "No transmissions yet.",
+    "totalVoices": "voices recorded",
+    "byFeeling": "By feeling",
+    "byRegion": "By region",
+    "categories": {
+      "fear": "fear",
+      "hope": "hope",
+      "grief": "grief",
+      "excitement": "excitement",
+      "anger": "anger",
+      "uncertainty": "uncertainty",
+      "wonder": "wonder",
+      "other": "other"
+    },
+    "areasAffected": "Areas of life affected",
+    "countries": "countries",
+    "continents": "continents",
+    "feelings": "feelings",
+    "filterCountry": "Country",
+    "filterGender": "Gender",
+    "filterAge": "Age",
+    "filterEmployment": "Employment",
+    "allCountries": "All countries",
+    "allGenders": "All genders",
+    "allAges": "All ages",
+    "allEmployment": "All employment"
+  },
   "demographics": {
     "heading": "Help us understand who's feeling this.",
     "subheading": "Completely optional. Nothing here is ever attached to your conversation.",

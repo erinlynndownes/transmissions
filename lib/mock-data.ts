@@ -65,7 +65,7 @@ export const MOCK_ITEMS: ConversationItem[] = [
   item(4,
     "I used to love my job. Now I spend half my day wondering if I'll still have it next year.",
     "An office worker whose daily tasks are increasingly automated, feeling disposable.",
-    ["fear", "displacement"], ["work_affected", "financial_affected"], "personal",
+    ["fear", "uncertainty"], ["work_affected", "financial_affected"], "personal",
     { poignancyScore: 8, voteCount: 11, regionCountry: "US", regionContinent: "North America" }
   ),
   item(5,
@@ -85,7 +85,7 @@ export const MOCK_ITEMS: ConversationItem[] = [
   item(7,
     "Mi abuela nunca va a entender esto, y eso me rompe el corazón. El mundo se está moviendo sin ella.",
     "Someone grieving the generational divide as their grandmother is left behind by technology.",
-    ["grief", "displacement"], ["relationships_affected"], "personal",
+    ["grief", "uncertainty"], ["relationships_affected"], "personal",
     { poignancyScore: 9, voteCount: 17, language: "es", regionCountry: "MX", regionContinent: "North America" }
   ),
 
@@ -149,7 +149,7 @@ export const MOCK_ITEMS: ConversationItem[] = [
   item(16,
     "我觉得AI让我更孤独了。以前遇到问题会找朋友聊,现在只是打开一个对话框。",
     "Someone in China feeling lonelier because AI replaced conversations they used to have with friends.",
-    ["grief", "displacement"], ["relationships_affected"], "personal",
+    ["grief", "anger"], ["relationships_affected"], "personal",
     { poignancyScore: 8, voteCount: 11, language: "zh", regionCountry: "CN", regionContinent: "Asia" }
   ),
   item(17,
@@ -175,7 +175,7 @@ export const MOCK_ITEMS: ConversationItem[] = [
   item(20,
     "I'm a nurse. When they told us AI would help with patient notes, I was hopeful. Now I spend more time correcting the AI than I ever spent writing them myself.",
     "A nurse frustrated that AI tools promised efficiency but created more busywork.",
-    ["anger", "displacement"], ["work_affected", "health_affected"], "personal",
+    ["anger", "grief"], ["work_affected", "health_affected"], "personal",
     { poignancyScore: 7, voteCount: 8, regionCountry: "US", regionContinent: "North America" }
   ),
   item(21,
@@ -199,7 +199,7 @@ export const MOCK_ITEMS: ConversationItem[] = [
   item(24,
     "I lost my job to automation three years ago. Everyone said to retrain. Retrain for what? A job that'll be automated next?",
     "Someone displaced by automation, frustrated by the cycle of retraining for jobs that also disappear.",
-    ["displacement", "anger"], ["work_affected", "financial_affected"], "personal",
+    ["anger", "fear"], ["work_affected", "financial_affected"], "personal",
     { poignancyScore: 9, voteCount: 20, regionCountry: "US", regionContinent: "North America" }
   ),
   item(25,
@@ -247,15 +247,23 @@ export function filterMockItems(params: {
 
 /**
  * Mock stats matching the seed data.
+ * Keys mirror what getStats() produces from the real stats table:
+ *   STAT#category  → "category"
+ *   DEMO#gender    → "demo_gender"
+ *   DEMO#category#gender → "demo_category#gender"
  */
 export function getMockStats(): Record<string, Record<string, number>> {
-  // Count from actual items
   const stats: Record<string, Record<string, number>> = {
     total: { submissions: MOCK_ITEMS.length },
     category: {},
     eventTag: {},
     continent: {},
     country: {},
+    demo_gender: {},
+    demo_ageRange: {},
+    demo_employmentStatus: {},
+    "demo_category#gender": {},
+    "demo_category#ageRange": {},
   };
 
   for (const item of MOCK_ITEMS) {
@@ -272,6 +280,39 @@ export function getMockStats(): Record<string, Record<string, number>> {
       stats.country[item.regionCountry] = (stats.country[item.regionCountry] ?? 0) + 1;
     }
   }
+
+  // Simulated demographic data (~50% of submissions provided demographics)
+  stats.demo_gender = {
+    female: 6, male: 4, "non-binary": 2, "prefer not to say": 1,
+  };
+  stats.demo_ageRange = {
+    "18-24": 3, "25-34": 5, "35-44": 3, "45-54": 1, "55-64": 1,
+  };
+  stats.demo_employmentStatus = {
+    employed: 5, "self-employed": 3, student: 2, unemployed: 2, retired: 1,
+  };
+
+  // Cross-dimensional: category × gender
+  stats["demo_category#gender"] = {
+    "fear#female": 3, "fear#male": 2, "fear#non-binary": 1,
+    "hope#female": 2, "hope#male": 2,
+    "grief#female": 2, "grief#non-binary": 1,
+    "anger#male": 1, "anger#female": 1,
+    "uncertainty#female": 2, "uncertainty#male": 1,
+    "excitement#male": 1, "excitement#female": 1,
+    "wonder#female": 1, "wonder#non-binary": 1,
+  };
+
+  // Cross-dimensional: category × ageRange
+  stats["demo_category#ageRange"] = {
+    "fear#18-24": 1, "fear#25-34": 2, "fear#35-44": 2,
+    "hope#25-34": 2, "hope#18-24": 1,
+    "grief#25-34": 1, "grief#35-44": 1, "grief#45-54": 1,
+    "anger#25-34": 1, "anger#35-44": 1,
+    "uncertainty#18-24": 1, "uncertainty#25-34": 1, "uncertainty#55-64": 1,
+    "excitement#18-24": 1, "excitement#25-34": 1,
+    "wonder#25-34": 1, "wonder#18-24": 1,
+  };
 
   return stats;
 }

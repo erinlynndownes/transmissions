@@ -18,6 +18,36 @@
     "backToBeginning": "最初に戻る",
     "submissionId": "提出ID"
   },
+  "explore": {
+    "voices": "人々の声",
+    "all": "すべて",
+    "noTransmissions": "まだトランスミッションはありません。",
+    "totalVoices": "記録された声",
+    "byFeeling": "感情別",
+    "byRegion": "地域別",
+    "categories": {
+      "fear": "恐れ",
+      "hope": "希望",
+      "grief": "悲しみ",
+      "excitement": "興奮",
+      "anger": "怒り",
+      "uncertainty": "不確実さ",
+      "wonder": "驚嘆",
+      "other": "その他"
+    },
+    "areasAffected": "影響を受けた生活分野",
+    "countries": "か国",
+    "continents": "大陸",
+    "feelings": "感情",
+    "filterCountry": "国",
+    "filterGender": "性別",
+    "filterAge": "年齢",
+    "filterEmployment": "雇用",
+    "allCountries": "すべての国",
+    "allGenders": "すべての性別",
+    "allAges": "すべての年齢",
+    "allEmployment": "すべての雇用"
+  },
   "demographics": {
     "heading": "これを感じているのが誰か、理解するお手伝いをしてください。",
     "subheading": "完全に任意です。ここの情報は会話と結びつくことはありません。",

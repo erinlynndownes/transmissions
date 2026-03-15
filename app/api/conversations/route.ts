@@ -4,7 +4,7 @@ import { Category, EventTag, Beat, FilterParams } from "@/lib/types";
 
 const VALID_CATEGORIES = new Set<string>([
   "fear", "hope", "grief", "excitement", "anger",
-  "uncertainty", "displacement", "wonder", "other",
+  "uncertainty", "wonder", "other",
 ]);
 
 const VALID_EVENT_TAGS = new Set<string>([

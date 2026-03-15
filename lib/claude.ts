@@ -73,7 +73,7 @@ IMPORTANT rules for quote selection:
 5. Set contentWarning to true if the conversation contains slurs, graphic descriptions of violence, or discriminatory language that could be harmful to read without warning. Rough language or swearing alone does not warrant a content warning.
 
 6. Assign 1-3 categories from this list that best describe the emotional tenor:
-   fear, hope, grief, excitement, anger, uncertainty, displacement, wonder, other
+   fear, hope, grief, excitement, anger, uncertainty, wonder, other
 
 7. Identify which life circumstances appear in the conversation (0 or more):
    work_affected, health_affected, relationships_affected, creative_affected, education_affected, financial_affected
