@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getQuotes } from "@/lib/storage";
+import { getConversations } from "@/lib/storage";
+import { Category } from "@/lib/types";
 
+// Legacy route — prefer /api/conversations
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const category = searchParams.get("category") ?? undefined;
+  const category = searchParams.get("category") as Category | undefined;
 
-  const quotes = await getQuotes(category);
-  return NextResponse.json({ quotes });
+  const result = await getConversations({ category, limit: 20 });
+  return NextResponse.json({ quotes: result.items });
 }

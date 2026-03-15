@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { QuoteRecord } from "@/lib/types";
+import { ConversationItem } from "@/lib/types";
 
-export function RotatingQuote({ quotes }: { quotes: QuoteRecord[] }) {
+export function RotatingQuote({ quotes }: { quotes: ConversationItem[] }) {
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
 

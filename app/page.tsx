@@ -1,57 +1,59 @@
 import Link from "next/link";
-import { getQuotes } from "@/lib/storage";
+import { getConversations } from "@/lib/storage";
 import { RotatingQuote } from "@/components/RotatingQuote";
-import { QuoteRecord } from "@/lib/types";
+import { ConversationItem } from "@/lib/types";
 
-export const revalidate = 300; // refresh quotes every 5 min
+const QUOTE_THRESHOLD = 10;
+
+export const revalidate = 300;
 
 export default async function Home() {
-  let quotes: QuoteRecord[] = [];
+  let quotes: ConversationItem[] = [];
   try {
-    quotes = await getQuotes();
+    const result = await getConversations({ limit: 20 });
+    quotes = result.items;
   } catch {
     // DynamoDB not set up yet — show empty state
   }
 
+  const hasEnoughQuotes = quotes.length >= QUOTE_THRESHOLD;
+
   return (
-    <main className="min-h-screen bg-neutral-950 text-neutral-100">
-      <div className="max-w-2xl mx-auto px-6 py-24 flex flex-col gap-16">
-        <div>
-          <h1 className="text-sm uppercase tracking-widest text-neutral-500 mb-2">
-            transmissions
-          </h1>
-          <p className="text-neutral-400 text-base leading-relaxed">
-            People saying what they feel about AI. Anonymous, honest, recorded.
-          </p>
-        </div>
+    <main className="min-h-screen flex items-center justify-center relative">
+      {/* Frame */}
+      <div className="fixed inset-4 sm:inset-8 md:inset-16 lg:inset-[100px] border border-[var(--foreground)]/20 rounded pointer-events-none" />
 
-        {quotes.length > 0 && (
-          <div className="border-l border-neutral-700 pl-6">
-            <RotatingQuote quotes={quotes} />
-          </div>
-        )}
+      <div className="max-w-2xl mx-auto px-6 flex flex-col items-center text-center gap-12">
+        <h1 className="text-6xl md:text-7xl lg:text-8xl font-light tracking-tight">
+          transmissions
+        </h1>
 
-        <div className="flex flex-col gap-4">
-          <Link
-            href="/talk"
-            className="inline-block px-6 py-3 bg-neutral-100 hover:bg-white text-neutral-900 text-sm rounded transition-colors w-fit"
-          >
-            Add your voice
-          </Link>
-          {quotes.length > 0 && (
-            <Link
-              href="/explore"
-              className="text-sm text-neutral-500 hover:text-neutral-300 transition-colors"
-            >
-              Read what others have said →
-            </Link>
+        <div className="min-h-[80px]">
+          {hasEnoughQuotes ? (
+            <div className="border-l border-[var(--foreground)]/20 pl-6 text-left">
+              <RotatingQuote quotes={quotes} />
+            </div>
+          ) : (
+            <p className="text-2xl md:text-3xl opacity-50 leading-relaxed">
+              How do you feel about AI?
+            </p>
           )}
         </div>
 
-        <p className="text-neutral-700 text-xs">
-          Conversations are stored anonymously. By submitting, you give
-          permission to display your words here.
-        </p>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link
+            href="/talk"
+            className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] text-sm rounded transition-colors"
+          >
+            Add your voice
+          </Link>
+          <Link
+            href="/explore"
+            className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] text-sm rounded transition-colors"
+          >
+            See others
+          </Link>
+        </div>
       </div>
     </main>
   );

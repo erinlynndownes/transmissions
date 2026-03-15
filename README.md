@@ -37,6 +37,7 @@ AWS_REGION=us-east-1
 DYNAMODB_TABLE_NAME=transmissions-dev
 DYNAMODB_STATS_TABLE_NAME=transmissions-stats-dev
 S3_BUCKET_NAME=transmissions-conversations-dev
+MOCK_STORAGE=true  # Skip AWS calls for local testing
 ```
 
 ### Run

@@ -18,20 +18,28 @@ import {
 } from "./types";
 import { v4 as uuidv4 } from "uuid";
 
-const s3 = new S3Client({ region: process.env.AWS_REGION });
-const dynamo = DynamoDBDocumentClient.from(
-  new DynamoDBClient({ region: process.env.AWS_REGION })
-);
+const MOCK = process.env.MOCK_STORAGE === "true";
 
-const BUCKET = process.env.S3_BUCKET_NAME!;
-const TABLE = process.env.DYNAMODB_TABLE_NAME!;
-const STATS_TABLE = process.env.DYNAMODB_STATS_TABLE_NAME!;
+const s3 = MOCK ? (null as unknown as S3Client) : new S3Client({ region: process.env.AWS_REGION });
+const dynamo = MOCK
+  ? (null as unknown as DynamoDBDocumentClient)
+  : DynamoDBDocumentClient.from(new DynamoDBClient({ region: process.env.AWS_REGION }));
+
+const BUCKET = process.env.S3_BUCKET_NAME ?? "";
+const TABLE = process.env.DYNAMODB_TABLE_NAME ?? "";
+const STATS_TABLE = process.env.DYNAMODB_STATS_TABLE_NAME ?? "";
 
 export async function saveSubmission(
   input: SubmissionInput,
   extracted: ExtractedData
-): Promise<{ id: string; quote: string; poignancyScore: number }> {
+): Promise<{ id: string; quote: string; poignancyScore: number; categories: string[] }> {
   const id = uuidv4();
+
+  if (MOCK) {
+    console.log("[MOCK] saveSubmission:", { id, quote: extracted.quote });
+    return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore, categories: extracted.categories };
+  }
+
   const createdAt = new Date().toISOString();
   const SK = `${createdAt}#${id}`;
 
@@ -44,6 +52,7 @@ export async function saveSubmission(
     quote: extracted.quote,
     beat: extracted.beat,
     poignancyScore: extracted.poignancyScore,
+    contentWarning: extracted.contentWarning,
     voteCount: 0,
     categories: extracted.categories,
     eventTags: extracted.eventTags,
@@ -164,12 +173,13 @@ export async function saveSubmission(
     )
   );
 
-  return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore };
+  return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore, categories: extracted.categories };
 }
 
 export async function getConversation(
   id: string
 ): Promise<ConversationRecord | null> {
+  if (MOCK) return null;
   try {
     const result = await s3.send(
       new GetObjectCommand({
@@ -193,6 +203,8 @@ export async function getConversation(
 export async function getConversations(
   params: FilterParams
 ): Promise<PagedResult<ConversationItem>> {
+  if (MOCK) return { items: [] };
+
   let PK = "ALL";
 
   if (params.category) PK = `CAT#${params.category}`;
@@ -229,6 +241,7 @@ export async function getConversations(
 export async function getStats(): Promise<
   Record<string, Record<string, number>>
 > {
+  if (MOCK) return {};
   const result = await dynamo.send(
     new ScanCommand({ TableName: STATS_TABLE })
   );
@@ -255,6 +268,7 @@ export async function incrementVote(
   id: string,
   createdAt: string
 ): Promise<number> {
+  if (MOCK) return 1;
   const SK = `${createdAt}#${id}`;
 
   const result = await dynamo.send(
@@ -284,6 +298,14 @@ export async function saveDemographics(
   }
   if (input.employmentStatus) {
     updates.push({ PK: "DEMO#employmentStatus", SK: input.employmentStatus });
+  }
+  if (input.incomeRange) {
+    updates.push({ PK: "DEMO#incomeRange", SK: input.incomeRange });
+  }
+
+  if (MOCK) {
+    console.log("[MOCK] saveDemographics:", input);
+    return;
   }
 
   // Cross-dimensional stats: category × demographic

@@ -33,6 +33,7 @@ export type ConversationItem = {
   quote: string;
   beat: Beat;
   poignancyScore: number;
+  contentWarning: boolean;
   voteCount: number;
   categories: Category[];
   eventTags: EventTag[];
@@ -53,6 +54,7 @@ export type ExtractedData = {
   quote: string;
   beat: Beat;
   poignancyScore: number;
+  contentWarning: boolean;
   categories: Category[];
   eventTags: EventTag[];
 };
@@ -68,6 +70,7 @@ export type DemographicsInput = {
   gender?: string;
   ageRange?: string;
   employmentStatus?: string;
+  incomeRange?: string;
   categories: Category[];
 };
 

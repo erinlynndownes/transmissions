@@ -1,5 +1,5 @@
-import { getQuotes } from "@/lib/storage";
-import { Category, QuoteRecord } from "@/lib/types";
+import { getConversations } from "@/lib/storage";
+import { Category, ConversationItem } from "@/lib/types";
 import Link from "next/link";
 
 export const revalidate = 300;
@@ -16,19 +16,23 @@ export default async function ExplorePage({
 }) {
   const category = searchParams.category as Category | undefined;
 
-  let quotes: QuoteRecord[] = [];
+  let quotes: ConversationItem[] = [];
   try {
-    quotes = await getQuotes(category);
+    const result = await getConversations({
+      category,
+      limit: 20,
+    });
+    quotes = result.items;
   } catch {
     // DynamoDB not set up yet
   }
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-neutral-100">
+    <main className="min-h-screen text-neutral-100">
       <div className="max-w-2xl mx-auto px-6 py-16">
         <div className="mb-10">
           <Link href="/" className="text-xs text-neutral-600 hover:text-neutral-400 transition-colors">
-            ← transmissions
+            &larr; transmissions
           </Link>
         </div>
 
@@ -69,7 +73,7 @@ export default async function ExplorePage({
         ) : (
           <div className="space-y-8">
             {quotes.map((q) => (
-              <div key={q.id} className="border-l border-neutral-800 pl-5">
+              <div key={q.id} className="border-l border-neutral-700 pl-5">
                 <blockquote className="text-neutral-300 leading-relaxed italic mb-2">
                   &ldquo;{q.quote}&rdquo;
                 </blockquote>
@@ -77,7 +81,7 @@ export default async function ExplorePage({
                   {q.categories.map((cat) => (
                     <span
                       key={cat}
-                      className="text-xs text-neutral-600 bg-neutral-900 px-2 py-0.5 rounded"
+                      className="text-xs text-neutral-600 bg-neutral-800/50 px-2 py-0.5 rounded"
                     >
                       {cat}
                     </span>
