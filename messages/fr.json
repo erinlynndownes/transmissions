@@ -1,0 +1,30 @@
+{
+  "home": {
+    "title": "transmissions",
+    "question": "Que ressentez-vous face \u00e0 l'intelligence artificielle ?",
+    "addVoice": "Ajoutez votre voix",
+    "seeOthers": "Voir les autres"
+  },
+  "talk": {
+    "beforeWeBegin": "Avant de commencer",
+    "consent1": "Ceci est une courte conversation sur ce que vous ressentez face \u00e0 l'intelligence artificielle. Avec votre permission, vos mots seront conserv\u00e9s de mani\u00e8re anonyme et affich\u00e9s publiquement pour que d'autres les lisent.",
+    "consent2": "Veuillez ne rien inclure de personnel que vous ne voudriez pas voir affich\u00e9. Pas de noms, de lieux ou de d\u00e9tails identifiants. Vous ne pourrez pas le modifier apr\u00e8s.",
+    "consentButton": "Je comprends, parlons",
+    "placeholder": "Dites ce que vous avez \u00e0 dire...",
+    "send": "envoyer",
+    "transmissionReceived": "Transmission re\u00e7ue. Vos mots font d\u00e9sormais partie des archives.",
+    "exploreOthers": "d\u00e9couvrir ce que d'autres ont dit",
+    "backToBeginning": "retour au d\u00e9but",
+    "submissionId": "ID de soumission"
+  },
+  "demographics": {
+    "heading": "Aidez-nous \u00e0 comprendre qui ressent cela.",
+    "subheading": "Enti\u00e8rement facultatif. Rien ici n'est jamais li\u00e9 \u00e0 votre conversation.",
+    "gender": "Genre",
+    "genderPlaceholder": "Comme vous vous d\u00e9crivez",
+    "ageRange": "Tranche d'\u00e2ge",
+    "employment": "Emploi",
+    "share": "partager",
+    "thankYou": "Merci."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "home": {
+    "title": "transmissions",
+    "question": "Was empfinden Sie gegen\u00fcber k\u00fcnstlicher Intelligenz?",
+    "addVoice": "F\u00fcgen Sie Ihre Stimme hinzu",
+    "seeOthers": "Andere ansehen"
+  },
+  "talk": {
+    "beforeWeBegin": "Bevor wir beginnen",
+    "consent1": "Dies ist ein kurzes Gespr\u00e4ch dar\u00fcber, was Sie gegen\u00fcber k\u00fcnstlicher Intelligenz empfinden. Mit Ihrer Erlaubnis werden Ihre Worte anonym gespeichert und \u00f6ffentlich angezeigt, damit andere sie lesen k\u00f6nnen.",
+    "consent2": "Bitte geben Sie nichts Pers\u00f6nliches an, das Sie nicht \u00f6ffentlich sehen m\u00f6chten. Keine Namen, Orte oder identifizierende Details. Sie k\u00f6nnen es nachtr\u00e4glich nicht bearbeiten.",
+    "consentButton": "Verstanden, lass uns reden",
+    "placeholder": "Sagen Sie, was Sie sagen m\u00fcssen...",
+    "send": "senden",
+    "transmissionReceived": "\u00dcbertragung empfangen. Ihre Worte sind jetzt Teil der Aufzeichnung.",
+    "exploreOthers": "entdecken, was andere gesagt haben",
+    "backToBeginning": "zur\u00fcck zum Anfang",
+    "submissionId": "Einreichungs-ID"
+  },
+  "demographics": {
+    "heading": "Helfen Sie uns zu verstehen, wer das empfindet.",
+    "subheading": "V\u00f6llig freiwillig. Nichts hier wird jemals mit Ihrem Gespr\u00e4ch verkn\u00fcpft.",
+    "gender": "Geschlecht",
+    "genderPlaceholder": "Wie Sie sich beschreiben",
+    "ageRange": "Altersgruppe",
+    "employment": "Besch\u00e4ftigung",
+    "share": "teilen",
+    "thankYou": "Danke."
+  }
+}

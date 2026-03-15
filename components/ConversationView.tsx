@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { Message, Category } from "@/lib/types";
-
-const OPENING_MESSAGE = "How do you feel about AI?";
 
 const AGE_RANGES = ["13-17", "18-24", "25-34", "35-44", "45-54", "55-64", "65+"];
 const EMPLOYMENT_OPTIONS = [
@@ -71,6 +70,8 @@ function DemographicsSection({
   categories: Category[];
   submissionId: string | null;
 }) {
+  const t = useTranslations("demographics");
+  const tTalk = useTranslations("talk");
   const [gender, setGender] = useState("");
   const [ageRange, setAgeRange] = useState("");
   const [employmentStatus, setEmploymentStatus] = useState("");
@@ -93,10 +94,10 @@ function DemographicsSection({
   if (demographicsSubmitted) {
     return (
       <div className="mt-8 animate-fade-in">
-        <p className="text-neutral-500 text-xs">Thank you.</p>
+        <p className="text-neutral-500 text-xs">{t("thankYou")}</p>
         {submissionId && (
           <p className="text-neutral-700 text-xs mt-4">
-            Submission ID: <span className="font-mono text-neutral-600">{submissionId}</span>
+            {tTalk("submissionId")}: <span className="font-mono text-neutral-600">{submissionId}</span>
           </p>
         )}
       </div>
@@ -106,29 +107,29 @@ function DemographicsSection({
   return (
     <div className="mt-12 border-t border-neutral-800 pt-8">
       <p className="text-sm text-neutral-300 mb-2 text-center">
-        Help us understand who&apos;s feeling this.
+        {t("heading")}
       </p>
       <p className="text-xs text-neutral-600 mb-6 text-center">
-        Completely optional. Nothing here is ever attached to your conversation.
+        {t("subheading")}
       </p>
 
       <div className="space-y-4 text-left">
         <div>
           <label className="text-xs text-neutral-500 uppercase tracking-wider block mb-1">
-            Gender
+            {t("gender")}
           </label>
           <input
             type="text"
             value={gender}
             onChange={(e) => setGender(e.target.value)}
-            placeholder="However you describe yourself"
+            placeholder={t("genderPlaceholder")}
             className="w-full bg-neutral-800/50 border border-neutral-700 rounded px-3 py-2 text-sm text-neutral-200 placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
           />
         </div>
 
         <div>
           <label className="text-xs text-neutral-500 uppercase tracking-wider block mb-2">
-            Age range
+            {t("ageRange")}
           </label>
           <div className="flex flex-wrap gap-2">
             {AGE_RANGES.map((r) => (
@@ -149,7 +150,7 @@ function DemographicsSection({
 
         <div>
           <label className="text-xs text-neutral-500 uppercase tracking-wider block mb-2">
-            Employment
+            {t("employment")}
           </label>
           <div className="flex flex-wrap gap-2">
             {EMPLOYMENT_OPTIONS.map((opt) => (
@@ -177,20 +178,49 @@ function DemographicsSection({
           onClick={handleDemographicsSubmit}
           className="px-6 py-2 bg-neutral-100 hover:bg-white text-neutral-900 text-sm rounded transition-colors"
         >
-          share
+          {t("share")}
         </button>
       </div>
 
       {submissionId && (
         <p className="text-neutral-700 text-xs mt-6 text-center">
-          Submission ID: <span className="font-mono text-neutral-600">{submissionId}</span>
+          {tTalk("submissionId")}: <span className="font-mono text-neutral-600">{submissionId}</span>
         </p>
       )}
     </div>
   );
 }
 
+const SESSION_KEY = "transmissions-conversation";
+
+function saveSession(data: { messages: Message[]; consented: boolean; conversationComplete: boolean }) {
+  try {
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+  } catch {
+    // sessionStorage unavailable or full
+  }
+}
+
+function loadSession(): { messages: Message[]; consented: boolean; conversationComplete: boolean } | null {
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function clearSession() {
+  try {
+    sessionStorage.removeItem(SESSION_KEY);
+  } catch {
+    // ignore
+  }
+}
+
 export function ConversationView() {
+  const t = useTranslations("talk");
+  const tHome = useTranslations("home");
   const [consented, setConsented] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -200,13 +230,33 @@ export function ConversationView() {
   const [submissionId, setSubmissionId] = useState<string | null>(null);
   const [latestAssistantIndex, setLatestAssistantIndex] = useState(-1);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [restored, setRestored] = useState(false);
+
+  const openingMessage = tHome("question");
 
   useEffect(() => {
-    if (consented) {
-      setMessages([{ role: "assistant", content: OPENING_MESSAGE }]);
+    const saved = loadSession();
+    if (saved && saved.consented && saved.messages.length > 0 && !saved.conversationComplete) {
+      setConsented(true);
+      setMessages(saved.messages);
+      setLatestAssistantIndex(-1);
+    }
+    setRestored(true);
+  }, []);
+
+  useEffect(() => {
+    if (!restored) return;
+    if (consented && messages.length === 0) {
+      setMessages([{ role: "assistant", content: openingMessage }]);
       setLatestAssistantIndex(0);
     }
-  }, [consented]);
+  }, [consented, restored, openingMessage]);
+
+  useEffect(() => {
+    if (restored && consented && messages.length > 0) {
+      saveSession({ messages, consented, conversationComplete });
+    }
+  }, [messages, consented, conversationComplete, restored]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -262,7 +312,7 @@ export function ConversationView() {
 
       if (isComplete) {
         setConversationComplete(true);
-        // Auto-submit in the background
+        clearSession();
         submitConversation(newMessages);
       }
     } finally {
@@ -279,25 +329,17 @@ export function ConversationView() {
     return (
       <div className="max-w-lg mx-auto px-6 flex flex-col items-center justify-center text-center gap-8 min-h-screen">
         <h2 className="text-2xl font-light text-neutral-100">
-          Before we begin
+          {t("beforeWeBegin")}
         </h2>
         <div className="text-sm text-neutral-400 leading-relaxed space-y-4">
-          <p>
-            This is a short conversation about how you feel about AI. With your
-            permission, your words will be stored anonymously and displayed
-            publicly for others to read.
-          </p>
-          <p className="text-neutral-500">
-            Please don&apos;t include anything personal you wouldn&apos;t want
-            shown. No names, locations, or identifying details. You can&apos;t
-            edit it after the fact.
-          </p>
+          <p>{t("consent1")}</p>
+          <p className="text-neutral-500">{t("consent2")}</p>
         </div>
         <button
           onClick={() => setConsented(true)}
           className="px-8 py-3 bg-neutral-100 hover:bg-white text-neutral-900 text-sm rounded transition-colors"
         >
-          I understand, let&apos;s talk
+          {t("consentButton")}
         </button>
       </div>
     );
@@ -331,7 +373,7 @@ export function ConversationView() {
         {conversationComplete && (
           <div className="animate-fade-in">
             <p className="text-sm text-neutral-500 mt-8">
-              Transmission received. Your words are part of the record now.
+              {t("transmissionReceived")}
             </p>
             <DemographicsSection categories={categories} submissionId={submissionId} />
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center text-sm">
@@ -339,13 +381,13 @@ export function ConversationView() {
                 href="/explore"
                 className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] rounded transition-colors text-center"
               >
-                explore what others said
+                {t("exploreOthers")}
               </a>
               <a
                 href="/"
                 className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] rounded transition-colors text-center"
               >
-                back to the beginning
+                {t("backToBeginning")}
               </a>
             </div>
           </div>
@@ -360,7 +402,7 @@ export function ConversationView() {
             <textarea
               className="flex-1 bg-neutral-800/50 border border-neutral-700 rounded px-4 py-3 text-neutral-100 text-lg placeholder-neutral-600 resize-none focus:outline-none focus:border-neutral-500"
               rows={3}
-              placeholder="Say what you need to say..."
+              placeholder={t("placeholder")}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
@@ -376,7 +418,7 @@ export function ConversationView() {
                 disabled={loading || !input.trim()}
                 className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 disabled:opacity-30 text-neutral-200 text-sm rounded transition-colors"
               >
-                send
+                {t("send")}
               </button>
             </div>
           </div>

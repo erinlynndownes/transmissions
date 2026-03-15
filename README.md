@@ -6,6 +6,7 @@ A web app for collecting and displaying how humans feel about AI. Users have a g
 
 - **Framework**: Next.js (App Router) + TypeScript + Tailwind CSS
 - **AI**: Anthropic Claude API
+- **i18n**: next-intl (en, es, fr, pt, de, ja, zh)
 - **Storage**: AWS DynamoDB (single-table design) + S3
 - **Infrastructure**: Terraform (in `terraform/`)
 

@@ -40,6 +40,7 @@ export type ConversationItem = {
   regionSubdivision?: string;
   regionCountry?: string;
   regionContinent?: string;
+  language?: string;
 };
 
 export type ConversationRecord = {
@@ -57,6 +58,9 @@ export type ExtractedData = {
   contentWarning: boolean;
   categories: Category[];
   eventTags: EventTag[];
+  language: string;
+  quoteEn: string | null;
+  summaryEn: string | null;
 };
 
 export type SubmissionInput = {
@@ -70,7 +74,6 @@ export type DemographicsInput = {
   gender?: string;
   ageRange?: string;
   employmentStatus?: string;
-  incomeRange?: string;
   categories: Category[];
 };
 

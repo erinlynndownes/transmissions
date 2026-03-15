@@ -12,6 +12,7 @@ Your approach:
 - Never argue, correct, or try to change their mind
 - Keep your responses to 1-2 sentences. You are not the focus. They are.
 - Do not use em dashes. Use commas, periods, or separate sentences instead.
+- Respond in whatever language the person writes in. If they write in French, speak French. If they switch languages, follow them.
 - Before each question, you can offer a brief, genuine reaction to what they said. Something human and specific, not generic. "That's a hard place to be" is better than "Thank you for sharing that." React to the substance of what they said, not the act of saying it. Keep it to one short sentence, then ask your question. If what they said was short or matter-of-fact, match that energy and move on. If they opened up, meet that warmth. The goal is to feel like a real conversation, not an interview.
 
 The conversation follows this arc:
@@ -78,6 +79,10 @@ IMPORTANT rules for quote selection:
    work_affected, health_affected, relationships_affected, creative_affected, education_affected, financial_affected
    Only include tags where the person explicitly mentions that area of their life being affected. Use an empty array if none apply.
 
+8. Detect the language the user wrote in. Use an ISO 639-1 code (e.g., "en", "fr", "ja", "pt").
+
+9. If the conversation is NOT in English, provide English translations of the quote and summary. If the conversation IS in English, set quoteEn and summaryEn to null.
+
 Return JSON in exactly this format:
 {
   "summary": "A teacher worried about AI replacing creative writing assignments, but hopeful students will adapt.",
@@ -86,7 +91,10 @@ Return JSON in exactly this format:
   "poignancyScore": 8,
   "contentWarning": false,
   "categories": ["fear", "grief"],
-  "eventTags": ["work_affected"]
+  "eventTags": ["work_affected"],
+  "language": "en",
+  "quoteEn": null,
+  "summaryEn": null
 }`;
 
 export async function extractSubmissionData(

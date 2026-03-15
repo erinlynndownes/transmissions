@@ -1,0 +1,30 @@
+{
+  "home": {
+    "title": "transmissions",
+    "question": "How do you feel about AI?",
+    "addVoice": "Add your voice",
+    "seeOthers": "See others"
+  },
+  "talk": {
+    "beforeWeBegin": "Before we begin",
+    "consent1": "This is a short conversation about how you feel about AI. With your permission, your words will be stored anonymously and displayed publicly for others to read.",
+    "consent2": "Please don't include anything personal you wouldn't want shown. No names, locations, or identifying details. You can't edit it after the fact.",
+    "consentButton": "I understand, let's talk",
+    "placeholder": "Say what you need to say...",
+    "send": "send",
+    "transmissionReceived": "Transmission received. Your words are part of the record now.",
+    "exploreOthers": "explore what others said",
+    "backToBeginning": "back to the beginning",
+    "submissionId": "Submission ID"
+  },
+  "demographics": {
+    "heading": "Help us understand who's feeling this.",
+    "subheading": "Completely optional. Nothing here is ever attached to your conversation.",
+    "gender": "Gender",
+    "genderPlaceholder": "However you describe yourself",
+    "ageRange": "Age range",
+    "employment": "Employment",
+    "share": "share",
+    "thankYou": "Thank you."
+  }
+}

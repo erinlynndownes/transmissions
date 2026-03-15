@@ -2,12 +2,15 @@ import Link from "next/link";
 import { getConversations } from "@/lib/storage";
 import { RotatingQuote } from "@/components/RotatingQuote";
 import { ConversationItem } from "@/lib/types";
+import { getTranslations } from "next-intl/server";
 
 const QUOTE_THRESHOLD = 10;
 
 export const revalidate = 300;
 
 export default async function Home() {
+  const t = await getTranslations("home");
+
   let quotes: ConversationItem[] = [];
   try {
     const result = await getConversations({ limit: 20 });
@@ -25,11 +28,11 @@ export default async function Home() {
 
       <div className="max-w-2xl mx-auto px-6 flex flex-col items-center text-center">
         <h1 className="text-3xl md:text-4xl font-light tracking-tight opacity-50 mb-10">
-          transmissions
+          {t("title")}
         </h1>
 
         <p className="text-3xl md:text-4xl lg:text-5xl leading-relaxed mb-8">
-          How do you feel about AI?
+          {t("question")}
         </p>
 
         {hasEnoughQuotes && (
@@ -43,13 +46,13 @@ export default async function Home() {
             href="/talk"
             className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] text-sm rounded transition-colors"
           >
-            Add your voice
+            {t("addVoice")}
           </Link>
           <Link
             href="/explore"
             className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] text-sm rounded transition-colors"
           >
-            See others
+            {t("seeOthers")}
           </Link>
         </div>
       </div>

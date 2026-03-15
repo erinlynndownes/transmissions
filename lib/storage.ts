@@ -299,10 +299,6 @@ export async function saveDemographics(
   if (input.employmentStatus) {
     updates.push({ PK: "DEMO#employmentStatus", SK: input.employmentStatus });
   }
-  if (input.incomeRange) {
-    updates.push({ PK: "DEMO#incomeRange", SK: input.incomeRange });
-  }
-
   if (MOCK) {
     console.log("[MOCK] saveDemographics:", input);
     return;
