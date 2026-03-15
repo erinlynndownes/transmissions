@@ -1,27 +1,56 @@
 import { NextRequest, NextResponse } from "next/server";
-import { extractQuoteAndCategories } from "@/lib/claude";
+import { extractSubmissionData } from "@/lib/claude";
 import { saveSubmission } from "@/lib/storage";
-import { Message, Submission, Category } from "@/lib/types";
-import { v4 as uuidv4 } from "uuid";
+import { checkRateLimit } from "@/lib/ratelimit";
+import { Message, SubmissionInput } from "@/lib/types";
+
+const RATE_LIMIT_MAX = 3;
+const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
+const MIN_USER_MESSAGES = 4;
 
 export async function POST(req: NextRequest) {
-  const { messages }: { messages: Message[] } = await req.json();
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
 
-  if (!messages || messages.length < 2) {
-    return NextResponse.json({ error: "Conversation too short" }, { status: 400 });
+  const limited = checkRateLimit(`submit:${ip}`, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS);
+  if (limited) {
+    return NextResponse.json(
+      { error: "Too many submissions. Try again later." },
+      { status: 429 }
+    );
   }
 
-  const { quote, categories } = await extractQuoteAndCategories(messages);
+  const body: SubmissionInput = await req.json();
+  const { messages, regionSubdivision, regionCountry, regionContinent } = body;
 
-  const submission: Submission = {
-    id: uuidv4(),
-    createdAt: new Date().toISOString(),
-    messages,
-    quote,
-    categories: categories as Category[],
-  };
+  if (!messages || !Array.isArray(messages)) {
+    return NextResponse.json({ error: "Invalid messages" }, { status: 400 });
+  }
 
-  await saveSubmission(submission);
+  // Require at least 4 user messages
+  const userMessages = messages.filter((m: Message) => m.role === "user");
+  if (userMessages.length < MIN_USER_MESSAGES) {
+    return NextResponse.json(
+      { error: "Conversation too short" },
+      { status: 400 }
+    );
+  }
 
-  return NextResponse.json({ id: submission.id, quote });
+  try {
+    const extracted = await extractSubmissionData(messages);
+
+    const result = await saveSubmission(
+      { messages, regionSubdivision, regionCountry, regionContinent },
+      extracted
+    );
+
+    return NextResponse.json(result);
+  } catch (error: unknown) {
+    if (error instanceof Error && "status" in error && (error as { status: number }).status === 402) {
+      return NextResponse.json(
+        { error: "We're taking a break — check back later." },
+        { status: 503 }
+      );
+    }
+    throw error;
+  }
 }

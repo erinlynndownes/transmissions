@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# project history (local reference, not checked in)
+HISTORY.md
+
+# terraform
+terraform/.terraform/

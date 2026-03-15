@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { Message } from "./types";
+import { Message, ExtractedData } from "./types";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -44,18 +44,36 @@ const EXTRACTION_PROMPT = `You are analyzing a conversation transcript. Your job
 
 1. Extract the single most quotable, resonant sentence or short passage from the conversation — something that captures the human's authentic feeling. Prefer the final answer if it is strong, but choose whatever is most powerful.
 
-2. Assign 1-3 categories from this list that best describe the emotional tenor:
-fear, hope, grief, excitement, anger, uncertainty, displacement, wonder, other
+2. Identify which beat in the conversation arc the quote came from:
+   - "opening" — their initial reaction to "How do you feel about AI?"
+   - "future" — their sense of what happens from here
+   - "personal" — how it's touching their own life
+   - "closing" — what they'd say to AI builders
+   - "other" — if it doesn't fit the above
+
+3. Assign a poignancy score from 1-10:
+   - 1 = generic, surface-level, could be anyone
+   - 10 = deeply felt, specific, uniquely quotable
+
+4. Assign 1-3 categories from this list that best describe the emotional tenor:
+   fear, hope, grief, excitement, anger, uncertainty, displacement, wonder, other
+
+5. Identify which life circumstances appear in the conversation (0 or more):
+   work_affected, health_affected, relationships_affected, creative_affected, education_affected, financial_affected
+   Only include tags where the person explicitly mentions that area of their life being affected. Use an empty array if none apply.
 
 Return JSON in exactly this format:
 {
   "quote": "the extracted quote here",
-  "categories": ["category1", "category2"]
+  "beat": "closing",
+  "poignancyScore": 8,
+  "categories": ["fear", "grief"],
+  "eventTags": ["work_affected"]
 }`;
 
-export async function extractQuoteAndCategories(
+export async function extractSubmissionData(
   messages: Message[]
-): Promise<{ quote: string; categories: string[] }> {
+): Promise<ExtractedData> {
   const transcript = messages
     .map((m) => `${m.role === "user" ? "Human" : "Assistant"}: ${m.content}`)
     .join("\n\n");
@@ -74,5 +92,5 @@ export async function extractQuoteAndCategories(
   const block = response.content[0];
   if (block.type !== "text") throw new Error("Unexpected response type");
 
-  return JSON.parse(block.text);
+  return JSON.parse(block.text) as ExtractedData;
 }

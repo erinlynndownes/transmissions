@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Transmissions
 
-## Getting Started
+A web app for collecting and displaying how humans feel about AI. Users have a guided conversation with Claude, and with their permission, their words are stored anonymously and displayed to others.
 
-First, run the development server:
+## Stack
+
+- **Framework**: Next.js (App Router) + TypeScript + Tailwind CSS
+- **AI**: Anthropic Claude API
+- **Storage**: AWS DynamoDB (single-table design) + S3
+- **Infrastructure**: Terraform (in `terraform/`)
+
+## Setup
+
+```bash
+npm install
+```
+
+### AWS Infrastructure
+
+Requires AWS CLI credentials configured (`~/.aws/credentials` or SSO).
+
+```bash
+cd terraform
+terraform init
+terraform apply \
+  -var="environment=dev" \
+  -var="github_repository=https://github.com/youruser/transmissions" \
+  -var="github_access_token=ghp_xxxx" \
+  -var="anthropic_api_key=sk-ant-xxxx"
+```
+
+This creates DynamoDB tables, S3 bucket, Secrets Manager secret, Amplify app with auto-deploy, and IAM roles. Copy the output env vars to `.env.local` for local dev:
+
+```
+ANTHROPIC_API_KEY=your-key
+AWS_REGION=us-east-1
+DYNAMODB_TABLE_NAME=transmissions-dev
+DYNAMODB_STATS_TABLE_NAME=transmissions-stats-dev
+S3_BUCKET_NAME=transmissions-conversations-dev
+```
+
+### Run
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## API Routes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Route | Method | Description |
+|-------|--------|-------------|
+| `/api/conversation` | POST | Proxies messages to Claude (rate limited) |
+| `/api/submit` | POST | Extracts quote, saves to S3 + DynamoDB |
+| `/api/conversations` | GET | Paginated, filterable quote listing |
+| `/api/demographics` | POST | Voluntary demographics (decoupled) |
+| `/api/vote` | POST | Increment vote count |
+| `/api/stats` | GET | Aggregated counts |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Architecture
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See `docs/schema-and-storage-plan.md` for the full data model and storage design.
