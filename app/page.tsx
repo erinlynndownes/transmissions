@@ -11,6 +11,8 @@ export const revalidate = 300;
 export default async function Home() {
   const t = await getTranslations("home");
 
+  const question = Math.random() < 0.5 ? t("question") : t("closingQuestion");
+
   let quotes: ConversationItem[] = [];
   try {
     const result = await getConversations({ limit: 20 });
@@ -32,7 +34,7 @@ export default async function Home() {
         </h1>
 
         <p className="text-3xl md:text-4xl lg:text-5xl leading-relaxed mb-8">
-          {t("question")}
+          {question}
         </p>
 
         {hasEnoughQuotes && (

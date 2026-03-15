@@ -1,29 +1,30 @@
 {
   "home": {
     "title": "transmissions",
-    "question": "Was empfinden Sie gegen\u00fcber k\u00fcnstlicher Intelligenz?",
-    "addVoice": "F\u00fcgen Sie Ihre Stimme hinzu",
+    "question": "Was empfinden Sie gegenüber künstlicher Intelligenz?",
+    "closingQuestion": "Wenn die Menschen, die KI entwickeln, Sie jetzt hören könnten, was würden Sie ihnen sagen?",
+    "addVoice": "Fügen Sie Ihre Stimme hinzu",
     "seeOthers": "Andere ansehen"
   },
   "talk": {
     "beforeWeBegin": "Bevor wir beginnen",
-    "consent1": "Dies ist ein kurzes Gespr\u00e4ch dar\u00fcber, was Sie gegen\u00fcber k\u00fcnstlicher Intelligenz empfinden. Mit Ihrer Erlaubnis werden Ihre Worte anonym gespeichert und \u00f6ffentlich angezeigt, damit andere sie lesen k\u00f6nnen.",
-    "consent2": "Bitte geben Sie nichts Pers\u00f6nliches an, das Sie nicht \u00f6ffentlich sehen m\u00f6chten. Keine Namen, Orte oder identifizierende Details. Sie k\u00f6nnen es nachtr\u00e4glich nicht bearbeiten.",
+    "consent1": "Dies ist ein kurzes Gespräch darüber, was Sie gegenüber künstlicher Intelligenz empfinden. Mit Ihrer Erlaubnis werden Ihre Worte anonym gespeichert und öffentlich angezeigt, damit andere sie lesen können.",
+    "consent2": "Bitte geben Sie nichts Persönliches an, das Sie nicht öffentlich sehen möchten. Keine Namen, Orte oder identifizierende Details. Sie können es nachträglich nicht bearbeiten.",
     "consentButton": "Verstanden, lass uns reden",
-    "placeholder": "Sagen Sie, was Sie sagen m\u00fcssen...",
+    "placeholder": "Sagen Sie, was Sie sagen müssen...",
     "send": "senden",
-    "transmissionReceived": "\u00dcbertragung empfangen. Ihre Worte sind jetzt Teil der Aufzeichnung.",
+    "transmissionReceived": "Übertragung empfangen. Ihre Worte sind jetzt Teil der Aufzeichnung.",
     "exploreOthers": "entdecken, was andere gesagt haben",
-    "backToBeginning": "zur\u00fcck zum Anfang",
+    "backToBeginning": "zurück zum Anfang",
     "submissionId": "Einreichungs-ID"
   },
   "demographics": {
     "heading": "Helfen Sie uns zu verstehen, wer das empfindet.",
-    "subheading": "V\u00f6llig freiwillig. Nichts hier wird jemals mit Ihrem Gespr\u00e4ch verkn\u00fcpft.",
+    "subheading": "Völlig freiwillig. Nichts hier wird jemals mit Ihrem Gespräch verknüpft.",
     "gender": "Geschlecht",
     "genderPlaceholder": "Wie Sie sich beschreiben",
     "ageRange": "Altersgruppe",
-    "employment": "Besch\u00e4ftigung",
+    "employment": "Beschäftigung",
     "share": "teilen",
     "thankYou": "Danke."
   }

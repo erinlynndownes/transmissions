@@ -1,26 +1,27 @@
 {
   "home": {
     "title": "transmissions",
-    "question": "\u00bfC\u00f3mo te sientes respecto a la inteligencia artificial?",
-    "addVoice": "A\u00f1ade tu voz",
+    "question": "¿Cómo te sientes respecto a la inteligencia artificial?",
+    "closingQuestion": "Si las personas que construyen la inteligencia artificial pudieran escucharte ahora mismo, ¿qué les dirías?",
+    "addVoice": "Añade tu voz",
     "seeOthers": "Ver a otros"
   },
   "talk": {
     "beforeWeBegin": "Antes de empezar",
-    "consent1": "Esta es una breve conversaci\u00f3n sobre c\u00f3mo te sientes respecto a la inteligencia artificial. Con tu permiso, tus palabras se guardar\u00e1n de forma an\u00f3nima y se mostrar\u00e1n p\u00fablicamente para que otros las lean.",
-    "consent2": "Por favor, no incluyas nada personal que no quieras que se muestre. Sin nombres, ubicaciones ni datos identificativos. No podr\u00e1s editarlo despu\u00e9s.",
+    "consent1": "Esta es una breve conversación sobre cómo te sientes respecto a la inteligencia artificial. Con tu permiso, tus palabras se guardarán de forma anónima y se mostrarán públicamente para que otros las lean.",
+    "consent2": "Por favor, no incluyas nada personal que no quieras que se muestre. Sin nombres, ubicaciones ni datos identificativos. No podrás editarlo después.",
     "consentButton": "Entiendo, hablemos",
     "placeholder": "Di lo que necesites decir...",
     "send": "enviar",
-    "transmissionReceived": "Transmisi\u00f3n recibida. Tus palabras ya forman parte del registro.",
+    "transmissionReceived": "Transmisión recibida. Tus palabras ya forman parte del registro.",
     "exploreOthers": "explora lo que dijeron otros",
     "backToBeginning": "volver al inicio",
-    "submissionId": "ID de env\u00edo"
+    "submissionId": "ID de envío"
   },
   "demographics": {
-    "heading": "Ay\u00fadanos a entender qui\u00e9n siente esto.",
-    "subheading": "Completamente opcional. Nada aqu\u00ed se vincula jam\u00e1s a tu conversaci\u00f3n.",
-    "gender": "G\u00e9nero",
+    "heading": "Ayúdanos a entender quién siente esto.",
+    "subheading": "Completamente opcional. Nada aquí se vincula jamás a tu conversación.",
+    "gender": "Género",
     "genderPlaceholder": "Como te describas",
     "ageRange": "Rango de edad",
     "employment": "Empleo",

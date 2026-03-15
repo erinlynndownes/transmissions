@@ -1,30 +1,31 @@
 {
   "home": {
     "title": "transmissions",
-    "question": "\u4f60\u5bf9\u4eba\u5de5\u667a\u80fd\u6709\u4ec0\u4e48\u611f\u53d7\uff1f",
-    "addVoice": "\u6dfb\u52a0\u4f60\u7684\u58f0\u97f3",
-    "seeOthers": "\u67e5\u770b\u4ed6\u4eba\u7684\u58f0\u97f3"
+    "question": "你对人工智能有什么感受？",
+    "closingQuestion": "如果那些构建人工智能的人现在能听到你的声音，你会对他们说什么？",
+    "addVoice": "添加你的声音",
+    "seeOthers": "查看他人的声音"
   },
   "talk": {
-    "beforeWeBegin": "\u5728\u6211\u4eec\u5f00\u59cb\u4e4b\u524d",
-    "consent1": "\u8fd9\u662f\u4e00\u6bb5\u5173\u4e8e\u4f60\u5bf9\u4eba\u5de5\u667a\u80fd\u611f\u53d7\u7684\u77ed\u6682\u5bf9\u8bdd\u3002\u7ecf\u4f60\u5141\u8bb8\uff0c\u4f60\u7684\u8bdd\u8bed\u5c06\u88ab\u533f\u540d\u4fdd\u5b58\u5e76\u516c\u5f00\u5c55\u793a\uff0c\u4f9b\u4ed6\u4eba\u9605\u8bfb\u3002",
-    "consent2": "\u8bf7\u4e0d\u8981\u5305\u542b\u4efb\u4f55\u4f60\u4e0d\u5e0c\u671b\u88ab\u5c55\u793a\u7684\u4e2a\u4eba\u4fe1\u606f\u3002\u4e0d\u8981\u5305\u542b\u59d3\u540d\u3001\u5730\u70b9\u6216\u53ef\u8bc6\u522b\u7684\u7ec6\u8282\u3002\u4e8b\u540e\u65e0\u6cd5\u7f16\u8f91\u3002",
-    "consentButton": "\u6211\u7406\u89e3\u4e86\uff0c\u6211\u4eec\u8c08\u8c08\u5427",
-    "placeholder": "\u8bf4\u51fa\u4f60\u60f3\u8bf4\u7684...",
-    "send": "\u53d1\u9001",
-    "transmissionReceived": "\u4f20\u8f93\u5df2\u63a5\u6536\u3002\u4f60\u7684\u8bdd\u8bed\u73b0\u5728\u5df2\u6210\u4e3a\u8bb0\u5f55\u7684\u4e00\u90e8\u5206\u3002",
-    "exploreOthers": "\u63a2\u7d22\u4ed6\u4eba\u8bf4\u4e86\u4ec0\u4e48",
-    "backToBeginning": "\u56de\u5230\u5f00\u59cb",
-    "submissionId": "\u63d0\u4ea4ID"
+    "beforeWeBegin": "在我们开始之前",
+    "consent1": "这是一段关于你对人工智能感受的短暂对话。经你允许，你的话语将被匿名保存并公开展示，供他人阅读。",
+    "consent2": "请不要包含任何你不希望被展示的个人信息。不要包含姓名、地点或可识别的细节。事后无法编辑。",
+    "consentButton": "我理解了，我们谈谈吧",
+    "placeholder": "说出你想说的...",
+    "send": "发送",
+    "transmissionReceived": "传输已接收。你的话语现在已成为记录的一部分。",
+    "exploreOthers": "探索他人说了什么",
+    "backToBeginning": "回到开始",
+    "submissionId": "提交ID"
   },
   "demographics": {
-    "heading": "\u5e2e\u52a9\u6211\u4eec\u4e86\u89e3\u8c01\u5728\u611f\u53d7\u8fd9\u4e9b\u3002",
-    "subheading": "\u5b8c\u5168\u81ea\u613f\u3002\u8fd9\u91cc\u7684\u4efb\u4f55\u4fe1\u606f\u90fd\u4e0d\u4f1a\u4e0e\u4f60\u7684\u5bf9\u8bdd\u5173\u8054\u3002",
-    "gender": "\u6027\u522b",
-    "genderPlaceholder": "\u7528\u4f60\u81ea\u5df1\u7684\u65b9\u5f0f\u63cf\u8ff0",
-    "ageRange": "\u5e74\u9f84\u6bb5",
-    "employment": "\u5c31\u4e1a\u72b6\u51b5",
-    "share": "\u5206\u4eab",
-    "thankYou": "\u8c22\u8c22\u3002"
+    "heading": "帮助我们了解谁在感受这些。",
+    "subheading": "完全自愿。这里的任何信息都不会与你的对话关联。",
+    "gender": "性别",
+    "genderPlaceholder": "用你自己的方式描述",
+    "ageRange": "年龄段",
+    "employment": "就业状况",
+    "share": "分享",
+    "thankYou": "谢谢。"
   }
 }

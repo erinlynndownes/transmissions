@@ -1,28 +1,29 @@
 {
   "home": {
     "title": "transmissions",
-    "question": "Que ressentez-vous face \u00e0 l'intelligence artificielle ?",
+    "question": "Que ressentez-vous face à l'intelligence artificielle ?",
+    "closingQuestion": "Si les personnes qui construisent l'IA pouvaient vous entendre maintenant, que leur diriez-vous ?",
     "addVoice": "Ajoutez votre voix",
     "seeOthers": "Voir les autres"
   },
   "talk": {
     "beforeWeBegin": "Avant de commencer",
-    "consent1": "Ceci est une courte conversation sur ce que vous ressentez face \u00e0 l'intelligence artificielle. Avec votre permission, vos mots seront conserv\u00e9s de mani\u00e8re anonyme et affich\u00e9s publiquement pour que d'autres les lisent.",
-    "consent2": "Veuillez ne rien inclure de personnel que vous ne voudriez pas voir affich\u00e9. Pas de noms, de lieux ou de d\u00e9tails identifiants. Vous ne pourrez pas le modifier apr\u00e8s.",
+    "consent1": "Ceci est une courte conversation sur ce que vous ressentez face à l'intelligence artificielle. Avec votre permission, vos mots seront conservés de manière anonyme et affichés publiquement pour que d'autres les lisent.",
+    "consent2": "Veuillez ne rien inclure de personnel que vous ne voudriez pas voir affiché. Pas de noms, de lieux ou de détails identifiants. Vous ne pourrez pas le modifier après.",
     "consentButton": "Je comprends, parlons",
-    "placeholder": "Dites ce que vous avez \u00e0 dire...",
+    "placeholder": "Dites ce que vous avez à dire...",
     "send": "envoyer",
-    "transmissionReceived": "Transmission re\u00e7ue. Vos mots font d\u00e9sormais partie des archives.",
-    "exploreOthers": "d\u00e9couvrir ce que d'autres ont dit",
-    "backToBeginning": "retour au d\u00e9but",
+    "transmissionReceived": "Transmission reçue. Vos mots font désormais partie des archives.",
+    "exploreOthers": "découvrir ce que d'autres ont dit",
+    "backToBeginning": "retour au début",
     "submissionId": "ID de soumission"
   },
   "demographics": {
-    "heading": "Aidez-nous \u00e0 comprendre qui ressent cela.",
-    "subheading": "Enti\u00e8rement facultatif. Rien ici n'est jamais li\u00e9 \u00e0 votre conversation.",
+    "heading": "Aidez-nous à comprendre qui ressent cela.",
+    "subheading": "Entièrement facultatif. Rien ici n'est jamais lié à votre conversation.",
     "gender": "Genre",
-    "genderPlaceholder": "Comme vous vous d\u00e9crivez",
-    "ageRange": "Tranche d'\u00e2ge",
+    "genderPlaceholder": "Comme vous vous décrivez",
+    "ageRange": "Tranche d'âge",
     "employment": "Emploi",
     "share": "partager",
     "thankYou": "Merci."

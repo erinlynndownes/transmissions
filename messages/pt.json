@@ -1,28 +1,29 @@
 {
   "home": {
     "title": "transmissions",
-    "question": "O que voc\u00ea sente em rela\u00e7\u00e3o \u00e0 intelig\u00eancia artificial?",
+    "question": "O que você sente em relação à inteligência artificial?",
+    "closingQuestion": "Se as pessoas que estão construindo a IA pudessem te ouvir agora, o que você diria?",
     "addVoice": "Adicione sua voz",
     "seeOthers": "Ver outros"
   },
   "talk": {
-    "beforeWeBegin": "Antes de come\u00e7ar",
-    "consent1": "Esta \u00e9 uma breve conversa sobre o que voc\u00ea sente em rela\u00e7\u00e3o \u00e0 intelig\u00eancia artificial. Com sua permiss\u00e3o, suas palavras ser\u00e3o armazenadas anonimamente e exibidas publicamente para que outros leiam.",
-    "consent2": "Por favor, n\u00e3o inclua nada pessoal que voc\u00ea n\u00e3o queira que seja exibido. Sem nomes, locais ou detalhes identificadores. Voc\u00ea n\u00e3o poder\u00e1 editar depois.",
+    "beforeWeBegin": "Antes de começar",
+    "consent1": "Esta é uma breve conversa sobre o que você sente em relação à inteligência artificial. Com sua permissão, suas palavras serão armazenadas anonimamente e exibidas publicamente para que outros leiam.",
+    "consent2": "Por favor, não inclua nada pessoal que você não queira que seja exibido. Sem nomes, locais ou detalhes identificadores. Você não poderá editar depois.",
     "consentButton": "Entendi, vamos conversar",
     "placeholder": "Diga o que precisa dizer...",
     "send": "enviar",
-    "transmissionReceived": "Transmiss\u00e3o recebida. Suas palavras agora fazem parte do registro.",
+    "transmissionReceived": "Transmissão recebida. Suas palavras agora fazem parte do registro.",
     "exploreOthers": "explore o que outros disseram",
-    "backToBeginning": "voltar ao in\u00edcio",
+    "backToBeginning": "voltar ao início",
     "submissionId": "ID de envio"
   },
   "demographics": {
-    "heading": "Ajude-nos a entender quem est\u00e1 sentindo isso.",
-    "subheading": "Completamente opcional. Nada aqui \u00e9 vinculado \u00e0 sua conversa.",
-    "gender": "G\u00eanero",
-    "genderPlaceholder": "Como voc\u00ea se descreve",
-    "ageRange": "Faixa et\u00e1ria",
+    "heading": "Ajude-nos a entender quem está sentindo isso.",
+    "subheading": "Completamente opcional. Nada aqui é vinculado à sua conversa.",
+    "gender": "Gênero",
+    "genderPlaceholder": "Como você se descreve",
+    "ageRange": "Faixa etária",
     "employment": "Emprego",
     "share": "compartilhar",
     "thankYou": "Obrigado."

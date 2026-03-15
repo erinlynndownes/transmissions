@@ -259,6 +259,22 @@ export function ConversationView() {
   }, [messages, consented, conversationComplete, restored]);
 
   useEffect(() => {
+    if (!consented || conversationComplete) return;
+
+    function handleBeforeUnload() {
+      const userMessageCount = messages.filter((m) => m.role === "user").length;
+      if (userMessageCount === 0) return;
+      navigator.sendBeacon(
+        "/api/drop",
+        new Blob([JSON.stringify({ userMessageCount })], { type: "application/json" })
+      );
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [consented, conversationComplete, messages]);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 

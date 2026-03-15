@@ -2,6 +2,7 @@
   "home": {
     "title": "transmissions",
     "question": "How do you feel about AI?",
+    "closingQuestion": "If the people building AI could hear you right now, what would you say?",
     "addVoice": "Add your voice",
     "seeOthers": "See others"
   },

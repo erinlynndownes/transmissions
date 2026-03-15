@@ -17,6 +17,7 @@ import {
   PagedResult,
 } from "./types";
 import { v4 as uuidv4 } from "uuid";
+import { filterMockItems, getMockStats } from "./mock-data";
 
 const MOCK = process.env.MOCK_STORAGE === "true";
 
@@ -203,7 +204,7 @@ export async function getConversation(
 export async function getConversations(
   params: FilterParams
 ): Promise<PagedResult<ConversationItem>> {
-  if (MOCK) return { items: [] };
+  if (MOCK) return filterMockItems(params);
 
   let PK = "ALL";
 
@@ -241,7 +242,7 @@ export async function getConversations(
 export async function getStats(): Promise<
   Record<string, Record<string, number>>
 > {
-  if (MOCK) return {};
+  if (MOCK) return getMockStats();
   const result = await dynamo.send(
     new ScanCommand({ TableName: STATS_TABLE })
   );
@@ -332,5 +333,22 @@ export async function saveDemographics(
         })
       )
     )
+  );
+}
+
+export async function incrementDropoff(userMessageCount: number): Promise<void> {
+  if (MOCK) {
+    console.log("[MOCK] incrementDropoff:", userMessageCount);
+    return;
+  }
+
+  await dynamo.send(
+    new UpdateCommand({
+      TableName: STATS_TABLE,
+      Key: { PK: "STAT#dropoff", SK: String(userMessageCount) },
+      UpdateExpression: "ADD #count :one",
+      ExpressionAttributeNames: { "#count": "count" },
+      ExpressionAttributeValues: { ":one": 1 },
+    })
   );
 }
