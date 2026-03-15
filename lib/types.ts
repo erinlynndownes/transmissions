@@ -12,6 +12,7 @@ export type Category =
   | "uncertainty"
   | "displacement"
   | "wonder"
+  | "humor"
   | "other";
 
 export type Submission = {
