@@ -29,6 +29,7 @@ export type ConversationItem = {
   SK: string;
   id: string;
   createdAt: string;
+  summary: string;
   quote: string;
   beat: Beat;
   poignancyScore: number;
@@ -48,6 +49,7 @@ export type ConversationRecord = {
 };
 
 export type ExtractedData = {
+  summary: string;
   quote: string;
   beat: Beat;
   poignancyScore: number;

@@ -51,7 +51,8 @@ npm run dev
 |-------|--------|-------------|
 | `/api/conversation` | POST | Proxies messages to Claude (rate limited) |
 | `/api/submit` | POST | Extracts quote, saves to S3 + DynamoDB |
-| `/api/conversations` | GET | Paginated, filterable quote listing |
+| `/api/conversations` | GET | Paginated, filterable listing (summary + quote) |
+| `/api/conversations/:id` | GET | Full conversation from S3 |
 | `/api/demographics` | POST | Voluntary demographics (decoupled) |
 | `/api/vote` | POST | Increment vote count |
 | `/api/stats` | GET | Aggregated counts |

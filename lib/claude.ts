@@ -42,28 +42,31 @@ export async function continueConversation(
 
 const EXTRACTION_PROMPT = `You are analyzing a conversation transcript. Your job is to:
 
-1. Extract the single most quotable, resonant sentence or short passage from the conversation — something that captures the human's authentic feeling. Prefer the final answer if it is strong, but choose whatever is most powerful.
+1. Write a 1-2 sentence summary of the conversation — who this person is and what they feel about AI. Write in third person, present tense. Example: "A teacher worried about AI replacing creative writing assignments, but hopeful students will adapt."
 
-2. Identify which beat in the conversation arc the quote came from:
+2. Extract the single most quotable, resonant sentence or short passage from the conversation — something that captures the human's authentic feeling. Prefer the final answer if it is strong, but choose whatever is most powerful.
+
+3. Identify which beat in the conversation arc the quote came from:
    - "opening" — their initial reaction to "How do you feel about AI?"
    - "future" — their sense of what happens from here
    - "personal" — how it's touching their own life
    - "closing" — what they'd say to AI builders
    - "other" — if it doesn't fit the above
 
-3. Assign a poignancy score from 1-10:
+4. Assign a poignancy score from 1-10:
    - 1 = generic, surface-level, could be anyone
    - 10 = deeply felt, specific, uniquely quotable
 
-4. Assign 1-3 categories from this list that best describe the emotional tenor:
+5. Assign 1-3 categories from this list that best describe the emotional tenor:
    fear, hope, grief, excitement, anger, uncertainty, displacement, wonder, other
 
-5. Identify which life circumstances appear in the conversation (0 or more):
+6. Identify which life circumstances appear in the conversation (0 or more):
    work_affected, health_affected, relationships_affected, creative_affected, education_affected, financial_affected
    Only include tags where the person explicitly mentions that area of their life being affected. Use an empty array if none apply.
 
 Return JSON in exactly this format:
 {
+  "summary": "A teacher worried about AI replacing creative writing assignments, but hopeful students will adapt.",
   "quote": "the extracted quote here",
   "beat": "closing",
   "poignancyScore": 8,
@@ -80,7 +83,7 @@ export async function extractSubmissionData(
 
   const response = await client.messages.create({
     model: "claude-opus-4-6",
-    max_tokens: 300,
+    max_tokens: 500,
     messages: [
       {
         role: "user",

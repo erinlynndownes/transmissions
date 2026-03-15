@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   DynamoDBDocumentClient,
@@ -40,6 +40,7 @@ export async function saveSubmission(
     SK,
     id,
     createdAt,
+    summary: extracted.summary,
     quote: extracted.quote,
     beat: extracted.beat,
     poignancyScore: extracted.poignancyScore,
@@ -164,6 +165,29 @@ export async function saveSubmission(
   );
 
   return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore };
+}
+
+export async function getConversation(
+  id: string
+): Promise<ConversationRecord | null> {
+  try {
+    const result = await s3.send(
+      new GetObjectCommand({
+        Bucket: BUCKET,
+        Key: `conversations/${id}.json`,
+      })
+    );
+
+    const body = await result.Body?.transformToString();
+    if (!body) return null;
+
+    return JSON.parse(body) as ConversationRecord;
+  } catch (error: unknown) {
+    if (error instanceof Error && error.name === "NoSuchKey") {
+      return null;
+    }
+    throw error;
+  }
 }
 
 export async function getConversations(
