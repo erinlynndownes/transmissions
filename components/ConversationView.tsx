@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Message, Category } from "@/lib/types";
 
+const GENDER_OPTIONS = ["woman", "man", "non-binary", "other", "prefer not to say"];
 const AGE_RANGES = ["13-17", "18-24", "25-34", "35-44", "45-54", "55-64", "65+"];
 const EMPLOYMENT_OPTIONS = [
   "employed",
@@ -66,9 +67,11 @@ function UserMessage({ content, isLatest }: { content: string; isLatest: boolean
 function DemographicsSection({
   categories,
   submissionId,
+  regionContinent,
 }: {
   categories: Category[];
   submissionId: string | null;
+  regionContinent?: string;
 }) {
   const t = useTranslations("demographics");
   const tTalk = useTranslations("talk");
@@ -86,6 +89,7 @@ function DemographicsSection({
         gender: gender || undefined,
         ageRange: ageRange || undefined,
         employmentStatus: employmentStatus || undefined,
+        regionContinent: regionContinent || undefined,
         categories,
       }),
     });
@@ -115,16 +119,24 @@ function DemographicsSection({
 
       <div className="space-y-4 text-left">
         <div>
-          <label className="text-xs text-neutral-500 uppercase tracking-wider block mb-1">
+          <label className="text-xs text-neutral-500 uppercase tracking-wider block mb-2">
             {t("gender")}
           </label>
-          <input
-            type="text"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            placeholder={t("genderPlaceholder")}
-            className="w-full bg-neutral-800/50 border border-neutral-700 rounded px-3 py-2 text-sm text-neutral-200 placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
-          />
+          <div className="flex flex-wrap gap-2">
+            {GENDER_OPTIONS.map((opt) => (
+              <button
+                key={opt}
+                onClick={() => setGender(gender === opt ? "" : opt)}
+                className={`px-3 py-1 text-sm rounded transition-colors ${
+                  gender === opt
+                    ? "bg-neutral-200 text-neutral-900"
+                    : "bg-neutral-800/50 text-neutral-400 hover:text-neutral-200 border border-neutral-700"
+                }`}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div>
@@ -227,6 +239,7 @@ export function ConversationView() {
   const [loading, setLoading] = useState(false);
   const [conversationComplete, setConversationComplete] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [regionContinent, setRegionContinent] = useState<string | undefined>();
   const [submissionId, setSubmissionId] = useState<string | null>(null);
   const [latestAssistantIndex, setLatestAssistantIndex] = useState(-1);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -288,6 +301,7 @@ export function ConversationView() {
       if (res.ok) {
         const data = await res.json();
         setCategories(data.categories ?? []);
+        setRegionContinent(data.regionContinent);
         setSubmissionId(data.id ?? null);
       }
     } catch {
@@ -391,7 +405,7 @@ export function ConversationView() {
             <p className="text-sm text-neutral-500 mt-8">
               {t("transmissionReceived")}
             </p>
-            <DemographicsSection categories={categories} submissionId={submissionId} />
+            <DemographicsSection categories={categories} submissionId={submissionId} regionContinent={regionContinent} />
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center text-sm">
               <a
                 href="/explore"
@@ -414,28 +428,32 @@ export function ConversationView() {
 
       {!conversationComplete && (
         <div className="sticky bottom-0 pb-16">
-          <div className="flex gap-3">
-            <textarea
-              className="flex-1 bg-neutral-800/50 border border-neutral-700 rounded px-4 py-3 text-neutral-100 text-lg placeholder-neutral-600 resize-none focus:outline-none focus:border-neutral-500"
-              rows={3}
-              placeholder={t("placeholder")}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  sendMessage();
-                }
-              }}
-            />
-            <div className="flex flex-col gap-2 justify-end">
-              <button
-                onClick={sendMessage}
-                disabled={loading || !input.trim()}
-                className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 disabled:opacity-30 text-neutral-200 text-sm rounded transition-colors"
-              >
-                {t("send")}
-              </button>
+          <div className="relative border border-[var(--foreground)]/10 rounded p-3">
+            <div className="input-corner-tl" />
+            <div className="input-corner-br" />
+            <div className="flex gap-3">
+              <textarea
+                className="flex-1 bg-transparent text-neutral-100 text-lg placeholder-neutral-600 resize-none focus:outline-none"
+                rows={3}
+                placeholder={t("placeholder")}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
+              />
+              <div className="flex flex-col gap-2 justify-end">
+                <button
+                  onClick={sendMessage}
+                  disabled={loading || !input.trim()}
+                  className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 disabled:opacity-30 text-neutral-200 text-sm rounded transition-colors"
+                >
+                  {t("send")}
+                </button>
+              </div>
             </div>
           </div>
         </div>

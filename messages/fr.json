@@ -19,9 +19,10 @@
     "submissionId": "ID de soumission"
   },
   "explore": {
-    "voices": "Ce que les gens disent",
+    "voices": "Archives",
     "all": "tous",
     "noTransmissions": "Aucune transmission pour le moment.",
+    "back": "retour",
     "totalVoices": "voix enregistrées",
     "byFeeling": "Par ressenti",
     "byRegion": "Par région",
@@ -43,6 +44,8 @@
     "filterGender": "Genre",
     "filterAge": "Âge",
     "filterEmployment": "Emploi",
+    "allFeelings": "Tous les ressentis",
+    "allContinents": "Tous les continents",
     "allCountries": "Tous les pays",
     "allGenders": "Tous les genres",
     "allAges": "Tous les âges",
@@ -52,7 +55,6 @@
     "heading": "Aidez-nous à comprendre qui ressent cela.",
     "subheading": "Entièrement facultatif. Rien ici n'est jamais lié à votre conversation.",
     "gender": "Genre",
-    "genderPlaceholder": "Comme vous vous décrivez",
     "ageRange": "Tranche d'âge",
     "employment": "Emploi",
     "share": "partager",

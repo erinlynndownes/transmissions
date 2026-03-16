@@ -19,9 +19,10 @@
     "submissionId": "提交ID"
   },
   "explore": {
-    "voices": "人们在说什么",
+    "voices": "档案",
     "all": "全部",
     "noTransmissions": "还没有传输。",
+    "back": "返回",
     "totalVoices": "已记录的声音",
     "byFeeling": "按感受",
     "byRegion": "按地区",
@@ -43,6 +44,8 @@
     "filterGender": "性别",
     "filterAge": "年龄",
     "filterEmployment": "就业",
+    "allFeelings": "所有感受",
+    "allContinents": "所有大洲",
     "allCountries": "所有国家",
     "allGenders": "所有性别",
     "allAges": "所有年龄",
@@ -52,7 +55,6 @@
     "heading": "帮助我们了解谁在感受这些。",
     "subheading": "完全自愿。这里的任何信息都不会与你的对话关联。",
     "gender": "性别",
-    "genderPlaceholder": "用你自己的方式描述",
     "ageRange": "年龄段",
     "employment": "就业状况",
     "share": "分享",

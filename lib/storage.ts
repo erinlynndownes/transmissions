@@ -17,7 +17,7 @@ import {
   PagedResult,
 } from "./types";
 import { v4 as uuidv4 } from "uuid";
-import { filterMockItems, getMockStats } from "./mock-data";
+import { filterMockItems, getMockStats, getMockConversation } from "./mock-data";
 
 const MOCK = process.env.MOCK_STORAGE === "true";
 
@@ -30,15 +30,24 @@ const BUCKET = process.env.S3_BUCKET_NAME ?? "";
 const TABLE = process.env.DYNAMODB_TABLE_NAME ?? "";
 const STATS_TABLE = process.env.DYNAMODB_STATS_TABLE_NAME ?? "";
 
+function combinations<T>(arr: T[], size: number): T[][] {
+  if (size === 0) return [[]];
+  if (arr.length < size) return [];
+  const [first, ...rest] = arr;
+  const withFirst = combinations(rest, size - 1).map((c) => [first, ...c]);
+  const withoutFirst = combinations(rest, size);
+  return [...withFirst, ...withoutFirst];
+}
+
 export async function saveSubmission(
   input: SubmissionInput,
   extracted: ExtractedData
-): Promise<{ id: string; quote: string; poignancyScore: number; categories: string[] }> {
+): Promise<{ id: string; quote: string; poignancyScore: number; categories: string[]; regionContinent?: string }> {
   const id = uuidv4();
 
   if (MOCK) {
     console.log("[MOCK] saveSubmission:", { id, quote: extracted.quote });
-    return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore, categories: extracted.categories };
+    return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore, categories: extracted.categories, regionContinent: input.regionContinent };
   }
 
   const createdAt = new Date().toISOString();
@@ -155,6 +164,12 @@ export async function saveSubmission(
   }
   if (input.regionContinent) {
     statsUpdates.push({ PK: "STAT#continent", SK: input.regionContinent });
+    for (const cat of extracted.categories) {
+      statsUpdates.push({
+        PK: "STAT#category#continent",
+        SK: `${cat}#${input.regionContinent}`,
+      });
+    }
   }
   if (input.regionCountry) {
     statsUpdates.push({ PK: "STAT#country", SK: input.regionCountry });
@@ -174,13 +189,13 @@ export async function saveSubmission(
     )
   );
 
-  return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore, categories: extracted.categories };
+  return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore, categories: extracted.categories, regionContinent: input.regionContinent };
 }
 
 export async function getConversation(
   id: string
 ): Promise<ConversationRecord | null> {
-  if (MOCK) return null;
+  if (MOCK) return getMockConversation(id);
   try {
     const result = await s3.send(
       new GetObjectCommand({
@@ -300,24 +315,37 @@ export async function saveDemographics(
   if (input.employmentStatus) {
     updates.push({ PK: "DEMO#employmentStatus", SK: input.employmentStatus });
   }
+  if (input.regionContinent) {
+    updates.push({ PK: "DEMO#continent", SK: input.regionContinent });
+  }
   if (MOCK) {
     console.log("[MOCK] saveDemographics:", input);
     return;
   }
 
-  // Cross-dimensional stats: category × demographic
+  // Cross-dimensional stats: category × demographic (pairwise)
+  const dims: { key: string; value: string }[] = [];
+  if (input.gender) dims.push({ key: "gender", value: input.gender });
+  if (input.ageRange) dims.push({ key: "ageRange", value: input.ageRange });
+  if (input.employmentStatus) dims.push({ key: "employmentStatus", value: input.employmentStatus });
+  if (input.regionContinent) dims.push({ key: "continent", value: input.regionContinent });
+
   for (const cat of input.categories) {
-    if (input.gender) {
+    // Pairwise: category × each dimension
+    for (const d of dims) {
       updates.push({
-        PK: "DEMO#category#gender",
-        SK: `${cat}#${input.gender}`,
+        PK: `DEMO#category#${d.key}`,
+        SK: `${cat}#${d.value}`,
       });
     }
-    if (input.ageRange) {
-      updates.push({
-        PK: "DEMO#category#ageRange",
-        SK: `${cat}#${input.ageRange}`,
-      });
+    // All higher-order combos (3-way, 4-way, 5-way)
+    for (let size = 2; size <= dims.length; size++) {
+      for (const combo of combinations(dims, size)) {
+        updates.push({
+          PK: `DEMO#category#${combo.map((d) => d.key).join("#")}`,
+          SK: `${cat}#${combo.map((d) => d.value).join("#")}`,
+        });
+      }
     }
   }
 

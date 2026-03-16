@@ -19,9 +19,10 @@
     "submissionId": "提出ID"
   },
   "explore": {
-    "voices": "人々の声",
+    "voices": "アーカイブ",
     "all": "すべて",
     "noTransmissions": "まだトランスミッションはありません。",
+    "back": "戻る",
     "totalVoices": "記録された声",
     "byFeeling": "感情別",
     "byRegion": "地域別",
@@ -43,6 +44,8 @@
     "filterGender": "性別",
     "filterAge": "年齢",
     "filterEmployment": "雇用",
+    "allFeelings": "すべての感情",
+    "allContinents": "すべての大陸",
     "allCountries": "すべての国",
     "allGenders": "すべての性別",
     "allAges": "すべての年齢",
@@ -52,7 +55,6 @@
     "heading": "これを感じているのが誰か、理解するお手伝いをしてください。",
     "subheading": "完全に任意です。ここの情報は会話と結びつくことはありません。",
     "gender": "性別",
-    "genderPlaceholder": "あなた自身の言葉で",
     "ageRange": "年齢層",
     "employment": "雇用状況",
     "share": "共有",

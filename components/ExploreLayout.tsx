@@ -18,6 +18,7 @@ export function ExploreLayout({
 }) {
   const [activePanel, setActivePanel] = useState<Panel>(null);
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
+  const [activeContinent, setActiveContinent] = useState<string | null>(null);
 
   const handlePanelClick = (panel: "quotes" | "stats") => {
     // If this panel is already active, do nothing. Only expand or switch.
@@ -61,6 +62,12 @@ export function ExploreLayout({
               setActiveCategory(cat);
               if (activePanel !== "quotes") setActivePanel("quotes");
             }}
+            activeContinent={activeContinent}
+            onContinentChange={(continent) => {
+              setActiveContinent(continent);
+              if (activePanel !== "quotes") setActivePanel("quotes");
+            }}
+            continentOptions={Object.keys(stats.continent ?? {}).sort()}
           />
         </div>
 
@@ -75,6 +82,7 @@ export function ExploreLayout({
           <ExploreStats
             stats={stats}
             collapsed={activePanel === "quotes"}
+            activeContinent={activeContinent}
           />
         </div>
       </div>

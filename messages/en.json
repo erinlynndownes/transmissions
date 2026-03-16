@@ -19,9 +19,10 @@
     "submissionId": "Submission ID"
   },
   "explore": {
-    "voices": "What people are saying",
+    "voices": "Archive",
     "all": "all",
     "noTransmissions": "No transmissions yet.",
+    "back": "back",
     "totalVoices": "voices recorded",
     "byFeeling": "By feeling",
     "byRegion": "By region",
@@ -43,6 +44,8 @@
     "filterGender": "Gender",
     "filterAge": "Age",
     "filterEmployment": "Employment",
+    "allFeelings": "All feelings",
+    "allContinents": "All continents",
     "allCountries": "All countries",
     "allGenders": "All genders",
     "allAges": "All ages",
@@ -52,7 +55,6 @@
     "heading": "Help us understand who's feeling this.",
     "subheading": "Completely optional. Nothing here is ever attached to your conversation.",
     "gender": "Gender",
-    "genderPlaceholder": "However you describe yourself",
     "ageRange": "Age range",
     "employment": "Employment",
     "share": "share",

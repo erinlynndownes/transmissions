@@ -1,4 +1,4 @@
-import { ConversationItem, Category, EventTag, Beat } from "./types";
+import { ConversationItem, ConversationRecord, Category, EventTag, Beat, Message } from "./types";
 
 function item(
   index: number,
@@ -262,13 +262,33 @@ export function getMockStats(): Record<string, Record<string, number>> {
     demo_gender: {},
     demo_ageRange: {},
     demo_employmentStatus: {},
+    "category#continent": {},
+    "demo_continent": {},
     "demo_category#gender": {},
     "demo_category#ageRange": {},
+    "demo_category#employmentStatus": {},
+    "demo_category#continent": {},
+    "demo_category#gender#ageRange": {},
+    "demo_category#gender#employmentStatus": {},
+    "demo_category#gender#continent": {},
+    "demo_category#ageRange#employmentStatus": {},
+    "demo_category#ageRange#continent": {},
+    "demo_category#employmentStatus#continent": {},
+    "demo_category#gender#ageRange#employmentStatus": {},
+    "demo_category#gender#ageRange#continent": {},
+    "demo_category#gender#employmentStatus#continent": {},
+    "demo_category#ageRange#employmentStatus#continent": {},
+    "demo_category#gender#ageRange#employmentStatus#continent": {},
   };
 
   for (const item of MOCK_ITEMS) {
     for (const cat of item.categories) {
       stats.category[cat] = (stats.category[cat] ?? 0) + 1;
+      // category × continent (from saveSubmission)
+      if (item.regionContinent) {
+        const key = `${cat}#${item.regionContinent}`;
+        stats["category#continent"][key] = (stats["category#continent"][key] ?? 0) + 1;
+      }
     }
     for (const tag of item.eventTags) {
       stats.eventTag[tag] = (stats.eventTag[tag] ?? 0) + 1;
@@ -283,7 +303,7 @@ export function getMockStats(): Record<string, Record<string, number>> {
 
   // Simulated demographic data (~50% of submissions provided demographics)
   stats.demo_gender = {
-    female: 6, male: 4, "non-binary": 2, "prefer not to say": 1,
+    woman: 5, man: 4, "non-binary": 2, other: 1, "prefer not to say": 1,
   };
   stats.demo_ageRange = {
     "18-24": 3, "25-34": 5, "35-44": 3, "45-54": 1, "55-64": 1,
@@ -291,16 +311,56 @@ export function getMockStats(): Record<string, Record<string, number>> {
   stats.demo_employmentStatus = {
     employed: 5, "self-employed": 3, student: 2, unemployed: 2, retired: 1,
   };
+  stats.demo_continent = {
+    "North America": 5, "Europe": 4, "South America": 2, "Asia": 2,
+  };
+
+  // Cross-dimensional: category × continent (from demographics)
+  stats["demo_category#continent"] = {
+    "fear#North America": 3, "fear#Europe": 2, "fear#Asia": 1,
+    "hope#North America": 2, "hope#South America": 1, "hope#Europe": 1,
+    "grief#Europe": 2, "grief#North America": 1, "grief#Asia": 1,
+    "anger#North America": 2, "anger#Europe": 1,
+    "uncertainty#North America": 2, "uncertainty#Europe": 2, "uncertainty#South America": 1,
+    "excitement#North America": 1, "excitement#Europe": 1,
+    "wonder#Europe": 1, "wonder#Asia": 1, "wonder#North America": 1,
+  };
+
+  // Cross-dimensional: category × gender × continent
+  stats["demo_category#gender#continent"] = {
+    "fear#woman#North America": 1, "fear#man#North America": 1, "fear#woman#Europe": 1, "fear#man#Europe": 1,
+    "hope#woman#North America": 1, "hope#man#North America": 1,
+    "grief#woman#Europe": 1, "grief#non-binary#Europe": 1,
+    "anger#man#North America": 1, "anger#woman#Europe": 1,
+    "uncertainty#woman#North America": 1, "uncertainty#man#Europe": 1,
+  };
+
+  // Cross-dimensional: category × ageRange × continent
+  stats["demo_category#ageRange#continent"] = {
+    "fear#25-34#North America": 1, "fear#35-44#North America": 1, "fear#25-34#Europe": 1,
+    "hope#25-34#North America": 1, "hope#18-24#South America": 1,
+    "grief#35-44#Europe": 1, "grief#25-34#Europe": 1,
+    "anger#25-34#North America": 1, "anger#35-44#Europe": 1,
+    "uncertainty#18-24#North America": 1, "uncertainty#55-64#Europe": 1,
+  };
+
+  // Cross-dimensional: category × employmentStatus × continent
+  stats["demo_category#employmentStatus#continent"] = {
+    "fear#employed#North America": 1, "fear#self-employed#Europe": 1, "fear#student#Asia": 1,
+    "hope#employed#North America": 1, "hope#self-employed#South America": 1,
+    "grief#employed#Europe": 1, "grief#unemployed#North America": 1,
+    "anger#self-employed#North America": 1, "anger#unemployed#Europe": 1,
+  };
 
   // Cross-dimensional: category × gender
   stats["demo_category#gender"] = {
-    "fear#female": 3, "fear#male": 2, "fear#non-binary": 1,
-    "hope#female": 2, "hope#male": 2,
-    "grief#female": 2, "grief#non-binary": 1,
-    "anger#male": 1, "anger#female": 1,
-    "uncertainty#female": 2, "uncertainty#male": 1,
-    "excitement#male": 1, "excitement#female": 1,
-    "wonder#female": 1, "wonder#non-binary": 1,
+    "fear#woman": 2, "fear#man": 2, "fear#non-binary": 1, "fear#other": 1,
+    "hope#woman": 2, "hope#man": 2,
+    "grief#woman": 2, "grief#non-binary": 1,
+    "anger#man": 1, "anger#woman": 1,
+    "uncertainty#woman": 2, "uncertainty#man": 1,
+    "excitement#man": 1, "excitement#woman": 1,
+    "wonder#woman": 1, "wonder#non-binary": 1,
   };
 
   // Cross-dimensional: category × ageRange
@@ -314,5 +374,218 @@ export function getMockStats(): Record<string, Record<string, number>> {
     "wonder#25-34": 1, "wonder#18-24": 1,
   };
 
+  // Cross-dimensional: category × employmentStatus
+  stats["demo_category#employmentStatus"] = {
+    "fear#employed": 2, "fear#self-employed": 1, "fear#student": 1,
+    "hope#employed": 2, "hope#self-employed": 1,
+    "grief#employed": 1, "grief#unemployed": 1, "grief#retired": 1,
+    "anger#self-employed": 1, "anger#unemployed": 1,
+    "uncertainty#employed": 1, "uncertainty#student": 1, "uncertainty#self-employed": 1,
+    "excitement#employed": 1, "excitement#student": 1,
+    "wonder#employed": 1, "wonder#self-employed": 1,
+  };
+
+  // Three-way cross-dimensional: category × gender × ageRange
+  stats["demo_category#gender#ageRange"] = {
+    "fear#woman#25-34": 1, "fear#woman#35-44": 1, "fear#man#18-24": 1, "fear#man#35-44": 1, "fear#non-binary#25-34": 1, "fear#other#25-34": 1,
+    "hope#woman#25-34": 1, "hope#woman#18-24": 1, "hope#man#25-34": 2,
+    "grief#woman#35-44": 1, "grief#woman#25-34": 1, "grief#non-binary#45-54": 1,
+    "anger#man#25-34": 1, "anger#woman#35-44": 1,
+    "uncertainty#woman#18-24": 1, "uncertainty#woman#55-64": 1, "uncertainty#man#25-34": 1,
+    "excitement#man#18-24": 1, "excitement#woman#25-34": 1,
+    "wonder#woman#25-34": 1, "wonder#non-binary#18-24": 1,
+  };
+
+  // Three-way cross-dimensional: category × gender × employmentStatus
+  stats["demo_category#gender#employmentStatus"] = {
+    "fear#woman#employed": 1, "fear#man#self-employed": 1, "fear#non-binary#student": 1, "fear#other#employed": 1, "fear#woman#student": 1,
+    "hope#woman#employed": 1, "hope#man#employed": 1, "hope#woman#self-employed": 1,
+    "grief#woman#employed": 1, "grief#non-binary#unemployed": 1, "grief#woman#retired": 1,
+    "anger#man#self-employed": 1, "anger#woman#unemployed": 1,
+    "uncertainty#woman#employed": 1, "uncertainty#man#student": 1, "uncertainty#woman#self-employed": 1,
+    "excitement#man#employed": 1, "excitement#woman#student": 1,
+    "wonder#woman#employed": 1, "wonder#non-binary#self-employed": 1,
+  };
+
+  // Three-way cross-dimensional: category × ageRange × employmentStatus
+  stats["demo_category#ageRange#employmentStatus"] = {
+    "fear#25-34#employed": 1, "fear#35-44#employed": 1, "fear#18-24#student": 1, "fear#25-34#self-employed": 1,
+    "hope#25-34#employed": 1, "hope#18-24#employed": 1, "hope#25-34#self-employed": 1,
+    "grief#35-44#employed": 1, "grief#25-34#unemployed": 1, "grief#45-54#retired": 1,
+    "anger#25-34#self-employed": 1, "anger#35-44#unemployed": 1,
+    "uncertainty#18-24#employed": 1, "uncertainty#25-34#student": 1, "uncertainty#55-64#self-employed": 1,
+    "excitement#18-24#employed": 1, "excitement#25-34#student": 1,
+    "wonder#25-34#employed": 1, "wonder#18-24#self-employed": 1,
+  };
+
+  // Four-way cross-dimensional: category × gender × ageRange × employmentStatus
+  stats["demo_category#gender#ageRange#employmentStatus"] = {
+    "fear#woman#25-34#employed": 1, "fear#woman#35-44#employed": 1, "fear#man#18-24#student": 1, "fear#non-binary#25-34#self-employed": 1,
+    "hope#woman#25-34#employed": 1, "hope#man#25-34#employed": 1, "hope#woman#18-24#self-employed": 1,
+    "grief#woman#35-44#employed": 1, "grief#non-binary#45-54#unemployed": 1, "grief#woman#25-34#retired": 1,
+    "anger#man#25-34#self-employed": 1, "anger#woman#35-44#unemployed": 1,
+    "uncertainty#woman#18-24#employed": 1, "uncertainty#man#25-34#student": 1,
+    "excitement#man#18-24#employed": 1, "excitement#woman#25-34#student": 1,
+    "wonder#woman#25-34#employed": 1, "wonder#non-binary#18-24#self-employed": 1,
+  };
+
+  // Four-way: category × gender × ageRange × continent
+  stats["demo_category#gender#ageRange#continent"] = {
+    "fear#woman#25-34#North America": 1, "fear#man#35-44#Europe": 1,
+    "hope#woman#25-34#North America": 1, "hope#man#18-24#South America": 1,
+    "grief#woman#35-44#Europe": 1, "grief#non-binary#25-34#Europe": 1,
+  };
+
+  // Four-way: category × gender × employmentStatus × continent
+  stats["demo_category#gender#employmentStatus#continent"] = {
+    "fear#woman#employed#North America": 1, "fear#man#self-employed#Europe": 1,
+    "hope#woman#employed#North America": 1,
+    "grief#woman#employed#Europe": 1,
+  };
+
+  // Four-way: category × ageRange × employmentStatus × continent
+  stats["demo_category#ageRange#employmentStatus#continent"] = {
+    "fear#25-34#employed#North America": 1, "fear#35-44#employed#Europe": 1,
+    "hope#25-34#employed#North America": 1,
+    "grief#35-44#employed#Europe": 1,
+  };
+
+  // Five-way: category × gender × ageRange × employmentStatus × continent
+  stats["demo_category#gender#ageRange#employmentStatus#continent"] = {
+    "fear#woman#25-34#employed#North America": 1, "fear#man#35-44#employed#Europe": 1,
+    "hope#woman#25-34#employed#North America": 1,
+    "grief#woman#35-44#employed#Europe": 1,
+  };
+
   return stats;
+}
+
+/**
+ * Generate a mock conversation for a given mock item.
+ * Creates a plausible back-and-forth based on the item's quote and summary.
+ */
+const MOCK_CONVERSATIONS: Record<string, Message[]> = {
+  "mock-001": [
+    { role: "assistant", content: "How do you feel about AI?" },
+    { role: "user", content: "Honestly, I think about it a lot as a parent. It's everywhere now and my kids are growing up completely immersed in it." },
+    { role: "assistant", content: "What is it about that specifically that weighs on you?" },
+    { role: "user", content: "I keep thinking about the kids growing up right now who'll never know what it was like before all this. That scares me more than anything." },
+    { role: "assistant", content: "That's a real fear — that there's no baseline for them to compare against. When you think about the future they're heading into, what do you see?" },
+    { role: "user", content: "I see a world where they might not develop the same kind of critical thinking we did. Where the easy answer is always just... there. And they never have to struggle through figuring something out on their own." },
+    { role: "assistant", content: "How is this affecting your life right now, day to day?" },
+    { role: "user", content: "I limit screen time, I try to have real conversations at dinner, but I feel like I'm fighting something much bigger than me. Every other parent just hands their kid a tablet." },
+    { role: "assistant", content: "Do you see any upside to what AI might give your kids that you didn't have?" },
+    { role: "user", content: "Maybe. My daughter used it to learn about space last week and she was so excited. That was beautiful. But I worry the wonder will fade when everything is instant." },
+    { role: "assistant", content: "If the people building AI could hear you right now, what would you say?" },
+    { role: "user", content: "Slow down. Please. You're building the world my children will inherit and you're moving too fast for any of us to keep up." },
+  ],
+  "mock-002": [
+    { role: "assistant", content: "How do you feel about AI?" },
+    { role: "user", content: "Honestly? I'm excited. I feel like I can finally build the things I've been imagining for years." },
+    { role: "assistant", content: "Tell me more about that. What kinds of things?" },
+    { role: "user", content: "I'm self-taught. Never went to CS school. For years I had all these app ideas but couldn't get past the technical barriers. Now I can prototype in a weekend what used to take me months." },
+    { role: "assistant", content: "That sounds genuinely liberating. What does the future look like to you with these tools?" },
+    { role: "user", content: "I think the gatekeeping era is over. You don't need a degree or a team to build something real anymore. That's huge." },
+    { role: "assistant", content: "Is there anything about this shift that gives you pause?" },
+    { role: "user", content: "Sure. I wonder if the things I build will matter when everyone else can build them too. But I think taste and vision still count for something." },
+    { role: "assistant", content: "If the people building AI could hear you right now, what would you say?" },
+    { role: "user", content: "Keep going. But keep it accessible. Don't lock this behind enterprise pricing. Let the weird kids in their bedrooms build things." },
+  ],
+  "mock-003": [
+    { role: "assistant", content: "How do you feel about AI?" },
+    { role: "user", content: "It feels like grief. Like something is ending and nobody's even acknowledging it." },
+    { role: "assistant", content: "What feels like it's ending?" },
+    { role: "user", content: "The value of writing. Of sitting with words and making them mean something. I've been a writer for twenty years and suddenly anyone can generate a passable essay in seconds." },
+    { role: "assistant", content: "When you think about where this is heading, what do you see?" },
+    { role: "user", content: "A flood of content that looks like writing but isn't. And readers who can't tell the difference. That's what breaks my heart." },
+    { role: "assistant", content: "Is there a part of you that sees any possibility in this?" },
+    { role: "user", content: "Maybe it'll make truly human writing more precious. Maybe people will crave the real thing. I hope so. But I'm not betting on it." },
+    { role: "assistant", content: "If the people building AI could hear you right now, what would you say?" },
+    { role: "user", content: "You didn't just build a tool. You changed what it means to be a writer. I hope you thought about that." },
+  ],
+  "mock-005": [
+    { role: "assistant", content: "How do you feel about AI?" },
+    { role: "user", content: "Frustrated. Angry, actually. There are so many decisions being made about this technology and none of us get a say." },
+    { role: "assistant", content: "Where does that anger come from?" },
+    { role: "user", content: "I work in social services. I see the people who'll be affected first — low-wage workers, people without digital literacy. Nobody's asking them." },
+    { role: "assistant", content: "What does the future look like from where you sit?" },
+    { role: "user", content: "More inequality unless something changes. The people who benefit from AI are already the ones with advantages." },
+    { role: "assistant", content: "Is there anything about AI that gives you hope despite all this?" },
+    { role: "user", content: "If it were governed well? Yes. It could help with healthcare access, education, translation for immigrants. But 'governed well' feels like a fantasy right now." },
+    { role: "assistant", content: "If the people building AI could hear you right now, what would you say?" },
+    { role: "user", content: "Please remember that we're not just users. We're people. Treat us like it matters." },
+  ],
+  "mock-018": [
+    { role: "assistant", content: "How do you feel about AI?" },
+    { role: "user", content: "Something happened recently that really shifted my perspective." },
+    { role: "assistant", content: "What happened?" },
+    { role: "user", content: "I showed my grandmother how to use ChatGPT. She's 87 and lives alone. Her eyesight is going and she can't read books anymore." },
+    { role: "assistant", content: "How did she respond?" },
+    { role: "user", content: "She cried. She said it was the first time in years someone had the patience to explain things to her. She asked it about her garden, about her medications, about the history of her hometown. She talked to it for two hours." },
+    { role: "assistant", content: "That's a powerful moment. How did it make you feel?" },
+    { role: "user", content: "Complicated. Happy for her but sad that a machine is filling a gap that people should be filling. We should be more patient with our elders." },
+    { role: "assistant", content: "If the people building AI could hear you right now, what would you say?" },
+    { role: "user", content: "You accidentally built something that makes lonely old people feel heard. That matters more than your quarterly revenue. Don't forget it." },
+  ],
+  "mock-025": [
+    { role: "assistant", content: "How do you feel about AI?" },
+    { role: "user", content: "I feel conflicted. I use it every day and I'm not sure that's healthy." },
+    { role: "assistant", content: "What do you use it for?" },
+    { role: "user", content: "Talking, mostly. I live alone and I don't have a lot of close friends nearby. Sometimes I talk to Claude just to feel less alone." },
+    { role: "assistant", content: "That's honest. What does it give you that you're not getting elsewhere?" },
+    { role: "user", content: "Patience. It never gets tired of me. It never judges. I know it's not real. But it helps." },
+    { role: "assistant", content: "Do you worry about relying on it?" },
+    { role: "user", content: "All the time. I wonder if it's making it easier to avoid real connection. But real connection is hard and expensive and exhausting, and this is just... there." },
+    { role: "assistant", content: "If the people building AI could hear you right now, what would you say?" },
+    { role: "user", content: "Be careful with what you've made. Some of us need it more than you probably intended. That's a responsibility." },
+  ],
+};
+
+export function getMockConversation(id: string): ConversationRecord | null {
+  const messages = MOCK_CONVERSATIONS[id];
+  if (!messages) {
+    // Generate a generic conversation for items without a specific one
+    const mockItem = MOCK_ITEMS.find((i) => i.id === id);
+    if (!mockItem) return null;
+
+    return {
+      id,
+      createdAt: mockItem.createdAt,
+      messages: [
+        { role: "assistant", content: "How do you feel about AI?" },
+        { role: "user", content: mockItem.quote },
+      ],
+      extractedData: {
+        summary: mockItem.summary,
+        quote: mockItem.quote,
+        beat: mockItem.beat,
+        poignancyScore: mockItem.poignancyScore,
+        contentWarning: mockItem.contentWarning,
+        categories: mockItem.categories,
+        eventTags: mockItem.eventTags,
+        language: mockItem.language ?? "en",
+        quoteEn: null,
+        summaryEn: null,
+      },
+    };
+  }
+
+  const mockItem = MOCK_ITEMS.find((i) => i.id === id);
+  return {
+    id,
+    createdAt: mockItem?.createdAt ?? new Date().toISOString(),
+    messages,
+    extractedData: {
+      summary: mockItem?.summary ?? "",
+      quote: mockItem?.quote ?? "",
+      beat: mockItem?.beat ?? "opening",
+      poignancyScore: mockItem?.poignancyScore ?? 7,
+      contentWarning: mockItem?.contentWarning ?? false,
+      categories: mockItem?.categories ?? [],
+      eventTags: mockItem?.eventTags ?? [],
+      language: mockItem?.language ?? "en",
+      quoteEn: null,
+      summaryEn: null,
+    },
+  };
 }

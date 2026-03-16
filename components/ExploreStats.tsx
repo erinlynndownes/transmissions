@@ -6,14 +6,14 @@ import { useTranslations } from "next-intl";
 type Stats = Record<string, Record<string, number>>;
 
 const CATEGORY_COLORS: Record<string, string> = {
-  fear: "rgb(180, 120, 120)",
-  hope: "rgb(120, 180, 140)",
-  grief: "rgb(140, 130, 170)",
-  excitement: "rgb(200, 170, 100)",
-  anger: "rgb(200, 110, 100)",
-  uncertainty: "rgb(150, 160, 170)",
-  wonder: "rgb(120, 160, 190)",
-  other: "rgb(140, 140, 140)",
+  fear: "#b894ff",       // medium_slate_blue 700
+  hope: "#8dffdb",       // mint_cream 400
+  grief: "#c3bef7",      // periwinkle 500
+  excitement: "#dbc09e", // soft amber
+  anger: "#a070ff",      // medium_slate_blue 600
+  uncertainty: "#a3bcd8",// alice_blue 400
+  wonder: "#e7e6fc",     // periwinkle 800
+  other: "#cccccc",      // white 400
 };
 
 function DonutChart({
@@ -139,27 +139,23 @@ function FilterSelect({
 export function ExploreStats({
   stats,
   collapsed,
+  activeContinent,
 }: {
   stats: Stats;
   collapsed: boolean;
+  activeContinent: string | null;
 }) {
   const t = useTranslations("explore");
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const [filterCountry, setFilterCountry] = useState("");
   const [filterGender, setFilterGender] = useState("");
   const [filterAge, setFilterAge] = useState("");
   const [filterEmployment, setFilterEmployment] = useState("");
 
-  const total = stats.total?.submissions ?? 0;
   const categories = stats.category ?? {};
   const eventTags = stats.eventTag ?? {};
 
-  const countryOptions = useMemo(
-    () => Object.keys(stats.country ?? {}).sort(),
-    [stats]
-  );
   const genderOptions = useMemo(
     () => Object.keys(stats.demo_gender ?? {}).sort(),
     [stats]
@@ -173,28 +169,33 @@ export function ExploreStats({
     [stats]
   );
 
-  // When a demographic filter is active, recompute category breakdown
-  // from cross-dimensional stats
+  // When filters are active, recompute category breakdown from cross-dimensional stats
   const filteredCategories = useMemo(() => {
-    const crossKey = filterGender
-      ? "demo_category#gender"
-      : filterAge
-        ? "demo_category#ageRange"
-        : null;
-    const crossValue = filterGender || filterAge;
+    const activeFilters: { dim: string; value: string }[] = [];
+    if (filterGender) activeFilters.push({ dim: "gender", value: filterGender });
+    if (filterAge) activeFilters.push({ dim: "ageRange", value: filterAge });
+    if (filterEmployment) activeFilters.push({ dim: "employmentStatus", value: filterEmployment });
+    if (activeContinent) activeFilters.push({ dim: "continent", value: activeContinent });
 
-    if (!crossKey || !crossValue || !stats[crossKey]) return categories;
+    if (activeFilters.length === 0) return categories;
 
+    // Build the stats key from active filter dimensions
+    const crossKey = `demo_category#${activeFilters.map((f) => f.dim).join("#")}`;
     const crossData = stats[crossKey];
+    if (!crossData) return categories;
+
+    const filterValue = activeFilters.map((f) => f.value).join("#");
     const result: Record<string, number> = {};
     for (const [key, count] of Object.entries(crossData)) {
-      const [cat, val] = key.split("#");
-      if (val === crossValue) {
+      const parts = key.split("#");
+      const cat = parts[0];
+      const matchValue = parts.slice(1).join("#");
+      if (matchValue === filterValue) {
         result[cat] = (result[cat] ?? 0) + count;
       }
     }
     return result;
-  }, [categories, filterGender, filterAge, stats]);
+  }, [categories, filterGender, filterAge, filterEmployment, activeContinent, stats]);
 
   const filteredTotal = Object.values(filteredCategories).reduce(
     (sum, c) => sum + c,
@@ -218,27 +219,20 @@ export function ExploreStats({
     0
   );
 
-  const hasAnyFilter = filterCountry || filterGender || filterAge || filterEmployment;
+  const hasAnyFilter = activeContinent || filterGender || filterAge || filterEmployment;
 
   const filters = (
     <div className="flex flex-wrap gap-1.5 mb-4">
       <FilterSelect
-        value={filterCountry}
-        onChange={setFilterCountry}
-        label={t("filterCountry")}
-        allLabel={t("allCountries")}
-        options={countryOptions}
-      />
-      <FilterSelect
         value={filterGender}
-        onChange={(v) => { setFilterGender(v); setFilterAge(""); }}
+        onChange={setFilterGender}
         label={t("filterGender")}
         allLabel={t("allGenders")}
         options={genderOptions}
       />
       <FilterSelect
         value={filterAge}
-        onChange={(v) => { setFilterAge(v); setFilterGender(""); }}
+        onChange={setFilterAge}
         label={t("filterAge")}
         allLabel={t("allAges")}
         options={ageOptions}
@@ -265,7 +259,7 @@ export function ExploreStats({
                 value: d.value,
                 color: d.color,
               }))}
-              size={90}
+              size={120}
             />
           )}
         </div>
@@ -344,9 +338,12 @@ export function ExploreStats({
 
         {hasAnyFilter && (
           <div className="text-xs text-[var(--foreground)]/30 -mt-2 mb-2">
-            {filterGender || filterAge
-              ? `Showing category breakdown for ${filterGender || filterAge}`
-              : null}
+            {(() => {
+              const parts = [activeContinent, filterGender, filterAge, filterEmployment].filter(Boolean);
+              return parts.length > 0
+                ? `Showing category breakdown for ${parts.join(" + ")}`
+                : null;
+            })()}
           </div>
         )}
 
@@ -405,7 +402,7 @@ export function ExploreStats({
                       className="h-full rounded-full transition-all duration-500"
                       style={{
                         width: `${pct}%`,
-                        backgroundColor: "rgb(200, 170, 100)",
+                        backgroundColor: "#a3bcd8",
                         opacity: 0.6,
                       }}
                     />

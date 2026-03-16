@@ -73,6 +73,7 @@ export type DemographicsInput = {
   gender?: string;
   ageRange?: string;
   employmentStatus?: string;
+  regionContinent?: string;
   categories: Category[];
 };
 

@@ -19,9 +19,10 @@
     "submissionId": "Einreichungs-ID"
   },
   "explore": {
-    "voices": "Was die Menschen sagen",
+    "voices": "Archiv",
     "all": "alle",
     "noTransmissions": "Noch keine Übertragungen.",
+    "back": "zurück",
     "totalVoices": "Stimmen aufgezeichnet",
     "byFeeling": "Nach Gefühl",
     "byRegion": "Nach Region",
@@ -43,6 +44,8 @@
     "filterGender": "Geschlecht",
     "filterAge": "Alter",
     "filterEmployment": "Beschäftigung",
+    "allFeelings": "Alle Gefühle",
+    "allContinents": "Alle Kontinente",
     "allCountries": "Alle Länder",
     "allGenders": "Alle Geschlechter",
     "allAges": "Alle Alter",
@@ -52,7 +55,6 @@
     "heading": "Helfen Sie uns zu verstehen, wer das empfindet.",
     "subheading": "Völlig freiwillig. Nichts hier wird jemals mit Ihrem Gespräch verknüpft.",
     "gender": "Geschlecht",
-    "genderPlaceholder": "Wie Sie sich beschreiben",
     "ageRange": "Altersgruppe",
     "employment": "Beschäftigung",
     "share": "teilen",
