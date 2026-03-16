@@ -279,6 +279,21 @@ export function getMockStats(): Record<string, Record<string, number>> {
     "demo_category#gender#employmentStatus#continent": {},
     "demo_category#ageRange#employmentStatus#continent": {},
     "demo_category#gender#ageRange#employmentStatus#continent": {},
+    "demo_eventTag#gender": {},
+    "demo_eventTag#ageRange": {},
+    "demo_eventTag#employmentStatus": {},
+    "demo_eventTag#continent": {},
+    "demo_eventTag#gender#ageRange": {},
+    "demo_eventTag#gender#employmentStatus": {},
+    "demo_eventTag#gender#continent": {},
+    "demo_eventTag#ageRange#employmentStatus": {},
+    "demo_eventTag#ageRange#continent": {},
+    "demo_eventTag#employmentStatus#continent": {},
+    "demo_eventTag#gender#ageRange#employmentStatus": {},
+    "demo_eventTag#gender#ageRange#continent": {},
+    "demo_eventTag#gender#employmentStatus#continent": {},
+    "demo_eventTag#ageRange#employmentStatus#continent": {},
+    "demo_eventTag#gender#ageRange#employmentStatus#continent": {},
   };
 
   for (const item of MOCK_ITEMS) {
@@ -455,6 +470,131 @@ export function getMockStats(): Record<string, Record<string, number>> {
     "fear#woman#25-34#employed#North America": 1, "fear#man#35-44#employed#Europe": 1,
     "hope#woman#25-34#employed#North America": 1,
     "grief#woman#35-44#employed#Europe": 1,
+  };
+
+  // Cross-dimensional: eventTag × gender
+  stats["demo_eventTag#gender"] = {
+    "work_affected#woman": 3, "work_affected#man": 3, "work_affected#non-binary": 1,
+    "health_affected#woman": 2, "health_affected#man": 1,
+    "relationships_affected#woman": 2, "relationships_affected#man": 1, "relationships_affected#non-binary": 1,
+    "creative_affected#woman": 1, "creative_affected#man": 2,
+    "education_affected#woman": 1, "education_affected#man": 1, "education_affected#non-binary": 1,
+    "financial_affected#man": 1, "financial_affected#woman": 1,
+  };
+
+  // Cross-dimensional: eventTag × ageRange
+  stats["demo_eventTag#ageRange"] = {
+    "work_affected#25-34": 3, "work_affected#35-44": 2, "work_affected#18-24": 1,
+    "health_affected#25-34": 1, "health_affected#35-44": 1, "health_affected#55-64": 1,
+    "relationships_affected#18-24": 2, "relationships_affected#25-34": 1, "relationships_affected#35-44": 1,
+    "creative_affected#25-34": 2, "creative_affected#18-24": 1,
+    "education_affected#18-24": 2, "education_affected#25-34": 1,
+    "financial_affected#25-34": 1, "financial_affected#45-54": 1,
+  };
+
+  // Cross-dimensional: eventTag × employmentStatus
+  stats["demo_eventTag#employmentStatus"] = {
+    "work_affected#employed": 4, "work_affected#self-employed": 2, "work_affected#student": 1,
+    "health_affected#employed": 2, "health_affected#self-employed": 1,
+    "relationships_affected#employed": 2, "relationships_affected#student": 1, "relationships_affected#unemployed": 1,
+    "creative_affected#self-employed": 2, "creative_affected#employed": 1,
+    "education_affected#student": 2, "education_affected#employed": 1,
+    "financial_affected#employed": 1, "financial_affected#unemployed": 1,
+  };
+
+  // Cross-dimensional: eventTag × continent
+  stats["demo_eventTag#continent"] = {
+    "work_affected#North America": 3, "work_affected#Europe": 3, "work_affected#Asia": 1,
+    "health_affected#North America": 1, "health_affected#Europe": 1, "health_affected#South America": 1,
+    "relationships_affected#North America": 2, "relationships_affected#Europe": 1, "relationships_affected#Asia": 1,
+    "creative_affected#North America": 1, "creative_affected#Europe": 2,
+    "education_affected#North America": 1, "education_affected#South America": 1, "education_affected#Asia": 1,
+    "financial_affected#North America": 1, "financial_affected#Europe": 1,
+  };
+
+  // Cross-dimensional: eventTag × gender × ageRange
+  stats["demo_eventTag#gender#ageRange"] = {
+    "work_affected#woman#25-34": 2, "work_affected#man#35-44": 1, "work_affected#man#25-34": 1,
+    "health_affected#woman#35-44": 1, "health_affected#man#25-34": 1,
+    "relationships_affected#woman#18-24": 1, "relationships_affected#non-binary#25-34": 1,
+    "creative_affected#man#25-34": 1, "creative_affected#woman#18-24": 1,
+    "education_affected#woman#18-24": 1, "education_affected#non-binary#18-24": 1,
+  };
+
+  // Cross-dimensional: eventTag × gender × employmentStatus
+  stats["demo_eventTag#gender#employmentStatus"] = {
+    "work_affected#woman#employed": 2, "work_affected#man#self-employed": 1, "work_affected#man#employed": 1,
+    "health_affected#woman#employed": 1, "health_affected#man#self-employed": 1,
+    "relationships_affected#woman#employed": 1, "relationships_affected#non-binary#student": 1,
+    "creative_affected#man#self-employed": 1, "creative_affected#woman#employed": 1,
+    "education_affected#woman#student": 1, "education_affected#non-binary#student": 1,
+  };
+
+  // Cross-dimensional: eventTag × gender × continent
+  stats["demo_eventTag#gender#continent"] = {
+    "work_affected#woman#North America": 2, "work_affected#man#Europe": 2,
+    "health_affected#woman#North America": 1, "health_affected#man#Europe": 1,
+    "relationships_affected#woman#North America": 1, "relationships_affected#non-binary#Europe": 1,
+    "creative_affected#man#Europe": 1, "creative_affected#woman#North America": 1,
+    "education_affected#woman#South America": 1, "education_affected#non-binary#Asia": 1,
+  };
+
+  // Cross-dimensional: eventTag × ageRange × employmentStatus
+  stats["demo_eventTag#ageRange#employmentStatus"] = {
+    "work_affected#25-34#employed": 2, "work_affected#35-44#self-employed": 1,
+    "health_affected#35-44#employed": 1, "health_affected#25-34#self-employed": 1,
+    "relationships_affected#18-24#student": 1, "relationships_affected#25-34#employed": 1,
+    "creative_affected#25-34#self-employed": 1, "creative_affected#18-24#employed": 1,
+    "education_affected#18-24#student": 2,
+  };
+
+  // Cross-dimensional: eventTag × ageRange × continent
+  stats["demo_eventTag#ageRange#continent"] = {
+    "work_affected#25-34#North America": 2, "work_affected#35-44#Europe": 1,
+    "health_affected#35-44#North America": 1, "health_affected#25-34#Europe": 1,
+    "relationships_affected#18-24#North America": 1, "relationships_affected#25-34#Europe": 1,
+    "creative_affected#25-34#Europe": 1, "education_affected#18-24#South America": 1,
+  };
+
+  // Cross-dimensional: eventTag × employmentStatus × continent
+  stats["demo_eventTag#employmentStatus#continent"] = {
+    "work_affected#employed#North America": 2, "work_affected#self-employed#Europe": 1,
+    "health_affected#employed#North America": 1, "health_affected#self-employed#Europe": 1,
+    "relationships_affected#employed#North America": 1, "relationships_affected#student#Europe": 1,
+    "creative_affected#self-employed#Europe": 1, "education_affected#student#South America": 1,
+  };
+
+  // Four-way: eventTag × gender × ageRange × employmentStatus
+  stats["demo_eventTag#gender#ageRange#employmentStatus"] = {
+    "work_affected#woman#25-34#employed": 1, "work_affected#man#35-44#self-employed": 1,
+    "health_affected#woman#35-44#employed": 1,
+    "relationships_affected#non-binary#25-34#student": 1,
+  };
+
+  // Four-way: eventTag × gender × ageRange × continent
+  stats["demo_eventTag#gender#ageRange#continent"] = {
+    "work_affected#woman#25-34#North America": 1, "work_affected#man#35-44#Europe": 1,
+    "health_affected#woman#35-44#North America": 1,
+    "relationships_affected#non-binary#25-34#Europe": 1,
+  };
+
+  // Four-way: eventTag × gender × employmentStatus × continent
+  stats["demo_eventTag#gender#employmentStatus#continent"] = {
+    "work_affected#woman#employed#North America": 1, "work_affected#man#self-employed#Europe": 1,
+    "health_affected#woman#employed#North America": 1,
+    "relationships_affected#non-binary#student#Europe": 1,
+  };
+
+  // Four-way: eventTag × ageRange × employmentStatus × continent
+  stats["demo_eventTag#ageRange#employmentStatus#continent"] = {
+    "work_affected#25-34#employed#North America": 1, "work_affected#35-44#self-employed#Europe": 1,
+    "health_affected#35-44#employed#North America": 1,
+  };
+
+  // Five-way: eventTag × gender × ageRange × employmentStatus × continent
+  stats["demo_eventTag#gender#ageRange#employmentStatus#continent"] = {
+    "work_affected#woman#25-34#employed#North America": 1, "work_affected#man#35-44#self-employed#Europe": 1,
+    "health_affected#woman#35-44#employed#North America": 1,
   };
 
   return stats;

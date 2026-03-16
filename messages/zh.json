@@ -44,12 +44,23 @@
     "filterGender": "性别",
     "filterAge": "年龄",
     "filterEmployment": "就业",
-    "allFeelings": "所有感受",
+    "filterContinent": "大洲",
+    "allMoods": "所有情绪",
+    "allEvents": "所有领域",
     "allContinents": "所有大洲",
     "allCountries": "所有国家",
     "allGenders": "所有性别",
     "allAges": "所有年龄",
-    "allEmployment": "所有就业"
+    "allEmployment": "所有就业",
+    "searchLocation": "搜索位置...",
+    "eventTags": {
+      "work_affected": "工作",
+      "health_affected": "健康",
+      "relationships_affected": "人际关系",
+      "creative_affected": "创造力",
+      "education_affected": "教育",
+      "financial_affected": "财务"
+    }
   },
   "demographics": {
     "heading": "帮助我们了解谁在感受这些。",

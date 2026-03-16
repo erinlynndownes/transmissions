@@ -44,12 +44,23 @@
     "filterGender": "Gender",
     "filterAge": "Age",
     "filterEmployment": "Employment",
-    "allFeelings": "All feelings",
+    "filterContinent": "Continent",
+    "allMoods": "All moods",
+    "allEvents": "All areas",
     "allContinents": "All continents",
     "allCountries": "All countries",
     "allGenders": "All genders",
     "allAges": "All ages",
-    "allEmployment": "All employment"
+    "allEmployment": "All employment",
+    "searchLocation": "Search location...",
+    "eventTags": {
+      "work_affected": "work",
+      "health_affected": "health",
+      "relationships_affected": "relationships",
+      "creative_affected": "creative",
+      "education_affected": "education",
+      "financial_affected": "financial"
+    }
   },
   "demographics": {
     "heading": "Help us understand who's feeling this.",

@@ -13,10 +13,12 @@
     "@aws-sdk/client-dynamodb": "^3.1007.0",
     "@aws-sdk/client-s3": "^3.1007.0",
     "@aws-sdk/lib-dynamodb": "^3.1007.0",
+    "@types/react-simple-maps": "^3.0.6",
     "next": "16.1.6",
     "next-intl": "^4.8.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-simple-maps": "^3.0.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {

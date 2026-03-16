@@ -12,6 +12,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  if (!body.eventTags) body.eventTags = [];
+
   await saveDemographics(body);
 
   return NextResponse.json({ ok: true });

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
+import { ContinentMap } from "./ContinentMap";
 
 type Stats = Record<string, Record<string, number>>;
 
@@ -24,10 +25,50 @@ function DonutChart({
   size?: number;
 }) {
   const total = data.reduce((sum, d) => sum + d.value, 0);
-  if (total === 0) return null;
 
   const radius = size / 2 - 8;
   const innerRadius = radius * 0.6;
+
+  // Empty state: gray ring with "0" and "no data"
+  if (total === 0) {
+    return (
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={(radius + innerRadius) / 2}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={radius - innerRadius}
+          opacity={0.08}
+        />
+        <text
+          x={size / 2}
+          y={size / 2 - 6}
+          textAnchor="middle"
+          fill="currentColor"
+          opacity={0.3}
+          fontSize={24}
+          fontWeight={300}
+        >
+          0
+        </text>
+        <text
+          x={size / 2}
+          y={size / 2 + 12}
+          textAnchor="middle"
+          fill="currentColor"
+          opacity={0.2}
+          fontSize={8}
+          letterSpacing={2}
+          style={{ textTransform: "uppercase" }}
+        >
+          NO DATA
+        </text>
+      </svg>
+    );
+  }
+
   let currentAngle = -Math.PI / 2;
 
   const segments = data.map((d) => {
@@ -139,16 +180,15 @@ function FilterSelect({
 export function ExploreStats({
   stats,
   collapsed,
-  activeContinent,
 }: {
   stats: Stats;
   collapsed: boolean;
-  activeContinent: string | null;
 }) {
   const t = useTranslations("explore");
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  const [filterContinent, setFilterContinent] = useState("");
   const [filterGender, setFilterGender] = useState("");
   const [filterAge, setFilterAge] = useState("");
   const [filterEmployment, setFilterEmployment] = useState("");
@@ -168,6 +208,10 @@ export function ExploreStats({
     () => Object.keys(stats.demo_employmentStatus ?? {}).sort(),
     [stats]
   );
+  const continentOptions = useMemo(
+    () => Object.keys(stats.demo_continent ?? {}).sort(),
+    [stats]
+  );
 
   // When filters are active, recompute category breakdown from cross-dimensional stats
   const filteredCategories = useMemo(() => {
@@ -175,7 +219,7 @@ export function ExploreStats({
     if (filterGender) activeFilters.push({ dim: "gender", value: filterGender });
     if (filterAge) activeFilters.push({ dim: "ageRange", value: filterAge });
     if (filterEmployment) activeFilters.push({ dim: "employmentStatus", value: filterEmployment });
-    if (activeContinent) activeFilters.push({ dim: "continent", value: activeContinent });
+    if (filterContinent) activeFilters.push({ dim: "continent", value: filterContinent });
 
     if (activeFilters.length === 0) return categories;
 
@@ -195,31 +239,59 @@ export function ExploreStats({
       }
     }
     return result;
-  }, [categories, filterGender, filterAge, filterEmployment, activeContinent, stats]);
+  }, [categories, filterGender, filterAge, filterEmployment, filterContinent, stats]);
 
   const filteredTotal = Object.values(filteredCategories).reduce(
     (sum, c) => sum + c,
     0
   );
 
-  const categoryData = Object.entries(filteredCategories)
-    .sort(([, a], [, b]) => b - a)
-    .map(([cat, count]) => ({
-      label: cat,
-      value: count,
-      color: CATEGORY_COLORS[cat] ?? CATEGORY_COLORS.other,
-      pct: filteredTotal > 0 ? Math.round((count / filteredTotal) * 100) : 0,
-    }));
+  const categoryData = Object.keys(CATEGORY_COLORS)
+    .map((cat) => {
+      const count = filteredCategories[cat] ?? 0;
+      return {
+        label: cat,
+        value: count,
+        color: CATEGORY_COLORS[cat],
+        pct: filteredTotal > 0 ? Math.round((count / filteredTotal) * 100) : 0,
+      };
+    })
+    .sort((a, b) => b.value - a.value);
 
-  const eventTagEntries = Object.entries(eventTags).sort(
-    ([, a], [, b]) => b - a
-  );
+  // When filters are active, recompute event tag breakdown from cross-dimensional stats
+  const filteredEventTags = useMemo(() => {
+    const activeFilters: { dim: string; value: string }[] = [];
+    if (filterGender) activeFilters.push({ dim: "gender", value: filterGender });
+    if (filterAge) activeFilters.push({ dim: "ageRange", value: filterAge });
+    if (filterEmployment) activeFilters.push({ dim: "employmentStatus", value: filterEmployment });
+    if (filterContinent) activeFilters.push({ dim: "continent", value: filterContinent });
+
+    if (activeFilters.length === 0) return eventTags;
+
+    const crossKey = `demo_eventTag#${activeFilters.map((f) => f.dim).join("#")}`;
+    const crossData = stats[crossKey];
+    if (!crossData) return eventTags;
+
+    const filterValue = activeFilters.map((f) => f.value).join("#");
+    const result: Record<string, number> = {};
+    for (const [key, count] of Object.entries(crossData)) {
+      const parts = key.split("#");
+      const tag = parts[0];
+      const matchValue = parts.slice(1).join("#");
+      if (matchValue === filterValue) {
+        result[tag] = (result[tag] ?? 0) + count;
+      }
+    }
+    return result;
+  }, [eventTags, filterGender, filterAge, filterEmployment, filterContinent, stats]);
+
+  const eventTagEntries = Object.keys(EVENT_TAG_LABELS)
+    .map((tag) => [tag, filteredEventTags[tag] ?? 0] as [string, number])
+    .sort(([, a], [, b]) => b - a);
   const totalEventCount = eventTagEntries.reduce(
     (sum, [, c]) => sum + c,
     0
   );
-
-  const hasAnyFilter = activeContinent || filterGender || filterAge || filterEmployment;
 
   const filters = (
     <div className="flex flex-wrap gap-1.5 mb-4">
@@ -243,6 +315,13 @@ export function ExploreStats({
         label={t("filterEmployment")}
         allLabel={t("allEmployment")}
         options={employmentOptions}
+      />
+      <FilterSelect
+        value={filterContinent}
+        onChange={setFilterContinent}
+        label={t("filterContinent")}
+        allLabel={t("allContinents")}
+        options={continentOptions}
       />
     </div>
   );
@@ -282,6 +361,17 @@ export function ExploreStats({
           ))}
         </div>
 
+        {/* Compact map */}
+        {mounted && (
+          <div className="w-full px-1">
+            <ContinentMap
+              activeContinent={filterContinent || null}
+              onContinentChange={(c) => setFilterContinent(c ?? "")}
+              continentCounts={stats.continent ?? {}}
+            />
+          </div>
+        )}
+
         {/* Compact areas affected */}
         <div className="w-full space-y-1 px-1">
           <h3 className="text-xs uppercase tracking-widest text-[var(--foreground)]/30 mb-1">
@@ -305,27 +395,6 @@ export function ExploreStats({
           })}
         </div>
 
-        {/* Compact summary — stacked vertically */}
-        <div className="w-full space-y-2 px-1">
-          <div className="flex justify-between text-xs">
-            <span className="text-[var(--foreground)]/40">{t("countries")}</span>
-            <span className="text-[var(--foreground)]/60 tabular-nums">
-              {Object.keys(stats.country ?? {}).length}
-            </span>
-          </div>
-          <div className="flex justify-between text-xs">
-            <span className="text-[var(--foreground)]/40">{t("continents")}</span>
-            <span className="text-[var(--foreground)]/60 tabular-nums">
-              {Object.keys(stats.continent ?? {}).length}
-            </span>
-          </div>
-          <div className="flex justify-between text-xs">
-            <span className="text-[var(--foreground)]/40">{t("feelings")}</span>
-            <span className="text-[var(--foreground)]/60 tabular-nums">
-              {Object.keys(categories).length}
-            </span>
-          </div>
-        </div>
       </div>
     );
   }
@@ -336,44 +405,44 @@ export function ExploreStats({
         {/* Filters */}
         {filters}
 
-        {hasAnyFilter && (
-          <div className="text-xs text-[var(--foreground)]/30 -mt-2 mb-2">
-            {(() => {
-              const parts = [activeContinent, filterGender, filterAge, filterEmployment].filter(Boolean);
-              return parts.length > 0
-                ? `Showing category breakdown for ${parts.join(" + ")}`
-                : null;
-            })()}
+        {/* Donut chart + legend + map */}
+        <div className="flex items-center p-4 rounded border border-[var(--foreground)]/5">
+          <div className="w-[calc(50%-20px)] flex items-center gap-4">
+            {mounted && (
+              <DonutChart
+                data={categoryData.map((d) => ({
+                  label: d.label,
+                  value: d.value,
+                  color: d.color,
+                }))}
+              />
+            )}
+            <div className="flex-1 space-y-1.5">
+              {categoryData.map((d) => (
+                <div key={d.label} className="flex items-center gap-2 text-xs">
+                  <div
+                    className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: d.color, opacity: 0.7 }}
+                  />
+                  <span className="text-[var(--foreground)]/60 flex-1">
+                    {t(`categories.${d.label}`)}
+                  </span>
+                  <span className="text-[var(--foreground)]/40 tabular-nums">
+                    {d.pct}%
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-        )}
-
-        {/* Donut chart + legend */}
-        <div className="flex items-center gap-6 p-4 rounded border border-[var(--foreground)]/5">
           {mounted && (
-            <DonutChart
-              data={categoryData.map((d) => ({
-                label: d.label,
-                value: d.value,
-                color: d.color,
-              }))}
-            />
+            <div className="w-[calc(50%+20px)]">
+              <ContinentMap
+                activeContinent={filterContinent || null}
+                onContinentChange={(c) => setFilterContinent(c ?? "")}
+                continentCounts={stats.continent ?? {}}
+              />
+            </div>
           )}
-          <div className="flex-1 space-y-1.5">
-            {categoryData.map((d) => (
-              <div key={d.label} className="flex items-center gap-2 text-xs">
-                <div
-                  className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                  style={{ backgroundColor: d.color, opacity: 0.7 }}
-                />
-                <span className="text-[var(--foreground)]/60 flex-1">
-                  {t(`categories.${d.label}`)}
-                </span>
-                <span className="text-[var(--foreground)]/40 tabular-nums">
-                  {d.pct}%
-                </span>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Life areas affected */}
@@ -413,35 +482,6 @@ export function ExploreStats({
           </div>
         </div>
 
-        {/* Summary counts */}
-        <div className="p-4 rounded border border-[var(--foreground)]/5 flex items-center justify-around">
-          <div className="text-center">
-            <div className="text-2xl font-light text-[var(--foreground)]/70 tabular-nums">
-              {Object.keys(stats.country ?? {}).length}
-            </div>
-            <div className="text-xs text-[var(--foreground)]/30 uppercase tracking-widest mt-1">
-              {t("countries")}
-            </div>
-          </div>
-          <div className="w-px h-8 bg-[var(--foreground)]/10" />
-          <div className="text-center">
-            <div className="text-2xl font-light text-[var(--foreground)]/70 tabular-nums">
-              {Object.keys(stats.continent ?? {}).length}
-            </div>
-            <div className="text-xs text-[var(--foreground)]/30 uppercase tracking-widest mt-1">
-              {t("continents")}
-            </div>
-          </div>
-          <div className="w-px h-8 bg-[var(--foreground)]/10" />
-          <div className="text-center">
-            <div className="text-2xl font-light text-[var(--foreground)]/70 tabular-nums">
-              {Object.keys(categories).length}
-            </div>
-            <div className="text-xs text-[var(--foreground)]/30 uppercase tracking-widest mt-1">
-              {t("feelings")}
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

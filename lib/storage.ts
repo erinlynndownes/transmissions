@@ -42,12 +42,12 @@ function combinations<T>(arr: T[], size: number): T[][] {
 export async function saveSubmission(
   input: SubmissionInput,
   extracted: ExtractedData
-): Promise<{ id: string; quote: string; poignancyScore: number; categories: string[]; regionContinent?: string }> {
+): Promise<{ id: string; quote: string; poignancyScore: number; categories: string[]; eventTags: string[]; regionContinent?: string }> {
   const id = uuidv4();
 
   if (MOCK) {
     console.log("[MOCK] saveSubmission:", { id, quote: extracted.quote });
-    return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore, categories: extracted.categories, regionContinent: input.regionContinent };
+    return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore, categories: extracted.categories, eventTags: extracted.eventTags, regionContinent: input.regionContinent };
   }
 
   const createdAt = new Date().toISOString();
@@ -189,7 +189,7 @@ export async function saveSubmission(
     )
   );
 
-  return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore, categories: extracted.categories, regionContinent: input.regionContinent };
+  return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore, categories: extracted.categories, eventTags: extracted.eventTags, regionContinent: input.regionContinent };
 }
 
 export async function getConversation(
@@ -330,20 +330,37 @@ export async function saveDemographics(
   if (input.employmentStatus) dims.push({ key: "employmentStatus", value: input.employmentStatus });
   if (input.regionContinent) dims.push({ key: "continent", value: input.regionContinent });
 
+  // Cross-dimensional: category × demographics
   for (const cat of input.categories) {
-    // Pairwise: category × each dimension
     for (const d of dims) {
       updates.push({
         PK: `DEMO#category#${d.key}`,
         SK: `${cat}#${d.value}`,
       });
     }
-    // All higher-order combos (3-way, 4-way, 5-way)
     for (let size = 2; size <= dims.length; size++) {
       for (const combo of combinations(dims, size)) {
         updates.push({
           PK: `DEMO#category#${combo.map((d) => d.key).join("#")}`,
           SK: `${cat}#${combo.map((d) => d.value).join("#")}`,
+        });
+      }
+    }
+  }
+
+  // Cross-dimensional: eventTag × demographics
+  for (const tag of input.eventTags) {
+    for (const d of dims) {
+      updates.push({
+        PK: `DEMO#eventTag#${d.key}`,
+        SK: `${tag}#${d.value}`,
+      });
+    }
+    for (let size = 2; size <= dims.length; size++) {
+      for (const combo of combinations(dims, size)) {
+        updates.push({
+          PK: `DEMO#eventTag#${combo.map((d) => d.key).join("#")}`,
+          SK: `${tag}#${combo.map((d) => d.value).join("#")}`,
         });
       }
     }

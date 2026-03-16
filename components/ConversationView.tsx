@@ -66,10 +66,12 @@ function UserMessage({ content, isLatest }: { content: string; isLatest: boolean
 
 function DemographicsSection({
   categories,
+  eventTags,
   submissionId,
   regionContinent,
 }: {
   categories: Category[];
+  eventTags: string[];
   submissionId: string | null;
   regionContinent?: string;
 }) {
@@ -91,6 +93,7 @@ function DemographicsSection({
         employmentStatus: employmentStatus || undefined,
         regionContinent: regionContinent || undefined,
         categories,
+        eventTags,
       }),
     });
   }
@@ -239,6 +242,7 @@ export function ConversationView() {
   const [loading, setLoading] = useState(false);
   const [conversationComplete, setConversationComplete] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [eventTags, setEventTags] = useState<string[]>([]);
   const [regionContinent, setRegionContinent] = useState<string | undefined>();
   const [submissionId, setSubmissionId] = useState<string | null>(null);
   const [latestAssistantIndex, setLatestAssistantIndex] = useState(-1);
@@ -301,6 +305,7 @@ export function ConversationView() {
       if (res.ok) {
         const data = await res.json();
         setCategories(data.categories ?? []);
+        setEventTags(data.eventTags ?? []);
         setRegionContinent(data.regionContinent);
         setSubmissionId(data.id ?? null);
       }
@@ -405,7 +410,7 @@ export function ConversationView() {
             <p className="text-sm text-neutral-500 mt-8">
               {t("transmissionReceived")}
             </p>
-            <DemographicsSection categories={categories} submissionId={submissionId} regionContinent={regionContinent} />
+            <DemographicsSection categories={categories} eventTags={eventTags} submissionId={submissionId} regionContinent={regionContinent} />
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center text-sm">
               <a
                 href="/explore"
@@ -429,8 +434,6 @@ export function ConversationView() {
       {!conversationComplete && (
         <div className="sticky bottom-0 pb-16">
           <div className="relative border border-[var(--foreground)]/10 rounded p-3">
-            <div className="input-corner-tl" />
-            <div className="input-corner-br" />
             <div className="flex gap-3">
               <textarea
                 className="flex-1 bg-transparent text-neutral-100 text-lg placeholder-neutral-600 resize-none focus:outline-none"

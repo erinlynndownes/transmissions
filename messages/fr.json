@@ -44,12 +44,23 @@
     "filterGender": "Genre",
     "filterAge": "Âge",
     "filterEmployment": "Emploi",
-    "allFeelings": "Tous les ressentis",
+    "filterContinent": "Continent",
+    "allMoods": "Toutes les humeurs",
+    "allEvents": "Tous les domaines",
     "allContinents": "Tous les continents",
     "allCountries": "Tous les pays",
     "allGenders": "Tous les genres",
     "allAges": "Tous les âges",
-    "allEmployment": "Tous les emplois"
+    "allEmployment": "Tous les emplois",
+    "searchLocation": "Rechercher un lieu...",
+    "eventTags": {
+      "work_affected": "travail",
+      "health_affected": "santé",
+      "relationships_affected": "relations",
+      "creative_affected": "créativité",
+      "education_affected": "éducation",
+      "financial_affected": "finances"
+    }
   },
   "demographics": {
     "heading": "Aidez-nous à comprendre qui ressent cela.",

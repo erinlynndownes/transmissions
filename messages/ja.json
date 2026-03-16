@@ -44,12 +44,23 @@
     "filterGender": "性別",
     "filterAge": "年齢",
     "filterEmployment": "雇用",
-    "allFeelings": "すべての感情",
+    "filterContinent": "大陸",
+    "allMoods": "すべての気分",
+    "allEvents": "すべての分野",
     "allContinents": "すべての大陸",
     "allCountries": "すべての国",
     "allGenders": "すべての性別",
     "allAges": "すべての年齢",
-    "allEmployment": "すべての雇用"
+    "allEmployment": "すべての雇用",
+    "searchLocation": "場所を検索...",
+    "eventTags": {
+      "work_affected": "仕事",
+      "health_affected": "健康",
+      "relationships_affected": "人間関係",
+      "creative_affected": "創造性",
+      "education_affected": "教育",
+      "financial_affected": "経済"
+    }
   },
   "demographics": {
     "heading": "これを感じているのが誰か、理解するお手伝いをしてください。",

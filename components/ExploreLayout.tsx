@@ -16,9 +16,8 @@ export function ExploreLayout({
   quotes: ConversationItem[];
   stats: Stats;
 }) {
-  const [activePanel, setActivePanel] = useState<Panel>(null);
+  const [activePanel, setActivePanel] = useState<Panel>("quotes");
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
-  const [activeContinent, setActiveContinent] = useState<string | null>(null);
 
   const handlePanelClick = (panel: "quotes" | "stats") => {
     // If this panel is already active, do nothing. Only expand or switch.
@@ -47,13 +46,15 @@ export function ExploreLayout({
       <div className="flex-1 flex gap-6 px-6 pb-6 min-h-0">
         {/* Quotes panel */}
         <div
-          className={`${quotesWidth} transition-all duration-500 ease-in-out cursor-pointer rounded-l border border-[var(--foreground)]/10 p-6 overflow-y-auto overscroll-contain`}
+          className={`${quotesWidth} relative transition-all duration-500 ease-in-out cursor-pointer rounded-l border border-[var(--foreground)]/10 p-6 overflow-y-auto overscroll-contain`}
           onClick={(e) => {
             // Don't toggle panel if clicking an interactive element inside
-            if ((e.target as HTMLElement).closest("button, select")) return;
+            if ((e.target as HTMLElement).closest("button, select, input, svg")) return;
             handlePanelClick("quotes");
           }}
         >
+          <div className="frame-corner-tl absolute top-0 left-0" />
+          <div className="frame-corner-br absolute bottom-0 right-0" />
           <ExploreQuotes
             quotes={quotes}
             collapsed={activePanel === "stats"}
@@ -62,12 +63,9 @@ export function ExploreLayout({
               setActiveCategory(cat);
               if (activePanel !== "quotes") setActivePanel("quotes");
             }}
-            activeContinent={activeContinent}
-            onContinentChange={(continent) => {
-              setActiveContinent(continent);
+            onExpandArchive={() => {
               if (activePanel !== "quotes") setActivePanel("quotes");
             }}
-            continentOptions={Object.keys(stats.continent ?? {}).sort()}
           />
         </div>
 
@@ -75,14 +73,13 @@ export function ExploreLayout({
         <div
           className={`${statsWidth} transition-all duration-500 ease-in-out cursor-pointer rounded-r border border-[var(--foreground)]/10 p-6 overflow-y-auto overscroll-contain`}
           onClick={(e) => {
-            if ((e.target as HTMLElement).closest("button, select")) return;
+            if ((e.target as HTMLElement).closest("button, select, input, svg")) return;
             handlePanelClick("stats");
           }}
         >
           <ExploreStats
             stats={stats}
             collapsed={activePanel === "quotes"}
-            activeContinent={activeContinent}
           />
         </div>
       </div>

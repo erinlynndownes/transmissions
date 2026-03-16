@@ -75,6 +75,7 @@ export type DemographicsInput = {
   employmentStatus?: string;
   regionContinent?: string;
   categories: Category[];
+  eventTags: string[];
 };
 
 export type PagedResult<T> = {
