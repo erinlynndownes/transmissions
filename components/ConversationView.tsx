@@ -42,7 +42,8 @@ function UserMessage({ content, isLatest }: { content: string; isLatest: boolean
             {content.slice(0, USER_MESSAGE_TRUNCATE_LENGTH).trim()}&hellip;{" "}
             <button
               onClick={() => setExpanded(true)}
-              className="text-neutral-500 hover:text-neutral-300 text-sm transition-colors"
+              className="text-neutral-400 hover:text-neutral-300 text-sm transition-colors"
+              aria-label="Expand full message"
             >
               more
             </button>
@@ -217,7 +218,7 @@ export function ConversationView() {
         </h2>
         <div className="text-sm text-neutral-400 leading-relaxed space-y-4">
           <p>{t("consent1")}</p>
-          <p className="text-neutral-500">{t("consent2")}</p>
+          <p className="text-neutral-400">{t("consent2")}</p>
         </div>
         <button
           onClick={() => setConsented(true)}
@@ -230,13 +231,14 @@ export function ConversationView() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-6 pt-36 pb-12 flex flex-col min-h-screen">
+    <div id="main-content" className="max-w-2xl mx-auto px-6 pt-36 pb-12 flex flex-col min-h-screen">
       <div className="flex-1 space-y-6 mb-8">
         {messages.map((m, i) => {
+          const key = `${m.role}-${i}-${m.content.slice(0, 20)}`;
           if (m.role === "assistant") {
             return (
               <AssistantMessage
-                key={i}
+                key={key}
                 content={m.content}
                 fadeIn={i === latestAssistantIndex && i > 0}
               />
@@ -244,19 +246,21 @@ export function ConversationView() {
           }
           return (
             <UserMessage
-              key={i}
+              key={key}
               content={m.content}
               isLatest={i === lastUserIndex}
             />
           );
         })}
-        {loading && (
-          <div className="text-neutral-600 animate-pulse text-lg">...</div>
-        )}
+        <div aria-live="polite">
+          {loading && (
+            <div className="text-neutral-500 animate-pulse text-lg" role="status">...</div>
+          )}
+        </div>
 
         {conversationComplete && (
           <div className="animate-fade-in">
-            <p className="text-sm text-neutral-500 mt-8">
+            <p className="text-sm text-neutral-400 mt-8">
               {t("transmissionReceived")}
             </p>
             <DemographicsSection categories={categories} eventTags={eventTags} submissionId={submissionId} regionContinent={regionContinent} />
@@ -285,8 +289,9 @@ export function ConversationView() {
           <div className="relative border border-[var(--foreground)]/10 rounded p-3">
             <div className="flex gap-3">
               <textarea
-                className="flex-1 bg-transparent text-neutral-100 text-lg placeholder-neutral-600 resize-none focus:outline-none"
+                className="flex-1 bg-transparent text-neutral-100 text-lg placeholder-neutral-500 resize-none focus:outline-none"
                 rows={3}
+                aria-label={t("placeholder")}
                 placeholder={t("placeholder")}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}

@@ -10,6 +10,7 @@ export function ToggleButton({
   return (
     <button
       onClick={onClick}
+      aria-pressed={selected}
       className={`px-3 py-1 text-sm rounded transition-colors ${
         selected
           ? "bg-neutral-200 text-neutral-900"

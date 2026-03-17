@@ -12,7 +12,7 @@ export function DonutChart({
 
   if (total === 0) {
     return (
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label="No data available">
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -79,7 +79,7 @@ export function DonutChart({
   });
 
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label={`Feeling breakdown: ${segments.filter(s => s.value > 0).map(s => `${s.label} ${Math.round((s.value / total) * 100)}%`).join(', ')}. ${total} total.`}>
       {segments.map((seg) => (
         <path
           key={seg.label}

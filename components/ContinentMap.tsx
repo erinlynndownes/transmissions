@@ -33,6 +33,8 @@ function ContinentMapInner({
       width={600}
       height={340}
       style={{ width: "100%", height: "auto" }}
+      role="img"
+      aria-label="World map for filtering by continent. Use the continent dropdown for keyboard access."
     >
       <Geographies geography={GEO_URL}>
         {({ geographies }) =>
@@ -60,7 +62,7 @@ function ContinentMapInner({
               stroke: "var(--foreground)",
               strokeWidth: 0.3,
               strokeOpacity: 0.1,
-              outline: "none",
+              outline: undefined,
               cursor: "pointer",
               transition: "fill-opacity 0.2s ease",
             };
@@ -69,6 +71,7 @@ function ContinentMapInner({
               <Geography
                 key={geo.rsmKey}
                 geography={geo}
+                tabIndex={-1}
                 onClick={() => {
                   onContinentChange(isActive ? null : continent);
                 }}

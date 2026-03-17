@@ -53,10 +53,10 @@ export function DemographicsSection({
   if (demographicsSubmitted) {
     return (
       <div className="mt-8 animate-fade-in">
-        <p className="text-neutral-500 text-xs">{t("thankYou")}</p>
+        <p className="text-neutral-400 text-xs">{t("thankYou")}</p>
         {submissionId && (
-          <p className="text-neutral-700 text-xs mt-4">
-            {tTalk("submissionId")}: <span className="font-mono text-neutral-600">{submissionId}</span>
+          <p className="text-neutral-500 text-xs mt-4">
+            {tTalk("submissionId")}: <span className="font-mono text-neutral-500">{submissionId}</span>
           </p>
         )}
       </div>
@@ -68,16 +68,16 @@ export function DemographicsSection({
       <p className="text-sm text-neutral-300 mb-2 text-center">
         {t("heading")}
       </p>
-      <p className="text-xs text-neutral-600 mb-6 text-center">
+      <p className="text-xs text-neutral-500 mb-6 text-center">
         {t("subheading")}
       </p>
 
       <div className="space-y-4 text-left">
-        <div>
-          <label className="text-xs text-neutral-500 uppercase tracking-wider block mb-2">
+        <fieldset>
+          <legend className="text-xs text-neutral-400 uppercase tracking-wider block mb-2">
             {t("gender")}
-          </label>
-          <div className="flex flex-wrap gap-2">
+          </legend>
+          <div className="flex flex-wrap gap-2" role="group" aria-label={t("gender")}>
             {GENDER_OPTIONS.map((opt) => (
               <ToggleButton
                 key={opt}
@@ -87,13 +87,13 @@ export function DemographicsSection({
               />
             ))}
           </div>
-        </div>
+        </fieldset>
 
-        <div>
-          <label className="text-xs text-neutral-500 uppercase tracking-wider block mb-2">
+        <fieldset>
+          <legend className="text-xs text-neutral-400 uppercase tracking-wider block mb-2">
             {t("ageRange")}
-          </label>
-          <div className="flex flex-wrap gap-2">
+          </legend>
+          <div className="flex flex-wrap gap-2" role="group" aria-label={t("ageRange")}>
             {AGE_RANGES.map((r) => (
               <ToggleButton
                 key={r}
@@ -103,13 +103,13 @@ export function DemographicsSection({
               />
             ))}
           </div>
-        </div>
+        </fieldset>
 
-        <div>
-          <label className="text-xs text-neutral-500 uppercase tracking-wider block mb-2">
+        <fieldset>
+          <legend className="text-xs text-neutral-400 uppercase tracking-wider block mb-2">
             {t("employment")}
-          </label>
-          <div className="flex flex-wrap gap-2">
+          </legend>
+          <div className="flex flex-wrap gap-2" role="group" aria-label={t("employment")}>
             {EMPLOYMENT_OPTIONS.map((opt) => (
               <ToggleButton
                 key={opt}
@@ -119,7 +119,7 @@ export function DemographicsSection({
               />
             ))}
           </div>
-        </div>
+        </fieldset>
 
       </div>
 
@@ -133,8 +133,8 @@ export function DemographicsSection({
       </div>
 
       {submissionId && (
-        <p className="text-neutral-700 text-xs mt-6 text-center">
-          {tTalk("submissionId")}: <span className="font-mono text-neutral-600">{submissionId}</span>
+        <p className="text-neutral-500 text-xs mt-6 text-center">
+          {tTalk("submissionId")}: <span className="font-mono text-neutral-500">{submissionId}</span>
         </p>
       )}
     </div>

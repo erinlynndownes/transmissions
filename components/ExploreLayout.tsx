@@ -31,12 +31,12 @@ export function ExploreLayout({
     activePanel === "stats" ? "w-3/4" : activePanel === "quotes" ? "w-1/4" : "w-1/2";
 
   return (
-    <main className="h-screen flex flex-col overflow-hidden overscroll-none">
+    <main id="main-content" className="h-screen flex flex-col overflow-hidden overscroll-none">
       {/* Header */}
       <div className="px-6 pt-8 pb-4">
         <Link
           href="/"
-          className="text-xs text-[var(--foreground)]/30 hover:text-[var(--foreground)]/60 transition-colors"
+          className="text-xs text-[var(--foreground)]/50 hover:text-[var(--foreground)]/70 transition-colors"
         >
           &larr; transmissions
         </Link>
@@ -47,10 +47,19 @@ export function ExploreLayout({
         {/* Quotes panel */}
         <div
           className={`${quotesWidth} relative transition-all duration-500 ease-in-out cursor-pointer rounded-l border border-[var(--foreground)]/10 p-6 overflow-y-auto overscroll-contain`}
+          role="button"
+          tabIndex={0}
+          aria-label={activePanel === "quotes" ? "Quotes panel (expanded)" : "Expand quotes panel"}
           onClick={(e) => {
             // Don't toggle panel if clicking an interactive element inside
             if ((e.target as HTMLElement).closest("button, select, input, svg")) return;
             handlePanelClick("quotes");
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handlePanelClick("quotes");
+            }
           }}
         >
           <div className="frame-corner-tl absolute top-0 left-0" />
@@ -72,9 +81,18 @@ export function ExploreLayout({
         {/* Stats panel */}
         <div
           className={`${statsWidth} transition-all duration-500 ease-in-out cursor-pointer rounded-r border border-[var(--foreground)]/10 p-6 overflow-y-auto overscroll-contain`}
+          role="button"
+          tabIndex={0}
+          aria-label={activePanel === "stats" ? "Stats panel (expanded)" : "Expand stats panel"}
           onClick={(e) => {
             if ((e.target as HTMLElement).closest("button, select, input, svg")) return;
             handlePanelClick("stats");
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handlePanelClick("stats");
+            }
           }}
         >
           <ExploreStats

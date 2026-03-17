@@ -17,7 +17,7 @@ export function FilterSelect({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className="bg-[var(--foreground)]/5 text-[var(--foreground)]/60 text-xs rounded px-2 py-1 border border-[var(--foreground)]/10 cursor-pointer"
-      title={label}
+      aria-label={label}
     >
       <option value="">{allLabel}</option>
       {options.map((opt) => (

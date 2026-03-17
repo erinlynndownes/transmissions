@@ -161,7 +161,7 @@ export function ExploreStats({
         value={filterContinent}
         onChange={(e) => setFilterContinent(e.target.value)}
         className="bg-[var(--foreground)]/5 text-[var(--foreground)]/60 text-xs rounded px-2 py-1 border border-[var(--foreground)]/10 cursor-pointer"
-        title={t("filterContinent")}
+        aria-label={t("filterContinent")}
       >
         <option value="">{t("allContinents")}</option>
         {CONTINENTS.map((c) => (
@@ -198,10 +198,10 @@ export function ExploreStats({
                 className="w-2 h-2 rounded-full flex-shrink-0"
                 style={{ backgroundColor: d.color, opacity: 0.7 }}
               />
-              <span className="text-[var(--foreground)]/40 truncate flex-1">
+              <span className="text-[var(--foreground)]/50 truncate flex-1">
                 {t(`categories.${d.label}`)}
               </span>
-              <span className="text-[var(--foreground)]/30 tabular-nums">
+              <span className="text-[var(--foreground)]/40 tabular-nums">
                 {d.pct}%
               </span>
             </div>
@@ -221,7 +221,7 @@ export function ExploreStats({
 
         {/* Compact areas affected */}
         <div className="w-full space-y-1 px-1">
-          <h3 className="text-xs uppercase tracking-widest text-[var(--foreground)]/30 mb-1">
+          <h3 className="text-xs uppercase tracking-widest text-[var(--foreground)]/50 mb-1">
             {t("areasAffected")}
           </h3>
           {eventTagEntries.map(([tag, count]) => {
@@ -231,10 +231,10 @@ export function ExploreStats({
                 : 0;
             return (
               <div key={tag} className="flex justify-between text-xs">
-                <span className="text-[var(--foreground)]/40 truncate">
+                <span className="text-[var(--foreground)]/50 truncate">
                   {EVENT_TAG_LABELS[tag] ?? tag}
                 </span>
-                <span className="text-[var(--foreground)]/30 tabular-nums">
+                <span className="text-[var(--foreground)]/40 tabular-nums">
                   {pct}%
                 </span>
               </div>
@@ -274,7 +274,7 @@ export function ExploreStats({
                   <span className="text-[var(--foreground)]/60 flex-1">
                     {t(`categories.${d.label}`)}
                   </span>
-                  <span className="text-[var(--foreground)]/40 tabular-nums">
+                  <span className="text-[var(--foreground)]/50 tabular-nums">
                     {d.pct}%
                   </span>
                 </div>
@@ -294,7 +294,7 @@ export function ExploreStats({
 
         {/* Life areas affected */}
         <div className="p-4 rounded border border-[var(--foreground)]/5">
-          <h3 className="text-xs uppercase tracking-widest text-[var(--foreground)]/40 mb-4">
+          <h3 className="text-xs uppercase tracking-widest text-[var(--foreground)]/50 mb-4">
             {t("areasAffected")}
           </h3>
           <div className="space-y-3">
@@ -309,11 +309,11 @@ export function ExploreStats({
                     <span className="text-[var(--foreground)]/60">
                       {EVENT_TAG_LABELS[tag] ?? tag}
                     </span>
-                    <span className="text-[var(--foreground)]/40 tabular-nums">
+                    <span className="text-[var(--foreground)]/50 tabular-nums">
                       {pct}%
                     </span>
                   </div>
-                  <div className="h-1.5 bg-[var(--foreground)]/5 rounded-full overflow-hidden">
+                  <div className="h-1.5 bg-[var(--foreground)]/5 rounded-full overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`${EVENT_TAG_LABELS[tag] ?? tag}: ${pct}%`}>
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{

@@ -26,7 +26,7 @@ export default async function Home() {
   const hasEnoughQuotes = quotes.length >= QUOTE_THRESHOLD;
 
   return (
-    <main className="min-h-screen grid grid-rows-2 relative">
+    <main id="main-content" className="min-h-screen grid grid-rows-2 relative">
       {/* Frame */}
       <div className="fixed inset-3 sm:inset-4 md:inset-6 border border-[var(--foreground)]/20 rounded pointer-events-none" />
       <div className="frame-corner-tl fixed top-3 left-3 sm:top-4 sm:left-4 md:top-6 md:left-6" />

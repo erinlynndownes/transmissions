@@ -10,6 +10,17 @@
   --font-mono: var(--font-geist-mono);
 }
 
+fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-inline-size: 0;
+}
+
+legend {
+  padding: 0;
+}
+
 body {
   background: linear-gradient(to bottom, #1a1917, #302e2a);
   color: var(--foreground);
