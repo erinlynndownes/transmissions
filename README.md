@@ -34,7 +34,7 @@ This creates DynamoDB tables, S3 bucket, Secrets Manager secret, Amplify app wit
 
 ```
 ANTHROPIC_API_KEY=your-key
-AWS_REGION=us-east-1
+AWS_REGION=eu-west-1
 DYNAMODB_TABLE_NAME=transmissions-dev
 DYNAMODB_STATS_TABLE_NAME=transmissions-stats-dev
 S3_BUCKET_NAME=transmissions-conversations-dev

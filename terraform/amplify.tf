@@ -1,8 +1,8 @@
 resource "aws_amplify_app" "transmissions" {
-  name       = "transmissions${local.suffix}"
-  repository = var.github_repository
+  name = "transmissions${local.suffix}"
 
-  access_token = var.github_access_token
+  # GitHub repo is connected manually via the Amplify Console.
+  # After terraform apply, go to Amplify > transmissions > connect branch.
 
   iam_service_role_arn = aws_iam_role.amplify.arn
 
@@ -32,7 +32,7 @@ resource "aws_amplify_app" "transmissions" {
     DYNAMODB_TABLE_NAME       = aws_dynamodb_table.transmissions.name
     DYNAMODB_STATS_TABLE_NAME = aws_dynamodb_table.transmissions_stats.name
     S3_BUCKET_NAME            = aws_s3_bucket.conversations.id
-    ANTHROPIC_API_KEY         = aws_secretsmanager_secret_version.anthropic_api_key.secret_string
+    # ANTHROPIC_API_KEY is set manually in the Amplify Console.
   }
 }
 

@@ -46,3 +46,5 @@ HISTORY.md
 
 # terraform
 terraform/.terraform/
+*.tfvars
+terraform/*.tfstate*
