@@ -53,6 +53,16 @@
     "allAges": "すべての年齢",
     "allEmployment": "すべての雇用",
     "searchLocation": "場所を検索...",
+    "contentWarning": "この投稿には過激な表現が含まれています",
+    "showAnyway": "それでも表示する",
+    "continentNames": {
+      "Africa": "アフリカ",
+      "Asia": "アジア",
+      "Europe": "ヨーロッパ",
+      "North America": "北アメリカ",
+      "Oceania": "オセアニア",
+      "South America": "南アメリカ"
+    },
     "eventTags": {
       "work_affected": "仕事",
       "health_affected": "健康",

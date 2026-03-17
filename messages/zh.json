@@ -53,6 +53,16 @@
     "allAges": "所有年龄",
     "allEmployment": "所有就业",
     "searchLocation": "搜索位置...",
+    "contentWarning": "此投稿包含激烈言辞",
+    "showAnyway": "仍然显示",
+    "continentNames": {
+      "Africa": "非洲",
+      "Asia": "亚洲",
+      "Europe": "欧洲",
+      "North America": "北美洲",
+      "Oceania": "大洋洲",
+      "South America": "南美洲"
+    },
     "eventTags": {
       "work_affected": "工作",
       "health_affected": "健康",

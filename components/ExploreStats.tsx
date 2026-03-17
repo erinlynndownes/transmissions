@@ -112,22 +112,22 @@ function DonutChart({
       ))}
       <text
         x={size / 2}
-        y={size / 2 - 6}
+        y={size / 2 + 1}
         textAnchor="middle"
         fill="currentColor"
         opacity={0.7}
-        fontSize={24}
+        fontSize={size <= 120 ? 20 : 24}
         fontWeight={300}
       >
         {total}
       </text>
       <text
         x={size / 2}
-        y={size / 2 + 12}
+        y={size / 2 + (size <= 120 ? 14 : 18)}
         textAnchor="middle"
         fill="currentColor"
         opacity={0.3}
-        fontSize={8}
+        fontSize={size <= 120 ? 7 : 8}
         letterSpacing={2}
         style={{ textTransform: "uppercase" }}
       >
@@ -196,8 +196,9 @@ export function ExploreStats({
   const categories = stats.category ?? {};
   const eventTags = stats.eventTag ?? {};
 
+  const GENDER_FILTER_OPTIONS = ["woman", "man", "non-binary"];
   const genderOptions = useMemo(
-    () => Object.keys(stats.demo_gender ?? {}).sort(),
+    () => GENDER_FILTER_OPTIONS.filter((g) => (stats.demo_gender ?? {})[g] != null),
     [stats]
   );
   const ageOptions = useMemo(
@@ -208,10 +209,11 @@ export function ExploreStats({
     () => Object.keys(stats.demo_employmentStatus ?? {}).sort(),
     [stats]
   );
-  const continentOptions = useMemo(
-    () => Object.keys(stats.demo_continent ?? {}).sort(),
-    [stats]
-  );
+  const ALL_CONTINENTS = [
+    "Africa", "Asia", "Europe", "North America",
+    "Oceania", "South America",
+  ];
+  const continentOptions = ALL_CONTINENTS;
 
   // When filters are active, recompute category breakdown from cross-dimensional stats
   const filteredCategories = useMemo(() => {
@@ -316,13 +318,19 @@ export function ExploreStats({
         allLabel={t("allEmployment")}
         options={employmentOptions}
       />
-      <FilterSelect
+      <select
         value={filterContinent}
-        onChange={setFilterContinent}
-        label={t("filterContinent")}
-        allLabel={t("allContinents")}
-        options={continentOptions}
-      />
+        onChange={(e) => setFilterContinent(e.target.value)}
+        className="bg-[var(--foreground)]/5 text-[var(--foreground)]/60 text-xs rounded px-2 py-1 border border-[var(--foreground)]/10 cursor-pointer"
+        title={t("filterContinent")}
+      >
+        <option value="">{t("allContinents")}</option>
+        {continentOptions.map((c) => (
+          <option key={c} value={c}>
+            {t(`continentNames.${c}`)}
+          </option>
+        ))}
+      </select>
     </div>
   );
 

@@ -53,6 +53,16 @@
     "allAges": "Tous les âges",
     "allEmployment": "Tous les emplois",
     "searchLocation": "Rechercher un lieu...",
+    "contentWarning": "Cette transmission contient un langage fort",
+    "showAnyway": "afficher quand même",
+    "continentNames": {
+      "Africa": "Afrique",
+      "Asia": "Asie",
+      "Europe": "Europe",
+      "North America": "Amérique du Nord",
+      "Oceania": "Océanie",
+      "South America": "Amérique du Sud"
+    },
     "eventTags": {
       "work_affected": "travail",
       "health_affected": "santé",

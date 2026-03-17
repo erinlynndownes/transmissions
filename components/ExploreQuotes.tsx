@@ -4,6 +4,25 @@ import { useState, useMemo, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { ConversationItem, ConversationRecord, Category, EventTag } from "@/lib/types";
 
+const COUNTRY_NAMES: Record<string, string> = {
+  US: "United States", CA: "Canada", MX: "Mexico",
+  UK: "United Kingdom", FR: "France", DE: "Germany", ES: "Spain", IT: "Italy",
+  NL: "Netherlands", SE: "Sweden", NO: "Norway", DK: "Denmark", FI: "Finland",
+  PL: "Poland", PT: "Portugal", IE: "Ireland", CH: "Switzerland", AT: "Austria",
+  BE: "Belgium", CZ: "Czech Republic", RO: "Romania", GR: "Greece",
+  BR: "Brazil", AR: "Argentina", CO: "Colombia", CL: "Chile",
+  JP: "Japan", CN: "China", KR: "South Korea", IN: "India", TW: "Taiwan",
+  AU: "Australia", NZ: "New Zealand",
+  NG: "Nigeria", ZA: "South Africa", KE: "Kenya", EG: "Egypt", GH: "Ghana",
+  IL: "Israel", TR: "Turkey", SA: "Saudi Arabia", AE: "United Arab Emirates",
+  RU: "Russia", UA: "Ukraine", PH: "Philippines", ID: "Indonesia",
+  TH: "Thailand", VN: "Vietnam", MY: "Malaysia", SG: "Singapore",
+};
+
+function countryName(code: string): string {
+  return COUNTRY_NAMES[code] ?? code;
+}
+
 const CATEGORIES: Category[] = [
   "fear", "hope", "grief", "excitement", "anger",
   "uncertainty", "wonder", "other",
@@ -35,23 +54,33 @@ export function ExploreQuotes({
   const [locationFocused, setLocationFocused] = useState(false);
   const locationRef = useRef<HTMLDivElement>(null);
 
+  // Map of display name → country code for all countries in the data
   const locationOptions = useMemo(() => {
-    const countries = new Set<string>();
+    const codes = new Set<string>();
     for (const q of quotes) {
-      if (q.regionCountry) countries.add(q.regionCountry);
+      if (q.regionCountry) codes.add(q.regionCountry);
     }
-    return Array.from(countries).sort();
+    return Array.from(codes)
+      .map((code) => ({ code, name: countryName(code) }))
+      .sort((a, b) => a.name.localeCompare(b.name));
   }, [quotes]);
+
+  // The selected country code (what we actually filter by)
+  const [selectedCountryCode, setSelectedCountryCode] = useState<string | null>(null);
 
   const filtered = quotes.filter((q) => {
     if (activeCategory && !q.categories.includes(activeCategory)) return false;
     if (activeEventTag && !q.eventTags.includes(activeEventTag)) return false;
-    if (locationSearch && q.regionCountry?.toLowerCase() !== locationSearch.toLowerCase()) return false;
+    if (selectedCountryCode && q.regionCountry !== selectedCountryCode) return false;
     return true;
   });
 
+  const [revealedWarnings, setRevealedWarnings] = useState<Set<string>>(new Set());
+  const [conversationWarningRevealed, setConversationWarningRevealed] = useState(false);
+
   const handleQuoteClick = async (q: ConversationItem) => {
     onExpandArchive();
+    setConversationWarningRevealed(false);
     setLoading(true);
     try {
       const res = await fetch(`/api/conversations/${q.id}`);
@@ -66,10 +95,13 @@ export function ExploreQuotes({
 
   const handleBack = () => {
     setSelectedConversation(null);
+    setConversationWarningRevealed(false);
   };
 
   // Conversation detail view
   if (selectedConversation) {
+    const hasWarning = selectedConversation.extractedData?.contentWarning;
+
     return (
       <div className="h-full flex flex-col">
         <button
@@ -79,21 +111,33 @@ export function ExploreQuotes({
           &larr; {t("back")}
         </button>
 
-        <div className="flex-1 overflow-y-auto pr-2 space-y-5">
-          {selectedConversation.messages.map((msg, i) => (
-            <div key={i}>
-              {msg.role === "assistant" ? (
-                <p className="text-[var(--foreground)]/50 text-sm leading-relaxed">
-                  {msg.content}
-                </p>
-              ) : (
-                <p className="text-[var(--foreground)]/90 leading-relaxed">
-                  {msg.content}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
+        {hasWarning && !conversationWarningRevealed ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center gap-4">
+            <p className="text-[var(--foreground)]/40 text-sm">{t("contentWarning")}</p>
+            <button
+              onClick={() => setConversationWarningRevealed(true)}
+              className="text-xs text-[var(--foreground)]/30 hover:text-[var(--foreground)]/60 transition-colors border border-[var(--foreground)]/10 px-3 py-1 rounded"
+            >
+              {t("showAnyway")}
+            </button>
+          </div>
+        ) : (
+          <div className="flex-1 overflow-y-auto pr-2 space-y-5">
+            {selectedConversation.messages.map((msg, i) => (
+              <div key={i}>
+                {msg.role === "assistant" ? (
+                  <p className="text-[var(--foreground)]/50 text-sm leading-relaxed">
+                    {msg.content}
+                  </p>
+                ) : (
+                  <p className="text-[var(--foreground)]/90 leading-relaxed">
+                    {msg.content}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   }
@@ -137,29 +181,45 @@ export function ExploreQuotes({
             <input
               type="text"
               value={locationSearch}
-              onChange={(e) => setLocationSearch(e.target.value)}
+              onChange={(e) => {
+                setLocationSearch(e.target.value);
+                setSelectedCountryCode(null);
+                setLocationFocused(true);
+              }}
               onFocus={() => setLocationFocused(true)}
               onBlur={() => setTimeout(() => setLocationFocused(false), 150)}
               placeholder={t("searchLocation")}
-              className="bg-[var(--foreground)]/5 text-[var(--foreground)]/60 text-xs rounded px-2 py-1 border border-[var(--foreground)]/10 w-36 placeholder-[var(--foreground)]/30"
+              className="bg-[var(--foreground)]/5 text-[var(--foreground)]/60 text-xs rounded px-2 py-1 border border-[var(--foreground)]/10 w-44 placeholder-[var(--foreground)]/30"
             />
-            {locationFocused && locationOptions.filter(
-              (loc) => !locationSearch || loc.toLowerCase().includes(locationSearch.toLowerCase())
+            {selectedCountryCode && (
+              <button
+                onClick={() => {
+                  setLocationSearch("");
+                  setSelectedCountryCode(null);
+                }}
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[var(--foreground)]/30 hover:text-[var(--foreground)]/60 text-xs"
+              >
+                &times;
+              </button>
+            )}
+            {locationFocused && !selectedCountryCode && locationOptions.filter(
+              (loc) => !locationSearch || loc.name.toLowerCase().includes(locationSearch.toLowerCase())
             ).length > 0 && (
-              <div className="absolute top-full left-0 mt-1 w-full bg-[var(--background)] border border-[var(--foreground)]/10 rounded shadow-lg max-h-40 overflow-y-auto z-10">
+              <div className="absolute top-full left-0 mt-1 w-full bg-[#1a1a1a] border border-[var(--foreground)]/10 rounded shadow-lg max-h-40 overflow-y-auto z-20">
                 {locationOptions
-                  .filter((loc) => !locationSearch || loc.toLowerCase().includes(locationSearch.toLowerCase()))
+                  .filter((loc) => !locationSearch || loc.name.toLowerCase().includes(locationSearch.toLowerCase()))
                   .map((loc) => (
                     <button
-                      key={loc}
+                      key={loc.code}
                       onMouseDown={(e) => {
                         e.preventDefault();
-                        setLocationSearch(loc);
+                        setLocationSearch(loc.name);
+                        setSelectedCountryCode(loc.code);
                         setLocationFocused(false);
                       }}
-                      className="w-full text-left px-2 py-1 text-xs text-[var(--foreground)]/60 hover:bg-[var(--foreground)]/5 cursor-pointer"
+                      className="w-full text-left px-2 py-1.5 text-xs text-[var(--foreground)]/60 hover:bg-[var(--foreground)]/10 cursor-pointer"
                     >
-                      {loc}
+                      {loc.name}
                     </button>
                   ))}
               </div>
@@ -177,29 +237,47 @@ export function ExploreQuotes({
           <p className="text-[var(--foreground)]/30 text-sm">{t("noTransmissions")}</p>
         ) : !loading && (
           <div className="divide-y divide-[var(--foreground)]/5">
-            {filtered.map((q) => (
-              <button
-                key={q.id}
-                onClick={() => handleQuoteClick(q)}
-                className="w-full text-left py-4 px-4 -mx-4 hover:bg-[var(--foreground)]/5 transition-colors cursor-pointer"
-              >
-                <p className={`text-[var(--foreground)]/70 leading-relaxed ${collapsed ? "text-sm line-clamp-2" : "mb-2"}`}>
-                  &ldquo;{q.quote}&rdquo;
-                </p>
-                {!collapsed && (
-                  <div className="flex gap-2 mt-1">
-                    {q.categories.map((cat) => (
-                      <span
-                        key={cat}
-                        className="text-xs text-[var(--foreground)]/30 bg-[var(--foreground)]/5 px-2 py-0.5 rounded"
+            {filtered.map((q) => {
+              const isWarned = q.contentWarning && !revealedWarnings.has(q.id);
+              return (
+                <div key={q.id} className="relative py-4 px-4 -mx-4">
+                  {isWarned ? (
+                    <div className="flex items-center gap-3">
+                      <p className="text-[var(--foreground)]/30 text-xs italic flex-1">
+                        {t("contentWarning")}
+                      </p>
+                      <button
+                        onClick={() => setRevealedWarnings((prev) => new Set(prev).add(q.id))}
+                        className="text-xs text-[var(--foreground)]/30 hover:text-[var(--foreground)]/60 transition-colors border border-[var(--foreground)]/10 px-2 py-0.5 rounded shrink-0"
                       >
-                        {t(`categories.${cat}`)}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </button>
-            ))}
+                        {t("showAnyway")}
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleQuoteClick(q)}
+                      className="w-full text-left hover:bg-[var(--foreground)]/5 transition-colors cursor-pointer"
+                    >
+                      <p className={`text-[var(--foreground)]/70 leading-relaxed ${collapsed ? "text-sm line-clamp-2" : "mb-2"}`}>
+                        &ldquo;{q.quote}&rdquo;
+                      </p>
+                      {!collapsed && (
+                        <div className="flex gap-2 mt-1">
+                          {q.categories.map((cat) => (
+                            <span
+                              key={cat}
+                              className="text-xs text-[var(--foreground)]/30 bg-[var(--foreground)]/5 px-2 py-0.5 rounded"
+                            >
+                              {t(`categories.${cat}`)}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
