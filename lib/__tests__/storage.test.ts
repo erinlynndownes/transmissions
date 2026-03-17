@@ -8,7 +8,7 @@ const { mockS3Send, mockDynamoSend } = vi.hoisted(() => ({
 
 vi.hoisted(() => {
   process.env.MOCK_STORAGE = "false";
-  process.env.AWS_REGION = "us-east-1";
+  process.env.APP_REGION = "us-east-1";
   process.env.S3_BUCKET_NAME = "test-bucket";
   process.env.DYNAMODB_TABLE_NAME = "test-table";
   process.env.DYNAMODB_STATS_TABLE_NAME = "test-stats-table";

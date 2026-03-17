@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
     DYNAMODB_TABLE_NAME: process.env.DYNAMODB_TABLE_NAME,
     DYNAMODB_STATS_TABLE_NAME: process.env.DYNAMODB_STATS_TABLE_NAME,
     S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
+    APP_REGION: process.env.APP_REGION,
   },
 };
 

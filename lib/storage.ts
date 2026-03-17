@@ -22,10 +22,10 @@ import { combinations } from "./utils";
 
 const MOCK = process.env.MOCK_STORAGE === "true";
 
-const s3 = MOCK ? (null as unknown as S3Client) : new S3Client({ region: process.env.AWS_REGION });
+const s3 = MOCK ? (null as unknown as S3Client) : new S3Client({ region: process.env.APP_REGION });
 const dynamo = MOCK
   ? (null as unknown as DynamoDBDocumentClient)
-  : DynamoDBDocumentClient.from(new DynamoDBClient({ region: process.env.AWS_REGION }));
+  : DynamoDBDocumentClient.from(new DynamoDBClient({ region: process.env.APP_REGION }));
 
 const BUCKET = process.env.S3_BUCKET_NAME ?? "";
 const TABLE = process.env.DYNAMODB_TABLE_NAME ?? "";
