@@ -13,14 +13,9 @@ output "s3_bucket_name" {
   value       = aws_s3_bucket.conversations.id
 }
 
-output "amplify_app_id" {
-  description = "Amplify app ID"
-  value       = aws_amplify_app.transmissions.id
-}
-
-output "amplify_default_domain" {
-  description = "Amplify default domain"
-  value       = aws_amplify_app.transmissions.default_domain
+output "iam_role_arn" {
+  description = "Amplify IAM role ARN (assign in Amplify Console)"
+  value       = aws_iam_role.amplify.arn
 }
 
 output "env_vars" {
