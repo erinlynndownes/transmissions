@@ -76,6 +76,7 @@ export function ExploreStats({
 
   const categories = stats.category ?? {};
   const eventTags = stats.eventTag ?? {};
+  const submissionCount = stats.total?.submissions ?? 0;
 
   const genderOptions = useMemo(
     () => GENDER_FILTER_OPTIONS.filter((g) => (stats.demo_gender ?? {})[g] != null),
@@ -186,6 +187,7 @@ export function ExploreStats({
                 color: d.color,
               }))}
               size={120}
+              centerValue={submissionCount}
             />
           )}
         </div>
@@ -262,6 +264,7 @@ export function ExploreStats({
                   value: d.value,
                   color: d.color,
                 }))}
+                centerValue={submissionCount}
               />
             )}
             <div className="flex-1 space-y-1.5">

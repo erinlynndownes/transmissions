@@ -44,6 +44,26 @@ resource "aws_iam_role_policy" "amplify_dynamodb" {
   })
 }
 
+resource "aws_iam_role_policy" "amplify_logs" {
+  name = "cloudwatch-logs"
+  role = aws_iam_role.amplify.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+        ]
+        Resource = "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:*"
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy" "amplify_s3" {
   name = "s3-access"
   role = aws_iam_role.amplify.id

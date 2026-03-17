@@ -1,9 +1,11 @@
 export function DonutChart({
   data,
   size = 160,
+  centerValue,
 }: {
   data: { label: string; value: number; color: string }[];
   size?: number;
+  centerValue?: number;
 }) {
   const total = data.reduce((sum, d) => sum + d.value, 0);
 
@@ -99,7 +101,7 @@ export function DonutChart({
         fontSize={size <= 120 ? 20 : 24}
         fontWeight={300}
       >
-        {total}
+        {centerValue ?? total}
       </text>
       <text
         x={size / 2}
