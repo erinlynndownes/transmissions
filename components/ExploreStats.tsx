@@ -3,6 +3,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { ContinentMap } from "./ContinentMap";
+import { DonutChart } from "./DonutChart";
+import { FilterSelect } from "./FilterSelect";
+import { CONTINENTS } from "@/lib/geo";
 
 type Stats = Record<string, Record<string, number>>;
 
@@ -17,126 +20,6 @@ const CATEGORY_COLORS: Record<string, string> = {
   other: "#cccccc",      // white 400
 };
 
-function DonutChart({
-  data,
-  size = 160,
-}: {
-  data: { label: string; value: number; color: string }[];
-  size?: number;
-}) {
-  const total = data.reduce((sum, d) => sum + d.value, 0);
-
-  const radius = size / 2 - 8;
-  const innerRadius = radius * 0.6;
-
-  // Empty state: gray ring with "0" and "no data"
-  if (total === 0) {
-    return (
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={(radius + innerRadius) / 2}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={radius - innerRadius}
-          opacity={0.08}
-        />
-        <text
-          x={size / 2}
-          y={size / 2 - 6}
-          textAnchor="middle"
-          fill="currentColor"
-          opacity={0.3}
-          fontSize={24}
-          fontWeight={300}
-        >
-          0
-        </text>
-        <text
-          x={size / 2}
-          y={size / 2 + 12}
-          textAnchor="middle"
-          fill="currentColor"
-          opacity={0.2}
-          fontSize={8}
-          letterSpacing={2}
-          style={{ textTransform: "uppercase" }}
-        >
-          NO DATA
-        </text>
-      </svg>
-    );
-  }
-
-  let currentAngle = -Math.PI / 2;
-
-  const segments = data.map((d) => {
-    const angle = (d.value / total) * Math.PI * 2;
-    const startAngle = currentAngle;
-    const endAngle = currentAngle + angle;
-    currentAngle = endAngle;
-
-    const largeArc = angle > Math.PI ? 1 : 0;
-    const x1 = size / 2 + radius * Math.cos(startAngle);
-    const y1 = size / 2 + radius * Math.sin(startAngle);
-    const x2 = size / 2 + radius * Math.cos(endAngle);
-    const y2 = size / 2 + radius * Math.sin(endAngle);
-    const ix1 = size / 2 + innerRadius * Math.cos(startAngle);
-    const iy1 = size / 2 + innerRadius * Math.sin(startAngle);
-    const ix2 = size / 2 + innerRadius * Math.cos(endAngle);
-    const iy2 = size / 2 + innerRadius * Math.sin(endAngle);
-
-    const path = [
-      `M ${x1} ${y1}`,
-      `A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2}`,
-      `L ${ix2} ${iy2}`,
-      `A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${ix1} ${iy1}`,
-      "Z",
-    ].join(" ");
-
-    return { ...d, path };
-  });
-
-  return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      {segments.map((seg) => (
-        <path
-          key={seg.label}
-          d={seg.path}
-          fill={seg.color}
-          opacity={0.7}
-          stroke="var(--background)"
-          strokeWidth={1}
-        />
-      ))}
-      <text
-        x={size / 2}
-        y={size / 2 + 1}
-        textAnchor="middle"
-        fill="currentColor"
-        opacity={0.7}
-        fontSize={size <= 120 ? 20 : 24}
-        fontWeight={300}
-      >
-        {total}
-      </text>
-      <text
-        x={size / 2}
-        y={size / 2 + (size <= 120 ? 14 : 18)}
-        textAnchor="middle"
-        fill="currentColor"
-        opacity={0.3}
-        fontSize={size <= 120 ? 7 : 8}
-        letterSpacing={2}
-        style={{ textTransform: "uppercase" }}
-      >
-        TOTAL
-      </text>
-    </svg>
-  );
-}
-
 const EVENT_TAG_LABELS: Record<string, string> = {
   work_affected: "work",
   health_affected: "health",
@@ -146,35 +29,33 @@ const EVENT_TAG_LABELS: Record<string, string> = {
   financial_affected: "financial",
 };
 
-function FilterSelect({
-  value,
-  onChange,
-  label,
-  allLabel,
-  options,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  label: string;
-  allLabel: string;
-  options: string[];
-}) {
-  if (options.length === 0) return null;
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="bg-[var(--foreground)]/5 text-[var(--foreground)]/60 text-xs rounded px-2 py-1 border border-[var(--foreground)]/10 cursor-pointer"
-      title={label}
-    >
-      <option value="">{allLabel}</option>
-      {options.map((opt) => (
-        <option key={opt} value={opt}>
-          {opt}
-        </option>
-      ))}
-    </select>
-  );
+const BAR_COLOR = "#a3bcd8";
+
+const GENDER_FILTER_OPTIONS = ["woman", "man", "non-binary"];
+
+function filterCrossDimensional(
+  stats: Stats,
+  prefix: "category" | "eventTag",
+  filters: { dim: string; value: string }[],
+  fallback: Record<string, number>
+): Record<string, number> {
+  if (filters.length === 0) return fallback;
+
+  const crossKey = `demo_${prefix}#${filters.map((f) => f.dim).join("#")}`;
+  const crossData = stats[crossKey];
+  if (!crossData) return fallback;
+
+  const filterValue = filters.map((f) => f.value).join("#");
+  const result: Record<string, number> = {};
+  for (const [key, count] of Object.entries(crossData)) {
+    const parts = key.split("#");
+    const label = parts[0];
+    const matchValue = parts.slice(1).join("#");
+    if (matchValue === filterValue) {
+      result[label] = (result[label] ?? 0) + count;
+    }
+  }
+  return result;
 }
 
 export function ExploreStats({
@@ -196,7 +77,6 @@ export function ExploreStats({
   const categories = stats.category ?? {};
   const eventTags = stats.eventTag ?? {};
 
-  const GENDER_FILTER_OPTIONS = ["woman", "man", "non-binary"];
   const genderOptions = useMemo(
     () => GENDER_FILTER_OPTIONS.filter((g) => (stats.demo_gender ?? {})[g] != null),
     [stats]
@@ -209,39 +89,20 @@ export function ExploreStats({
     () => Object.keys(stats.demo_employmentStatus ?? {}).sort(),
     [stats]
   );
-  const ALL_CONTINENTS = [
-    "Africa", "Asia", "Europe", "North America",
-    "Oceania", "South America",
-  ];
-  const continentOptions = ALL_CONTINENTS;
 
-  // When filters are active, recompute category breakdown from cross-dimensional stats
-  const filteredCategories = useMemo(() => {
-    const activeFilters: { dim: string; value: string }[] = [];
-    if (filterGender) activeFilters.push({ dim: "gender", value: filterGender });
-    if (filterAge) activeFilters.push({ dim: "ageRange", value: filterAge });
-    if (filterEmployment) activeFilters.push({ dim: "employmentStatus", value: filterEmployment });
-    if (filterContinent) activeFilters.push({ dim: "continent", value: filterContinent });
+  const activeFilters = useMemo(() => {
+    const filters: { dim: string; value: string }[] = [];
+    if (filterGender) filters.push({ dim: "gender", value: filterGender });
+    if (filterAge) filters.push({ dim: "ageRange", value: filterAge });
+    if (filterEmployment) filters.push({ dim: "employmentStatus", value: filterEmployment });
+    if (filterContinent) filters.push({ dim: "continent", value: filterContinent });
+    return filters;
+  }, [filterGender, filterAge, filterEmployment, filterContinent]);
 
-    if (activeFilters.length === 0) return categories;
-
-    // Build the stats key from active filter dimensions
-    const crossKey = `demo_category#${activeFilters.map((f) => f.dim).join("#")}`;
-    const crossData = stats[crossKey];
-    if (!crossData) return categories;
-
-    const filterValue = activeFilters.map((f) => f.value).join("#");
-    const result: Record<string, number> = {};
-    for (const [key, count] of Object.entries(crossData)) {
-      const parts = key.split("#");
-      const cat = parts[0];
-      const matchValue = parts.slice(1).join("#");
-      if (matchValue === filterValue) {
-        result[cat] = (result[cat] ?? 0) + count;
-      }
-    }
-    return result;
-  }, [categories, filterGender, filterAge, filterEmployment, filterContinent, stats]);
+  const filteredCategories = useMemo(
+    () => filterCrossDimensional(stats, "category", activeFilters, categories),
+    [stats, activeFilters, categories]
+  );
 
   const filteredTotal = Object.values(filteredCategories).reduce(
     (sum, c) => sum + c,
@@ -260,32 +121,10 @@ export function ExploreStats({
     })
     .sort((a, b) => b.value - a.value);
 
-  // When filters are active, recompute event tag breakdown from cross-dimensional stats
-  const filteredEventTags = useMemo(() => {
-    const activeFilters: { dim: string; value: string }[] = [];
-    if (filterGender) activeFilters.push({ dim: "gender", value: filterGender });
-    if (filterAge) activeFilters.push({ dim: "ageRange", value: filterAge });
-    if (filterEmployment) activeFilters.push({ dim: "employmentStatus", value: filterEmployment });
-    if (filterContinent) activeFilters.push({ dim: "continent", value: filterContinent });
-
-    if (activeFilters.length === 0) return eventTags;
-
-    const crossKey = `demo_eventTag#${activeFilters.map((f) => f.dim).join("#")}`;
-    const crossData = stats[crossKey];
-    if (!crossData) return eventTags;
-
-    const filterValue = activeFilters.map((f) => f.value).join("#");
-    const result: Record<string, number> = {};
-    for (const [key, count] of Object.entries(crossData)) {
-      const parts = key.split("#");
-      const tag = parts[0];
-      const matchValue = parts.slice(1).join("#");
-      if (matchValue === filterValue) {
-        result[tag] = (result[tag] ?? 0) + count;
-      }
-    }
-    return result;
-  }, [eventTags, filterGender, filterAge, filterEmployment, filterContinent, stats]);
+  const filteredEventTags = useMemo(
+    () => filterCrossDimensional(stats, "eventTag", activeFilters, eventTags),
+    [stats, activeFilters, eventTags]
+  );
 
   const eventTagEntries = Object.keys(EVENT_TAG_LABELS)
     .map((tag) => [tag, filteredEventTags[tag] ?? 0] as [string, number])
@@ -325,7 +164,7 @@ export function ExploreStats({
         title={t("filterContinent")}
       >
         <option value="">{t("allContinents")}</option>
-        {continentOptions.map((c) => (
+        {CONTINENTS.map((c) => (
           <option key={c} value={c}>
             {t(`continentNames.${c}`)}
           </option>
@@ -479,7 +318,7 @@ export function ExploreStats({
                       className="h-full rounded-full transition-all duration-500"
                       style={{
                         width: `${pct}%`,
-                        backgroundColor: "#a3bcd8",
+                        backgroundColor: BAR_COLOR,
                         opacity: 0.6,
                       }}
                     />

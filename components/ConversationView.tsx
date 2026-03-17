@@ -3,17 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Message, Category } from "@/lib/types";
-
-const GENDER_OPTIONS = ["woman", "man", "non-binary", "other", "prefer not to say"];
-const AGE_RANGES = ["13-17", "18-24", "25-34", "35-44", "45-54", "55-64", "65+"];
-const EMPLOYMENT_OPTIONS = [
-  "employed",
-  "self-employed",
-  "unemployed",
-  "student",
-  "retired",
-  "other",
-];
+import { DemographicsSection } from "./DemographicsSection";
 
 function AssistantMessage({ content, fadeIn }: { content: string; fadeIn: boolean }) {
   const sentences = content.match(/[^.!?]+[.!?]+/g) || [content];
@@ -41,14 +31,15 @@ function AssistantMessage({ content, fadeIn }: { content: string; fadeIn: boolea
 
 function UserMessage({ content, isLatest }: { content: string; isLatest: boolean }) {
   const [expanded, setExpanded] = useState(false);
-  const isTruncatable = !isLatest && content.length > 120;
+  const USER_MESSAGE_TRUNCATE_LENGTH = 120;
+  const isTruncatable = !isLatest && content.length > USER_MESSAGE_TRUNCATE_LENGTH;
 
   return (
     <div className="text-neutral-400 pl-4 border-l border-neutral-700">
       <p className="text-base leading-relaxed">
         {isTruncatable && !expanded ? (
           <>
-            {content.slice(0, 120).trim()}&hellip;{" "}
+            {content.slice(0, USER_MESSAGE_TRUNCATE_LENGTH).trim()}&hellip;{" "}
             <button
               onClick={() => setExpanded(true)}
               className="text-neutral-500 hover:text-neutral-300 text-sm transition-colors"
@@ -60,148 +51,6 @@ function UserMessage({ content, isLatest }: { content: string; isLatest: boolean
           content
         )}
       </p>
-    </div>
-  );
-}
-
-function DemographicsSection({
-  categories,
-  eventTags,
-  submissionId,
-  regionContinent,
-}: {
-  categories: Category[];
-  eventTags: string[];
-  submissionId: string | null;
-  regionContinent?: string;
-}) {
-  const t = useTranslations("demographics");
-  const tTalk = useTranslations("talk");
-  const [gender, setGender] = useState("");
-  const [ageRange, setAgeRange] = useState("");
-  const [employmentStatus, setEmploymentStatus] = useState("");
-  const [demographicsSubmitted, setDemographicsSubmitted] = useState(false);
-
-  async function handleDemographicsSubmit() {
-    setDemographicsSubmitted(true);
-    await fetch("/api/demographics", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        gender: gender || undefined,
-        ageRange: ageRange || undefined,
-        employmentStatus: employmentStatus || undefined,
-        regionContinent: regionContinent || undefined,
-        categories,
-        eventTags,
-      }),
-    });
-  }
-
-  if (demographicsSubmitted) {
-    return (
-      <div className="mt-8 animate-fade-in">
-        <p className="text-neutral-500 text-xs">{t("thankYou")}</p>
-        {submissionId && (
-          <p className="text-neutral-700 text-xs mt-4">
-            {tTalk("submissionId")}: <span className="font-mono text-neutral-600">{submissionId}</span>
-          </p>
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div className="mt-12 border-t border-neutral-800 pt-8">
-      <p className="text-sm text-neutral-300 mb-2 text-center">
-        {t("heading")}
-      </p>
-      <p className="text-xs text-neutral-600 mb-6 text-center">
-        {t("subheading")}
-      </p>
-
-      <div className="space-y-4 text-left">
-        <div>
-          <label className="text-xs text-neutral-500 uppercase tracking-wider block mb-2">
-            {t("gender")}
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {GENDER_OPTIONS.map((opt) => (
-              <button
-                key={opt}
-                onClick={() => setGender(gender === opt ? "" : opt)}
-                className={`px-3 py-1 text-sm rounded transition-colors ${
-                  gender === opt
-                    ? "bg-neutral-200 text-neutral-900"
-                    : "bg-neutral-800/50 text-neutral-400 hover:text-neutral-200 border border-neutral-700"
-                }`}
-              >
-                {opt}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="text-xs text-neutral-500 uppercase tracking-wider block mb-2">
-            {t("ageRange")}
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {AGE_RANGES.map((r) => (
-              <button
-                key={r}
-                onClick={() => setAgeRange(ageRange === r ? "" : r)}
-                className={`px-3 py-1 text-sm rounded transition-colors ${
-                  ageRange === r
-                    ? "bg-neutral-200 text-neutral-900"
-                    : "bg-neutral-800/50 text-neutral-400 hover:text-neutral-200 border border-neutral-700"
-                }`}
-              >
-                {r}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="text-xs text-neutral-500 uppercase tracking-wider block mb-2">
-            {t("employment")}
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {EMPLOYMENT_OPTIONS.map((opt) => (
-              <button
-                key={opt}
-                onClick={() =>
-                  setEmploymentStatus(employmentStatus === opt ? "" : opt)
-                }
-                className={`px-3 py-1 text-sm rounded transition-colors ${
-                  employmentStatus === opt
-                    ? "bg-neutral-200 text-neutral-900"
-                    : "bg-neutral-800/50 text-neutral-400 hover:text-neutral-200 border border-neutral-700"
-                }`}
-              >
-                {opt}
-              </button>
-            ))}
-          </div>
-        </div>
-
-      </div>
-
-      <div className="text-center mt-6">
-        <button
-          onClick={handleDemographicsSubmit}
-          className="px-6 py-2 bg-neutral-100 hover:bg-white text-neutral-900 text-sm rounded transition-colors"
-        >
-          {t("share")}
-        </button>
-      </div>
-
-      {submissionId && (
-        <p className="text-neutral-700 text-xs mt-6 text-center">
-          {tTalk("submissionId")}: <span className="font-mono text-neutral-600">{submissionId}</span>
-        </p>
-      )}
     </div>
   );
 }

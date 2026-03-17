@@ -1,20 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getConversations } from "@/lib/storage";
-import { Category, EventTag, Beat, FilterParams } from "@/lib/types";
+import { CATEGORIES, EVENT_TAGS, BEATS, Category, EventTag, Beat, FilterParams } from "@/lib/types";
 
-const VALID_CATEGORIES = new Set<string>([
-  "fear", "hope", "grief", "excitement", "anger",
-  "uncertainty", "wonder", "other",
-]);
-
-const VALID_EVENT_TAGS = new Set<string>([
-  "work_affected", "health_affected", "relationships_affected",
-  "creative_affected", "education_affected", "financial_affected",
-]);
-
-const VALID_BEATS = new Set<string>([
-  "opening", "future", "personal", "closing", "other",
-]);
+const VALID_CATEGORIES = new Set<string>(CATEGORIES);
+const VALID_EVENT_TAGS = new Set<string>(EVENT_TAGS);
+const VALID_BEATS = new Set<string>(BEATS);
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);

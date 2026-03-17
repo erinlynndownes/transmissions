@@ -18,6 +18,7 @@ import {
 } from "./types";
 import { v4 as uuidv4 } from "uuid";
 import { filterMockItems, getMockStats, getMockConversation } from "./mock-data";
+import { combinations } from "./utils";
 
 const MOCK = process.env.MOCK_STORAGE === "true";
 
@@ -29,15 +30,7 @@ const dynamo = MOCK
 const BUCKET = process.env.S3_BUCKET_NAME ?? "";
 const TABLE = process.env.DYNAMODB_TABLE_NAME ?? "";
 const STATS_TABLE = process.env.DYNAMODB_STATS_TABLE_NAME ?? "";
-
-export function combinations<T>(arr: T[], size: number): T[][] {
-  if (size === 0) return [[]];
-  if (arr.length < size) return [];
-  const [first, ...rest] = arr;
-  const withFirst = combinations(rest, size - 1).map((c) => [first, ...c]);
-  const withoutFirst = combinations(rest, size);
-  return [...withFirst, ...withoutFirst];
-}
+const DEFAULT_PAGE_SIZE = 20;
 
 export async function saveSubmission(
   input: SubmissionInput,
@@ -151,7 +144,9 @@ export async function saveSubmission(
     new TransactWriteCommand({ TransactItems: transactItems })
   );
 
-  // Increment stats counters (best effort, not transactional)
+  // Increment stats counters (best effort, not transactional).
+  // At scale, replace with a DynamoDB Streams → Lambda pipeline to
+  // decouple stat aggregation from the write path.
   const statsUpdates: Array<{ PK: string; SK: string }> = [
     { PK: "STAT#total", SK: "submissions" },
   ];
@@ -175,7 +170,7 @@ export async function saveSubmission(
     statsUpdates.push({ PK: "STAT#country", SK: input.regionCountry });
   }
 
-  await Promise.allSettled(
+  const statsResults = await Promise.allSettled(
     statsUpdates.map((key) =>
       dynamo.send(
         new UpdateCommand({
@@ -188,6 +183,9 @@ export async function saveSubmission(
       )
     )
   );
+  for (const r of statsResults) {
+    if (r.status === "rejected") console.error("[stats] counter update failed:", r.reason);
+  }
 
   return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore, categories: extracted.categories, eventTags: extracted.eventTags, regionContinent: input.regionContinent };
 }
@@ -237,11 +235,15 @@ export async function getConversations(
       KeyConditionExpression: "PK = :pk",
       ExpressionAttributeValues: { ":pk": PK },
       ScanIndexForward: false,
-      Limit: params.limit ?? 20,
+      Limit: params.limit ?? DEFAULT_PAGE_SIZE,
       ...(params.cursor && {
-        ExclusiveStartKey: JSON.parse(
-          Buffer.from(params.cursor, "base64").toString("utf-8")
-        ),
+        ExclusiveStartKey: (() => {
+          try {
+            return JSON.parse(Buffer.from(params.cursor, "base64").toString("utf-8"));
+          } catch {
+            throw new Error("Invalid cursor");
+          }
+        })(),
       }),
     })
   );
@@ -323,7 +325,9 @@ export async function saveDemographics(
     return;
   }
 
-  // Cross-dimensional stats: category × demographic (pairwise)
+  // Cross-dimensional stats: category × demographic combinations.
+  // At scale, replace with a DynamoDB Streams → Lambda pipeline to
+  // decouple stat aggregation from the write path.
   const dims: { key: string; value: string }[] = [];
   if (input.gender) dims.push({ key: "gender", value: input.gender });
   if (input.ageRange) dims.push({ key: "ageRange", value: input.ageRange });
@@ -366,7 +370,7 @@ export async function saveDemographics(
     }
   }
 
-  await Promise.allSettled(
+  const results = await Promise.allSettled(
     updates.map((key) =>
       dynamo.send(
         new UpdateCommand({
@@ -379,6 +383,9 @@ export async function saveDemographics(
       )
     )
   );
+  for (const r of results) {
+    if (r.status === "rejected") console.error("[demographics] counter update failed:", r.reason);
+  }
 }
 
 export async function incrementDropoff(userMessageCount: number): Promise<void> {

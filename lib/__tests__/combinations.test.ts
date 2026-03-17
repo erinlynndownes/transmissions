@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { combinations } from "../storage";
+import { combinations } from "../utils";
 
 describe("combinations", () => {
   it("returns [[]] for size 0", () => {

@@ -2,6 +2,8 @@ import { getConversations, getStats } from "@/lib/storage";
 import { ConversationItem } from "@/lib/types";
 import { ExploreLayout } from "@/components/ExploreLayout";
 
+const EXPLORE_PAGE_SIZE = 50;
+
 export const revalidate = 300;
 
 export default async function ExplorePage() {
@@ -10,7 +12,7 @@ export default async function ExplorePage() {
 
   try {
     const [quotesResult, statsResult] = await Promise.all([
-      getConversations({ limit: 50 }),
+      getConversations({ limit: EXPLORE_PAGE_SIZE }),
       getStats(),
     ]);
     quotes = quotesResult.items;

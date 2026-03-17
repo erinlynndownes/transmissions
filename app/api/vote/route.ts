@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { incrementVote } from "@/lib/storage";
 import { checkRateLimit } from "@/lib/ratelimit";
+import { getClientIp } from "@/lib/api-utils";
 
 const RATE_LIMIT_MAX = 1;
 const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const ip = getClientIp(req);
 
   const { id, createdAt }: { id: string; createdAt: string } = await req.json();
 

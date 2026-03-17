@@ -60,7 +60,6 @@ IMPORTANT rules for quote selection:
 
 3. Identify which beat in the conversation arc the quote came from:
    - "opening", their initial reaction to "How do you feel about AI?"
-   - "change", what they would change about how this is all going
    - "future", their sense of what happens from here
    - "personal", how it's touching their own life
    - "closing", what they'd say to AI builders
@@ -118,5 +117,17 @@ export async function extractSubmissionData(
   const block = response.content[0];
   if (block.type !== "text") throw new Error("Unexpected response type");
 
-  return JSON.parse(block.text) as ExtractedData;
+  let parsed: ExtractedData;
+  try {
+    const text = block.text.replace(/^```json\s*\n?/, "").replace(/\n?```\s*$/, "");
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error(`Failed to parse extraction response: ${block.text.slice(0, 200)}`);
+  }
+
+  if (!parsed.quote || !parsed.summary || !parsed.categories?.length) {
+    throw new Error(`Extraction response missing required fields: ${JSON.stringify(parsed).slice(0, 200)}`);
+  }
+
+  return parsed;
 }

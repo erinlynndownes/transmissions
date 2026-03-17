@@ -3,25 +3,22 @@ export type Message = {
   content: string;
 };
 
-export type Category =
-  | "fear"
-  | "hope"
-  | "grief"
-  | "excitement"
-  | "anger"
-  | "uncertainty"
-  | "wonder"
-  | "other";
+export const CATEGORIES = [
+  "fear", "hope", "grief", "excitement", "anger",
+  "uncertainty", "wonder", "other",
+] as const;
+export type Category = (typeof CATEGORIES)[number];
 
-export type EventTag =
-  | "work_affected"
-  | "health_affected"
-  | "relationships_affected"
-  | "creative_affected"
-  | "education_affected"
-  | "financial_affected";
+export const EVENT_TAGS = [
+  "work_affected", "health_affected", "relationships_affected",
+  "creative_affected", "education_affected", "financial_affected",
+] as const;
+export type EventTag = (typeof EVENT_TAGS)[number];
 
-export type Beat = "opening" | "future" | "personal" | "closing" | "other";
+export const BEATS = [
+  "opening", "future", "personal", "closing", "other",
+] as const;
+export type Beat = (typeof BEATS)[number];
 
 export type ConversationItem = {
   PK: string;

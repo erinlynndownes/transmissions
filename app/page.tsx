@@ -5,13 +5,14 @@ import { ConversationItem } from "@/lib/types";
 import { getTranslations } from "next-intl/server";
 
 const QUOTE_THRESHOLD = 10;
+const CLOSING_QUESTION_PROBABILITY = 0.5;
 
 export const revalidate = 300;
 
 export default async function Home() {
   const t = await getTranslations("home");
 
-  const isClosing = Math.random() < 0.5;
+  const isClosing = Math.random() < CLOSING_QUESTION_PROBABILITY;
   const question = isClosing ? t("closingQuestion") : t("question");
 
   let quotes: ConversationItem[] = [];

@@ -7,6 +7,9 @@ export function RotatingQuote({ quotes }: { quotes: ConversationItem[] }) {
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
 
+  const ROTATION_INTERVAL_MS = 9000;
+  const FADE_DURATION_MS = 600;
+
   useEffect(() => {
     if (quotes.length <= 1) return;
 
@@ -15,8 +18,8 @@ export function RotatingQuote({ quotes }: { quotes: ConversationItem[] }) {
       setTimeout(() => {
         setIndex((i) => (i + 1) % quotes.length);
         setVisible(true);
-      }, 600);
-    }, 9000);
+      }, FADE_DURATION_MS);
+    }, ROTATION_INTERVAL_MS);
 
     return () => clearInterval(interval);
   }, [quotes.length]);

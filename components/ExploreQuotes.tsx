@@ -2,36 +2,8 @@
 
 import { useState, useMemo, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { ConversationItem, ConversationRecord, Category, EventTag } from "@/lib/types";
-
-const COUNTRY_NAMES: Record<string, string> = {
-  US: "United States", CA: "Canada", MX: "Mexico",
-  UK: "United Kingdom", FR: "France", DE: "Germany", ES: "Spain", IT: "Italy",
-  NL: "Netherlands", SE: "Sweden", NO: "Norway", DK: "Denmark", FI: "Finland",
-  PL: "Poland", PT: "Portugal", IE: "Ireland", CH: "Switzerland", AT: "Austria",
-  BE: "Belgium", CZ: "Czech Republic", RO: "Romania", GR: "Greece",
-  BR: "Brazil", AR: "Argentina", CO: "Colombia", CL: "Chile",
-  JP: "Japan", CN: "China", KR: "South Korea", IN: "India", TW: "Taiwan",
-  AU: "Australia", NZ: "New Zealand",
-  NG: "Nigeria", ZA: "South Africa", KE: "Kenya", EG: "Egypt", GH: "Ghana",
-  IL: "Israel", TR: "Turkey", SA: "Saudi Arabia", AE: "United Arab Emirates",
-  RU: "Russia", UA: "Ukraine", PH: "Philippines", ID: "Indonesia",
-  TH: "Thailand", VN: "Vietnam", MY: "Malaysia", SG: "Singapore",
-};
-
-function countryName(code: string): string {
-  return COUNTRY_NAMES[code] ?? code;
-}
-
-const CATEGORIES: Category[] = [
-  "fear", "hope", "grief", "excitement", "anger",
-  "uncertainty", "wonder", "other",
-];
-
-const EVENT_TAGS: EventTag[] = [
-  "work_affected", "health_affected", "relationships_affected",
-  "creative_affected", "education_affected", "financial_affected",
-];
+import { ConversationItem, ConversationRecord, Category, EventTag, CATEGORIES, EVENT_TAGS } from "@/lib/types";
+import { COUNTRY_NAMES, countryName } from "@/lib/geo";
 
 export function ExploreQuotes({
   quotes,
