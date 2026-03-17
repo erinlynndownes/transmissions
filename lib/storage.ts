@@ -30,7 +30,7 @@ const BUCKET = process.env.S3_BUCKET_NAME ?? "";
 const TABLE = process.env.DYNAMODB_TABLE_NAME ?? "";
 const STATS_TABLE = process.env.DYNAMODB_STATS_TABLE_NAME ?? "";
 
-function combinations<T>(arr: T[], size: number): T[][] {
+export function combinations<T>(arr: T[], size: number): T[][] {
   if (size === 0) return [[]];
   if (arr.length < size) return [];
   const [first, ...rest] = arr;
