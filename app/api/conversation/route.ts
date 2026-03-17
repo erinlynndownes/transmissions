@@ -34,6 +34,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ reply });
   } catch (error: unknown) {
     if (isAnthropicQuotaError(error)) return quotaExhaustedResponse();
-    throw error;
+    console.error("[conversation] error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
