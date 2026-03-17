@@ -72,6 +72,10 @@
       "financial_affected": "Finanzen"
     }
   },
+  "notFound": {
+    "message": "Diese Seite existiert nicht.",
+    "back": "zurück zu transmissions"
+  },
   "demographics": {
     "heading": "Helfen Sie uns zu verstehen, wer das empfindet.",
     "subheading": "Völlig freiwillig. Nichts hier wird jemals mit Ihrem Gespräch verknüpft.",

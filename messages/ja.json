@@ -72,6 +72,10 @@
       "financial_affected": "経済"
     }
   },
+  "notFound": {
+    "message": "このページは存在しません。",
+    "back": "transmissionsに戻る"
+  },
   "demographics": {
     "heading": "これを感じているのが誰か、理解するお手伝いをしてください。",
     "subheading": "完全に任意です。ここの情報は会話と結びつくことはありません。",

@@ -72,6 +72,10 @@
       "financial_affected": "财务"
     }
   },
+  "notFound": {
+    "message": "此页面不存在。",
+    "back": "返回 transmissions"
+  },
   "demographics": {
     "heading": "帮助我们了解谁在感受这些。",
     "subheading": "完全自愿。这里的任何信息都不会与你的对话关联。",
