@@ -1,8 +1,10 @@
 import { ConversationView } from "@/components/ConversationView";
+import { InfoButton } from "@/components/InfoButton";
 
 export default function TalkPage() {
   return (
     <div className="min-h-screen relative">
+      <InfoButton />
       {/* Frame */}
       <div className="fixed inset-3 sm:inset-4 md:inset-6 border border-[var(--foreground)]/20 rounded overflow-hidden pointer-events-none z-10" />
       <div className="frame-corner-tl fixed top-3 left-3 sm:top-4 sm:left-4 md:top-6 md:left-6 z-11" />

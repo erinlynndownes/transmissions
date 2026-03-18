@@ -13,6 +13,17 @@ resource "aws_dynamodb_table" "transmissions" {
     name = "SK"
     type = "S"
   }
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name            = "id-index"
+    hash_key        = "id"
+    projection_type = "ALL"
+  }
 }
 
 resource "aws_dynamodb_table" "transmissions_stats" {

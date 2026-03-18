@@ -11,6 +11,7 @@ import {
   ConversationItem,
   ConversationRecord,
   ExtractedData,
+  ModerationStatus,
   SubmissionInput,
   DemographicsInput,
   FilterParams,
@@ -19,6 +20,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { filterMockItems, getMockStats, getMockConversation } from "./mock-data";
 import { combinations } from "./utils";
+import { notifyPendingReview } from "./notify";
 
 const MOCK = process.env.MOCK_STORAGE === "true";
 
@@ -46,6 +48,9 @@ export async function saveSubmission(
   const createdAt = new Date().toISOString();
   const SK = `${createdAt}#${id}`;
 
+  const needsReview = extracted.contentHateful;
+  const moderationStatus: ModerationStatus = needsReview ? "pending_review" : "approved";
+
   const baseItem: ConversationItem = {
     PK: "ALL",
     SK,
@@ -56,6 +61,8 @@ export async function saveSubmission(
     beat: extracted.beat,
     poignancyScore: extracted.poignancyScore,
     contentWarning: extracted.contentWarning,
+    contentHateful: extracted.contentHateful,
+    moderationStatus,
     voteCount: 0,
     categories: extracted.categories,
     eventTags: extracted.eventTags,
@@ -145,46 +152,57 @@ export async function saveSubmission(
   );
 
   // Increment stats counters (best effort, not transactional).
-  // At scale, replace with a DynamoDB Streams → Lambda pipeline to
-  // decouple stat aggregation from the write path.
-  const statsUpdates: Array<{ PK: string; SK: string }> = [
-    { PK: "STAT#total", SK: "submissions" },
-  ];
+  // Skip for pending_review items — stats are incremented on approval instead.
+  if (moderationStatus === "approved") {
+    const statsUpdates: Array<{ PK: string; SK: string }> = [
+      { PK: "STAT#total", SK: "submissions" },
+    ];
 
-  for (const cat of extracted.categories) {
-    statsUpdates.push({ PK: "STAT#category", SK: cat });
-  }
-  for (const tag of extracted.eventTags) {
-    statsUpdates.push({ PK: "STAT#eventTag", SK: tag });
-  }
-  if (input.regionContinent) {
-    statsUpdates.push({ PK: "STAT#continent", SK: input.regionContinent });
     for (const cat of extracted.categories) {
-      statsUpdates.push({
-        PK: "STAT#category#continent",
-        SK: `${cat}#${input.regionContinent}`,
-      });
+      statsUpdates.push({ PK: "STAT#category", SK: cat });
+    }
+    for (const tag of extracted.eventTags) {
+      statsUpdates.push({ PK: "STAT#eventTag", SK: tag });
+    }
+    if (input.regionContinent) {
+      statsUpdates.push({ PK: "STAT#continent", SK: input.regionContinent });
+      for (const cat of extracted.categories) {
+        statsUpdates.push({
+          PK: "STAT#category#continent",
+          SK: `${cat}#${input.regionContinent}`,
+        });
+      }
+    }
+    if (input.regionCountry) {
+      statsUpdates.push({ PK: "STAT#country", SK: input.regionCountry });
+    }
+
+    const statsResults = await Promise.allSettled(
+      statsUpdates.map((key) =>
+        dynamo.send(
+          new UpdateCommand({
+            TableName: STATS_TABLE,
+            Key: key,
+            UpdateExpression: "ADD #count :one",
+            ExpressionAttributeNames: { "#count": "count" },
+            ExpressionAttributeValues: { ":one": 1 },
+          })
+        )
+      )
+    );
+    for (const r of statsResults) {
+      if (r.status === "rejected") console.error("[stats] counter update failed:", r.reason);
     }
   }
-  if (input.regionCountry) {
-    statsUpdates.push({ PK: "STAT#country", SK: input.regionCountry });
-  }
 
-  const statsResults = await Promise.allSettled(
-    statsUpdates.map((key) =>
-      dynamo.send(
-        new UpdateCommand({
-          TableName: STATS_TABLE,
-          Key: key,
-          UpdateExpression: "ADD #count :one",
-          ExpressionAttributeNames: { "#count": "count" },
-          ExpressionAttributeValues: { ":one": 1 },
-        })
-      )
-    )
-  );
-  for (const r of statsResults) {
-    if (r.status === "rejected") console.error("[stats] counter update failed:", r.reason);
+  if (needsReview) {
+    notifyPendingReview({
+      id,
+      quote: extracted.quote,
+      summary: extracted.summary,
+      contentWarning: extracted.contentWarning,
+      poignancyScore: extracted.poignancyScore,
+    });
   }
 
   return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore, categories: extracted.categories, eventTags: extracted.eventTags, regionContinent: input.regionContinent };
@@ -194,6 +212,19 @@ export async function getConversation(
   id: string
 ): Promise<ConversationRecord | null> {
   if (MOCK) return getMockConversation(id);
+
+  // Check moderation status via GSI before returning the conversation.
+  const meta = await dynamo.send(
+    new QueryCommand({
+      TableName: TABLE,
+      IndexName: "id-index",
+      KeyConditionExpression: "id = :id",
+      ExpressionAttributeValues: { ":id": id },
+    })
+  );
+  const item = meta.Items?.find((i) => i.PK === "ALL");
+  if (!item || item.moderationStatus !== "approved") return null;
+
   try {
     const result = await s3.send(
       new GetObjectCommand({
@@ -249,11 +280,12 @@ export async function getConversations(
   );
 
   const items = (result.Items ?? []) as ConversationItem[];
+  const approved = items.filter((item) => item.moderationStatus !== "pending_review" && item.moderationStatus !== "rejected");
   const cursor = result.LastEvaluatedKey
     ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString("base64")
     : undefined;
 
-  return { items, cursor };
+  return { items: approved, cursor };
 }
 
 export async function getStats(): Promise<
@@ -385,6 +417,107 @@ export async function saveDemographics(
   );
   for (const r of results) {
     if (r.status === "rejected") console.error("[demographics] counter update failed:", r.reason);
+  }
+}
+
+export async function getPendingReviews(): Promise<ConversationItem[]> {
+  if (MOCK) return [];
+
+  const result = await dynamo.send(
+    new QueryCommand({
+      TableName: TABLE,
+      KeyConditionExpression: "PK = :pk",
+      FilterExpression: "moderationStatus = :status",
+      ExpressionAttributeValues: { ":pk": "ALL", ":status": "pending_review" },
+      ScanIndexForward: false,
+    })
+  );
+
+  return (result.Items ?? []) as ConversationItem[];
+}
+
+export async function updateModerationStatus(
+  id: string,
+  status: ModerationStatus
+): Promise<void> {
+  if (MOCK) {
+    console.log("[MOCK] updateModerationStatus:", { id, status });
+    return;
+  }
+
+  // Find all PK variants for this item via GSI
+  const allItems = await dynamo.send(
+    new QueryCommand({
+      TableName: TABLE,
+      IndexName: "id-index",
+      KeyConditionExpression: "id = :id",
+      ExpressionAttributeValues: { ":id": id },
+    })
+  );
+
+  if (!allItems.Items?.length) {
+    throw new Error(`No items found for id: ${id}`);
+  }
+
+  const updates = allItems.Items.map((item) =>
+    dynamo.send(
+      new UpdateCommand({
+        TableName: TABLE,
+        Key: { PK: item.PK as string, SK: item.SK as string },
+        UpdateExpression: "SET moderationStatus = :status",
+        ExpressionAttributeValues: { ":status": status },
+      })
+    )
+  );
+
+  const results = await Promise.allSettled(updates);
+  for (const r of results) {
+    if (r.status === "rejected") console.error("[moderation] status update failed:", r.reason);
+  }
+
+  // When approving a previously pending item, increment stats that were skipped at submission time.
+  const primaryItem = allItems.Items.find((item) => item.PK === "ALL");
+  if (status === "approved" && primaryItem?.moderationStatus === "pending_review") {
+    const categories = (primaryItem.categories as string[]) ?? [];
+    const eventTags = (primaryItem.eventTags as string[]) ?? [];
+    const regionContinent = primaryItem.regionContinent as string | undefined;
+    const regionCountry = primaryItem.regionCountry as string | undefined;
+
+    const statsUpdates: Array<{ PK: string; SK: string }> = [
+      { PK: "STAT#total", SK: "submissions" },
+    ];
+    for (const cat of categories) {
+      statsUpdates.push({ PK: "STAT#category", SK: cat });
+    }
+    for (const tag of eventTags) {
+      statsUpdates.push({ PK: "STAT#eventTag", SK: tag });
+    }
+    if (regionContinent) {
+      statsUpdates.push({ PK: "STAT#continent", SK: regionContinent });
+      for (const cat of categories) {
+        statsUpdates.push({ PK: "STAT#category#continent", SK: `${cat}#${regionContinent}` });
+      }
+    }
+    if (regionCountry) {
+      statsUpdates.push({ PK: "STAT#country", SK: regionCountry });
+    }
+
+    const statsResults = await Promise.allSettled(
+      statsUpdates.map((key) =>
+        dynamo.send(
+          new UpdateCommand({
+            TableName: STATS_TABLE,
+            Key: key,
+            UpdateExpression: "ADD #count :one",
+            ExpressionAttributeNames: { "#count": "count" },
+            ExpressionAttributeValues: { ":one": 1 },
+          })
+        )
+      )
+    );
+    for (const r of statsResults) {
+      if (r.status === "rejected") console.error("[stats] approval counter update failed:", r.reason);
+    }
   }
 }
 

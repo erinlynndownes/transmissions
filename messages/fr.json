@@ -53,7 +53,7 @@
     "allAges": "Tous les âges",
     "allEmployment": "Tous les emplois",
     "searchLocation": "Rechercher un lieu...",
-    "contentWarning": "Cette transmission contient un langage fort",
+    "contentWarning": "Cette transmission contient du contenu sensible",
     "showAnyway": "afficher quand même",
     "continentNames": {
       "Africa": "Afrique",
@@ -75,6 +75,17 @@
   "notFound": {
     "message": "Cette page n'existe pas.",
     "back": "retour à transmissions"
+  },
+  "info": {
+    "label": "A propos de ce projet",
+    "title": "transmissions",
+    "about": "Ceci est un registre public de ce que les humains ressentent face a l'IA. Les gens ont une courte conversation guidee, et avec leur permission, leurs mots sont stockes de maniere anonyme et affiches pour que d'autres les lisent.",
+    "anonymous": "Aucun nom, lieu ou detail identifiant n'est collecte. Les conversations ne peuvent pas etre retracees jusqu'aux individus.",
+    "removalTitle": "Demandes de suppression",
+    "removal": "Si vous voyez quelque chose qui devrait etre supprime, ou si vous souhaitez faire supprimer votre propre publication, envoyez un email a help@transmissions.earth avec l'ID de la publication (affiche en bas de chaque conversation).",
+    "moderationTitle": "Moderation du contenu",
+    "moderation": "Les publications sont examinees pour detecter le contenu nuisible, haineux ou identifiant. Nous ne censurons pas les sentiments ou le langage fort, mais le contenu susceptible de nuire a autrui peut etre retenu ou supprime.",
+    "nonCommercial": "Ceci est un projet non commercial. Aucune donnee n'est vendue ou partagee. Les conversations sont traitees via l'API Anthropic, qui ne les utilise pas pour l'entrainement de modeles."
   },
   "demographics": {
     "heading": "Aidez-nous à comprendre qui ressent cela.",

@@ -71,6 +71,7 @@ function makeExtracted(overrides: Partial<ExtractedData> = {}): ExtractedData {
     beat: "opening",
     poignancyScore: 7,
     contentWarning: false,
+    contentHateful: false,
     categories: ["hope"],
     eventTags: ["work_affected"],
     language: "en",

@@ -7,6 +7,7 @@ import { Message } from "@/lib/types";
 const RATE_LIMIT_MAX = 30;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 const MAX_MESSAGE_LENGTH = 5000;
+const MAX_USER_MESSAGES = 16;
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
@@ -27,6 +28,11 @@ export async function POST(req: NextRequest) {
 
   if (messages.some((m) => m.content.length > MAX_MESSAGE_LENGTH)) {
     return NextResponse.json({ error: "Message too long" }, { status: 400 });
+  }
+
+  const userMessageCount = messages.filter((m) => m.role === "user").length;
+  if (userMessageCount > MAX_USER_MESSAGES) {
+    return NextResponse.json({ error: "Conversation limit reached" }, { status: 400 });
   }
 
   try {

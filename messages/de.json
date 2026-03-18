@@ -53,7 +53,7 @@
     "allAges": "Alle Alter",
     "allEmployment": "Alle Beschäftigungen",
     "searchLocation": "Ort suchen...",
-    "contentWarning": "Diese Übertragung enthält starke Sprache",
+    "contentWarning": "Diese Übertragung enthält sensible Inhalte",
     "showAnyway": "trotzdem anzeigen",
     "continentNames": {
       "Africa": "Afrika",
@@ -75,6 +75,17 @@
   "notFound": {
     "message": "Diese Seite existiert nicht.",
     "back": "zurück zu transmissions"
+  },
+  "info": {
+    "label": "Uber dieses Projekt",
+    "title": "transmissions",
+    "about": "Dies ist ein offentliches Archiv daruber, wie Menschen gegenuber KI empfinden. Menschen fuhren ein kurzes, geleitetes Gesprach, und mit ihrer Erlaubnis werden ihre Worte anonym gespeichert und fur andere zum Lesen angezeigt.",
+    "anonymous": "Es werden keine Namen, Orte oder identifizierende Details erhoben. Gesprache konnen nicht zu einzelnen Personen zuruckverfolgt werden.",
+    "removalTitle": "Loschungsanfragen",
+    "removal": "Wenn Sie etwas sehen, das entfernt werden sollte, oder Ihren eigenen Beitrag loschen mochten, senden Sie eine E-Mail an help@transmissions.earth mit der Beitrags-ID (am Ende jedes Gesprachs angezeigt).",
+    "moderationTitle": "Inhaltsmoderation",
+    "moderation": "Beitrage werden auf schadliche, hasserfullte oder personlich identifizierbare Inhalte uberpruft. Wir zensieren keine Gefuhle oder starke Sprache, aber Inhalte, die anderen schaden konnten, konnen zuruckgehalten oder entfernt werden.",
+    "nonCommercial": "Dies ist ein nichtkommerzielles Projekt. Keine Daten werden verkauft oder geteilt. Gesprache werden uber die Anthropic-API verarbeitet, die sie nicht fur das Modelltraining verwendet."
   },
   "demographics": {
     "heading": "Helfen Sie uns zu verstehen, wer das empfindet.",

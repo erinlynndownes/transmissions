@@ -20,6 +20,8 @@ export const BEATS = [
 ] as const;
 export type Beat = (typeof BEATS)[number];
 
+export type ModerationStatus = "approved" | "pending_review" | "rejected";
+
 export type ConversationItem = {
   PK: string;
   SK: string;
@@ -30,6 +32,8 @@ export type ConversationItem = {
   beat: Beat;
   poignancyScore: number;
   contentWarning: boolean;
+  contentHateful: boolean;
+  moderationStatus: ModerationStatus;
   voteCount: number;
   categories: Category[];
   eventTags: EventTag[];
@@ -52,6 +56,7 @@ export type ExtractedData = {
   beat: Beat;
   poignancyScore: number;
   contentWarning: boolean;
+  contentHateful: boolean;
   categories: Category[];
   eventTags: EventTag[];
   language: string;

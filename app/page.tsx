@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { getConversations } from "@/lib/storage";
 import { RotatingQuote } from "@/components/RotatingQuote";
+import { InfoButton } from "@/components/InfoButton";
 import { ConversationItem } from "@/lib/types";
 import { getTranslations } from "next-intl/server";
 
 const QUOTE_THRESHOLD = 10;
+const CAROUSEL_MIN_POIGNANCY = 5;
 const CLOSING_QUESTION_PROBABILITY = 0.5;
 
 export const revalidate = 300;
@@ -17,13 +19,17 @@ export default async function Home() {
 
   let quotes: ConversationItem[] = [];
   try {
-    const result = await getConversations({ limit: 20 });
+    const result = await getConversations({ limit: 100 });
     quotes = result.items;
   } catch {
     // DynamoDB not set up yet — show empty state
   }
 
-  const hasEnoughQuotes = quotes.length >= QUOTE_THRESHOLD;
+  const carouselQuotes = quotes
+    .filter((q) => q.poignancyScore >= CAROUSEL_MIN_POIGNANCY)
+    .sort((a, b) => b.poignancyScore - a.poignancyScore)
+    .slice(0, 20);
+  const hasEnoughQuotes = carouselQuotes.length >= QUOTE_THRESHOLD;
 
   return (
     <main id="main-content" className="min-h-screen grid grid-rows-2 relative">
@@ -47,7 +53,7 @@ export default async function Home() {
       <div className="relative flex flex-col items-center justify-center px-6">
         {hasEnoughQuotes && (
           <div className="absolute top-4 left-1/2 -translate-x-1/2 max-w-2xl w-full border-l border-[var(--foreground)]/20 pl-6 text-left h-[120px] overflow-hidden px-6">
-            <RotatingQuote quotes={quotes} />
+            <RotatingQuote quotes={carouselQuotes} />
           </div>
         )}
         <div className="flex flex-col sm:flex-row gap-4">
@@ -57,6 +63,7 @@ export default async function Home() {
           >
             {t("addVoice")}
           </Link>
+          <InfoButton variant="inline" />
           <Link
             href="/explore"
             className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] text-sm rounded transition-colors"

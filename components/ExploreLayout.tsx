@@ -12,9 +12,11 @@ type Stats = Record<string, Record<string, number>>;
 export function ExploreLayout({
   quotes,
   stats,
+  initialConversationId,
 }: {
   quotes: ConversationItem[];
   stats: Stats;
+  initialConversationId?: string;
 }) {
   const [activePanel, setActivePanel] = useState<Panel>("quotes");
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
@@ -75,6 +77,7 @@ export function ExploreLayout({
             onExpandArchive={() => {
               if (activePanel !== "quotes") setActivePanel("quotes");
             }}
+            initialConversationId={initialConversationId}
           />
         </div>
 

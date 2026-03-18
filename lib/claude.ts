@@ -36,7 +36,7 @@ export async function continueConversation(
   messages: Message[]
 ): Promise<string> {
   const response = await client.messages.create({
-    model: "claude-opus-4-6",
+    model: "claude-sonnet-4-6",
     max_tokens: 300,
     system: SYSTEM_PROMPT,
     messages: messages.map((m) => ({ role: m.role, content: m.content })),
@@ -69,7 +69,9 @@ IMPORTANT rules for quote selection:
    - 1 = generic, surface-level, could be anyone, OR contains hateful/discriminatory content
    - 10 = deeply felt, specific, uniquely quotable
 
-5. Set contentWarning to true if the conversation contains slurs, graphic descriptions of violence, or discriminatory language that could be harmful to read without warning. Rough language or swearing alone does not warrant a content warning.
+5. Content flags (two separate fields):
+   - contentWarning: true if the conversation contains distressing content that readers should opt into — graphic personal experiences, vivid descriptions of harm or trauma, slurs used in sincere self-reflection, or intense language that could upset someone unprepared. Swearing alone does not warrant a content warning. These submissions are still valuable and will be published with a blur overlay.
+   - contentHateful: true if the conversation contains discriminatory language directed at groups (racist, homophobic, etc.), slurs used to demean, threats or incitement of violence, or bad-faith trolling. These submissions are held for manual review. If contentHateful is true, contentWarning must also be true.
 
 6. Assign 1-3 categories from this list that best describe the emotional tenor:
    fear, hope, grief, excitement, anger, uncertainty, wonder, other
@@ -89,6 +91,7 @@ Return JSON in exactly this format:
   "beat": "closing",
   "poignancyScore": 8,
   "contentWarning": false,
+  "contentHateful": false,
   "categories": ["fear", "grief"],
   "eventTags": ["work_affected"],
   "language": "en",
@@ -104,7 +107,7 @@ export async function extractSubmissionData(
     .join("\n\n");
 
   const response = await client.messages.create({
-    model: "claude-opus-4-6",
+    model: "claude-sonnet-4-6",
     max_tokens: 500,
     messages: [
       {

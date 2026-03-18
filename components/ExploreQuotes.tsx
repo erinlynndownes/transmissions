@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { ConversationItem, ConversationRecord, Category, EventTag, CATEGORIES, EVENT_TAGS } from "@/lib/types";
 import { COUNTRY_NAMES, countryName } from "@/lib/geo";
@@ -11,12 +11,14 @@ export function ExploreQuotes({
   activeCategory,
   onCategoryChange,
   onExpandArchive,
+  initialConversationId,
 }: {
   quotes: ConversationItem[];
   collapsed: boolean;
   activeCategory: Category | null;
   onCategoryChange: (cat: Category | null) => void;
   onExpandArchive: () => void;
+  initialConversationId?: string;
 }) {
   const t = useTranslations("explore");
   const [selectedConversation, setSelectedConversation] = useState<ConversationRecord | null>(null);
@@ -49,6 +51,16 @@ export function ExploreQuotes({
 
   const [revealedWarnings, setRevealedWarnings] = useState<Set<string>>(new Set());
   const [conversationWarningRevealed, setConversationWarningRevealed] = useState(false);
+
+  useEffect(() => {
+    if (!initialConversationId) return;
+    onExpandArchive();
+    setLoading(true);
+    fetch(`/api/conversations/${initialConversationId}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => { if (data) setSelectedConversation(data); })
+      .finally(() => setLoading(false));
+  }, [initialConversationId]);
 
   const handleQuoteClick = async (q: ConversationItem) => {
     onExpandArchive();
@@ -109,6 +121,9 @@ export function ExploreQuotes({
                 )}
               </div>
             ))}
+            <p className="text-[10px] text-[var(--foreground)]/20 font-mono pt-4 select-all">
+              {selectedConversation.id}
+            </p>
           </div>
         )}
       </div>

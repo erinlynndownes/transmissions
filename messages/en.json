@@ -53,7 +53,7 @@
     "allAges": "All ages",
     "allEmployment": "All employment",
     "searchLocation": "Search location...",
-    "contentWarning": "This transmission contains strong language",
+    "contentWarning": "This transmission contains sensitive content",
     "showAnyway": "show anyway",
     "continentNames": {
       "Africa": "Africa",
@@ -75,6 +75,17 @@
   "notFound": {
     "message": "This page doesn't exist.",
     "back": "back to transmissions"
+  },
+  "info": {
+    "label": "About this project",
+    "title": "transmissions",
+    "about": "This is a public record of how humans feel about AI. People have a short, guided conversation, and with their permission, their words are stored anonymously and displayed for others to read.",
+    "anonymous": "No names, locations, or identifying details are collected. Conversations cannot be traced back to individuals.",
+    "removalTitle": "Removal requests",
+    "removal": "If you see something that should be taken down, or want your own submission removed, email help@transmissions.earth with the post ID (shown at the bottom of each conversation).",
+    "moderationTitle": "Content moderation",
+    "moderation": "Submissions are reviewed for harmful, hateful, or personally identifying content. We don't censor feelings or strong language, but content that could cause harm to others may be held or removed.",
+    "nonCommercial": "This is a non-commercial project. No data is sold or shared. Conversations are processed through the Anthropic API, which does not use them for model training."
   },
   "demographics": {
     "heading": "Help us understand who's feeling this.",

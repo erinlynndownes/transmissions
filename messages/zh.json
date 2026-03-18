@@ -53,7 +53,7 @@
     "allAges": "所有年龄",
     "allEmployment": "所有就业",
     "searchLocation": "搜索位置...",
-    "contentWarning": "此投稿包含激烈言辞",
+    "contentWarning": "此投稿包含敏感内容",
     "showAnyway": "仍然显示",
     "continentNames": {
       "Africa": "非洲",
@@ -75,6 +75,17 @@
   "notFound": {
     "message": "此页面不存在。",
     "back": "返回 transmissions"
+  },
+  "info": {
+    "label": "关于此项目",
+    "title": "transmissions",
+    "about": "这是一份关于人类对AI感受的公开记录。人们进行一段简短的引导式对话，经其许可，话语被匿名存储并展示给他人阅读。",
+    "anonymous": "不收集任何姓名、地点或可识别的细节。对话无法追溯到个人。",
+    "removalTitle": "删除请求",
+    "removal": "如果您发现应该被删除的内容，或希望删除您自己的投稿，请发送邮件至 help@transmissions.earth 并附上帖子ID（显示在每段对话底部）。",
+    "moderationTitle": "内容审核",
+    "moderation": "提交内容会经过审核，以排查有害、仇恨或涉及个人身份的内容。我们不审查感受或激烈言辞，但可能对他人造成伤害的内容可能会被保留或删除。",
+    "nonCommercial": "这是一个非商业项目。数据不会被出售或共享。对话通过Anthropic API处理，该API不会将其用于模型训练。"
   },
   "demographics": {
     "heading": "帮助我们了解谁在感受这些。",

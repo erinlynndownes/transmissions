@@ -158,6 +158,7 @@ export function ConversationView() {
         setEventTags(data.eventTags ?? []);
         setRegionContinent(data.regionContinent);
         setSubmissionId(data.id ?? null);
+        clearSession();
       }
     } catch {
       // Submission failed silently — conversation is still shown
@@ -180,6 +181,10 @@ export function ConversationView() {
         body: JSON.stringify({ messages: updated }),
       });
       const data = await res.json();
+      if (!res.ok || !data.reply) {
+        setMessages(updated.slice(0, -1));
+        return;
+      }
       let reply: string = data.reply;
 
       let isComplete = false;
@@ -197,7 +202,6 @@ export function ConversationView() {
 
       if (isComplete) {
         setConversationComplete(true);
-        clearSession();
         submitConversation(newMessages);
       }
     } finally {
@@ -284,7 +288,7 @@ export function ConversationView() {
         <div ref={bottomRef} />
       </div>
 
-      {!conversationComplete && (
+      {!conversationComplete && !loading && (
         <div className="sticky bottom-0 pb-16">
           <div className="relative border border-[var(--foreground)]/10 rounded p-3">
             <div className="flex gap-3">
