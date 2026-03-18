@@ -29,7 +29,9 @@ export default async function ExplorePage({
 
   return (
     <>
-      <InfoButton />
+      <div className="hidden md:block">
+        <InfoButton />
+      </div>
       <ExploreLayout quotes={quotes} stats={stats} initialConversationId={initialConversationId} />
     </>
   );

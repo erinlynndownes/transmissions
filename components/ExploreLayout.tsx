@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ConversationItem, Category } from "@/lib/types";
 import { ExploreQuotes } from "./ExploreQuotes";
 import { ExploreStats } from "./ExploreStats";
+import { InfoButton } from "./InfoButton";
 
 type Panel = "quotes" | "stats" | null;
 type Stats = Record<string, Record<string, number>>;
@@ -44,7 +45,7 @@ export function ExploreLayout({
         </Link>
 
         {/* Mobile tab switcher */}
-        <div className="flex gap-2 md:hidden">
+        <div className="flex items-center gap-2 md:hidden">
           <button
             onClick={() => setActivePanel("quotes")}
             className={`text-xs px-3 py-1 rounded transition-colors ${
@@ -65,6 +66,7 @@ export function ExploreLayout({
           >
             Stats
           </button>
+          <InfoButton variant="small" />
         </div>
       </div>
 

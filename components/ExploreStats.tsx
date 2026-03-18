@@ -253,8 +253,8 @@ export function ExploreStats({
         {filters}
 
         {/* Donut chart + legend + map */}
-        <div className="flex items-center p-4 rounded border border-[var(--foreground)]/5">
-          <div className="w-[calc(50%-20px)] flex items-center gap-4">
+        <div className="flex flex-col md:flex-row items-center p-4 rounded border border-[var(--foreground)]/5 gap-4">
+          <div className="w-full md:w-[calc(50%-20px)] flex items-center gap-4">
             {mounted && (
               <DonutChart
                 data={categoryData.map((d) => ({
@@ -283,7 +283,7 @@ export function ExploreStats({
             </div>
           </div>
           {mounted && (
-            <div className="w-[calc(50%+20px)]">
+            <div className="w-full md:w-[calc(50%+20px)]">
               <ContinentMap
                 activeContinent={filterContinent || null}
                 onContinentChange={(c) => setFilterContinent(c ?? "")}

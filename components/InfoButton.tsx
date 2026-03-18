@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 
-export function InfoButton({ variant = "corner" }: { variant?: "corner" | "inline" }) {
+export function InfoButton({ variant = "corner" }: { variant?: "corner" | "inline" | "small" }) {
   const t = useTranslations("info");
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -35,6 +35,14 @@ export function InfoButton({ variant = "corner" }: { variant?: "corner" | "inlin
         <button
           onClick={() => setOpen(true)}
           className="fixed top-4 right-4 sm:top-5 sm:right-5 md:top-7 md:right-7 z-40 w-8 h-8 flex items-center justify-center rounded-full border border-[var(--foreground)]/20 text-[var(--foreground)]/40 hover:text-[var(--foreground)]/70 hover:border-[var(--foreground)]/40 transition-colors text-sm"
+          aria-label={t("label")}
+        >
+          ?
+        </button>
+      ) : variant === "small" ? (
+        <button
+          onClick={() => setOpen(true)}
+          className="w-6 h-6 flex items-center justify-center rounded-full border border-[var(--foreground)]/20 text-[var(--foreground)]/40 hover:text-[var(--foreground)]/70 hover:border-[var(--foreground)]/40 transition-colors text-xs"
           aria-label={t("label")}
         >
           ?
