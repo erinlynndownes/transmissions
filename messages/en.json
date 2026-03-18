@@ -4,14 +4,14 @@
     "question": "How do you feel about AI?",
     "closingQuestion": "If the people building AI could hear you right now, what would you say?",
     "addVoice": "Add your voice",
-    "seeOthers": "See others"
+    "seeOthers": "Explore the archive"
   },
   "talk": {
     "beforeWeBegin": "Before we begin",
     "consent1": "This is a short conversation about how you feel about AI. With your permission, your words will be stored anonymously and displayed publicly for others to read.",
     "consent2": "Please don't include anything personal you wouldn't want shown. No names, locations, or identifying details. You can't edit it after the fact.",
     "consentButton": "I understand, let's talk",
-    "placeholder": "Say what you need to say...",
+    "placeholder": "Go ahead...",
     "send": "send",
     "transmissionReceived": "Transmission received. Your words are part of the record now.",
     "exploreOthers": "explore what others said",

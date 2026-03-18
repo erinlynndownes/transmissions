@@ -4,14 +4,14 @@
     "question": "O que você sente em relação à inteligência artificial?",
     "closingQuestion": "Se as pessoas que estão construindo a IA pudessem te ouvir agora, o que você diria?",
     "addVoice": "Adicione sua voz",
-    "seeOthers": "Ver outros"
+    "seeOthers": "Explorar o arquivo"
   },
   "talk": {
     "beforeWeBegin": "Antes de começar",
     "consent1": "Esta é uma breve conversa sobre o que você sente em relação à inteligência artificial. Com sua permissão, suas palavras serão armazenadas anonimamente e exibidas publicamente para que outros leiam.",
     "consent2": "Por favor, não inclua nada pessoal que você não queira que seja exibido. Sem nomes, locais ou detalhes identificadores. Você não poderá editar depois.",
     "consentButton": "Entendi, vamos conversar",
-    "placeholder": "Diga o que precisa dizer...",
+    "placeholder": "Pode falar...",
     "send": "enviar",
     "transmissionReceived": "Transmissão recebida. Suas palavras agora fazem parte do registro.",
     "exploreOthers": "explore o que outros disseram",

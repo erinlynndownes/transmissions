@@ -4,14 +4,14 @@
     "question": "你对人工智能有什么感受？",
     "closingQuestion": "如果那些构建人工智能的人现在能听到你的声音，你会对他们说什么？",
     "addVoice": "添加你的声音",
-    "seeOthers": "查看他人的声音"
+    "seeOthers": "浏览档案"
   },
   "talk": {
     "beforeWeBegin": "在我们开始之前",
     "consent1": "这是一段关于你对人工智能感受的短暂对话。经你允许，你的话语将被匿名保存并公开展示，供他人阅读。",
     "consent2": "请不要包含任何你不希望被展示的个人信息。不要包含姓名、地点或可识别的细节。事后无法编辑。",
     "consentButton": "我理解了，我们谈谈吧",
-    "placeholder": "说出你想说的...",
+    "placeholder": "请说吧...",
     "send": "发送",
     "transmissionReceived": "传输已接收。你的话语现在已成为记录的一部分。",
     "exploreOthers": "探索他人说了什么",

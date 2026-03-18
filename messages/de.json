@@ -4,14 +4,14 @@
     "question": "Was empfinden Sie gegenüber künstlicher Intelligenz?",
     "closingQuestion": "Wenn die Menschen, die KI entwickeln, Sie jetzt hören könnten, was würden Sie ihnen sagen?",
     "addVoice": "Fügen Sie Ihre Stimme hinzu",
-    "seeOthers": "Andere ansehen"
+    "seeOthers": "Das Archiv erkunden"
   },
   "talk": {
     "beforeWeBegin": "Bevor wir beginnen",
     "consent1": "Dies ist ein kurzes Gespräch darüber, was Sie gegenüber künstlicher Intelligenz empfinden. Mit Ihrer Erlaubnis werden Ihre Worte anonym gespeichert und öffentlich angezeigt, damit andere sie lesen können.",
     "consent2": "Bitte geben Sie nichts Persönliches an, das Sie nicht öffentlich sehen möchten. Keine Namen, Orte oder identifizierende Details. Sie können es nachträglich nicht bearbeiten.",
     "consentButton": "Verstanden, lass uns reden",
-    "placeholder": "Sagen Sie, was Sie sagen müssen...",
+    "placeholder": "Nur zu...",
     "send": "senden",
     "transmissionReceived": "Übertragung empfangen. Ihre Worte sind jetzt Teil der Aufzeichnung.",
     "exploreOthers": "entdecken, was andere gesagt haben",

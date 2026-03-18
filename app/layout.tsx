@@ -18,6 +18,19 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "transmissions",
   description: "People saying what they feel about AI. Anonymous, honest, recorded.",
+  metadataBase: new URL("https://transmissions.earth"),
+  openGraph: {
+    title: "transmissions",
+    description: "People saying what they feel about AI. Anonymous, honest, recorded.",
+    url: "https://transmissions.earth",
+    siteName: "transmissions",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "transmissions",
+    description: "People saying what they feel about AI. Anonymous, honest, recorded.",
+  },
 };
 
 export default async function RootLayout({

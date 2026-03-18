@@ -76,7 +76,7 @@ export function DemographicsSection({
           <legend className="text-xs text-neutral-400 uppercase tracking-wider block mb-2">
             {t("gender")}
           </legend>
-          <div className="flex flex-wrap gap-2 justify-center" role="group" aria-label={t("gender")}>
+          <div className="flex flex-wrap gap-2 justify-center mb-2" role="group" aria-label={t("gender")}>
             {GENDER_OPTIONS.map((opt) => (
               <ToggleButton
                 key={opt}
@@ -92,7 +92,7 @@ export function DemographicsSection({
           <legend className="text-xs text-neutral-400 uppercase tracking-wider block mb-2">
             {t("ageRange")}
           </legend>
-          <div className="flex flex-wrap gap-2 justify-center" role="group" aria-label={t("ageRange")}>
+          <div className="flex flex-wrap gap-2 justify-center mb-2" role="group" aria-label={t("ageRange")}>
             {AGE_RANGES.map((r) => (
               <ToggleButton
                 key={r}
@@ -108,7 +108,7 @@ export function DemographicsSection({
           <legend className="text-xs text-neutral-400 uppercase tracking-wider block mb-2">
             {t("employment")}
           </legend>
-          <div className="flex flex-wrap gap-2 justify-center" role="group" aria-label={t("employment")}>
+          <div className="flex flex-wrap gap-2 justify-center mb-2" role="group" aria-label={t("employment")}>
             {EMPLOYMENT_OPTIONS.map((opt) => (
               <ToggleButton
                 key={opt}
