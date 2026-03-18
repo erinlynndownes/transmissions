@@ -366,6 +366,19 @@ export async function saveDemographics(
   if (input.employmentStatus) dims.push({ key: "employmentStatus", value: input.employmentStatus });
   if (input.regionContinent) dims.push({ key: "continent", value: input.regionContinent });
 
+  // Total submission count per demographic combination (for accurate filtered percentages)
+  for (const d of dims) {
+    updates.push({ PK: `DEMO#total#${d.key}`, SK: d.value });
+  }
+  for (let size = 2; size <= dims.length; size++) {
+    for (const combo of combinations(dims, size)) {
+      updates.push({
+        PK: `DEMO#total#${combo.map((d) => d.key).join("#")}`,
+        SK: combo.map((d) => d.value).join("#"),
+      });
+    }
+  }
+
   // Cross-dimensional: category × demographics
   for (const cat of input.categories) {
     for (const d of dims) {

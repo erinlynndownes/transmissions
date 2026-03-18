@@ -105,10 +105,12 @@ export function ExploreStats({
     [stats, activeFilters, categories]
   );
 
-  const filteredTotal = Object.values(filteredCategories).reduce(
-    (sum, c) => sum + c,
-    0
-  );
+  const filteredSubmissionCount = useMemo(() => {
+    if (activeFilters.length === 0) return submissionCount;
+    const key = `demo_total#${activeFilters.map((f) => f.dim).join("#")}`;
+    const value = activeFilters.map((f) => f.value).join("#");
+    return (stats[key] ?? {})[value] ?? submissionCount;
+  }, [activeFilters, stats, submissionCount]);
 
   const categoryData = Object.keys(CATEGORY_COLORS)
     .map((cat) => {
@@ -117,7 +119,7 @@ export function ExploreStats({
         label: cat,
         value: count,
         color: CATEGORY_COLORS[cat],
-        pct: filteredTotal > 0 ? Math.round((count / filteredTotal) * 100) : 0,
+        pct: filteredSubmissionCount > 0 ? Math.round((count / filteredSubmissionCount) * 100) : 0,
       };
     })
     .sort((a, b) => b.value - a.value);
@@ -130,10 +132,6 @@ export function ExploreStats({
   const eventTagEntries = Object.keys(EVENT_TAG_LABELS)
     .map((tag) => [tag, filteredEventTags[tag] ?? 0] as [string, number])
     .sort(([, a], [, b]) => b - a);
-  const totalEventCount = eventTagEntries.reduce(
-    (sum, [, c]) => sum + c,
-    0
-  );
 
   const filters = (
     <div className="flex flex-wrap gap-1.5 mb-4">
@@ -228,8 +226,8 @@ export function ExploreStats({
           </h3>
           {eventTagEntries.map(([tag, count]) => {
             const pct =
-              totalEventCount > 0
-                ? Math.round((count / totalEventCount) * 100)
+              filteredSubmissionCount > 0
+                ? Math.round((count / filteredSubmissionCount) * 100)
                 : 0;
             return (
               <div key={tag} className="flex justify-between text-xs">
@@ -303,8 +301,8 @@ export function ExploreStats({
           <div className="space-y-3">
             {eventTagEntries.map(([tag, count]) => {
               const pct =
-                totalEventCount > 0
-                  ? Math.round((count / totalEventCount) * 100)
+                filteredSubmissionCount > 0
+                  ? Math.round((count / filteredSubmissionCount) * 100)
                   : 0;
               return (
                 <div key={tag}>
