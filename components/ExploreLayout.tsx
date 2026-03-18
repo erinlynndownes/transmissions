@@ -28,27 +28,51 @@ export function ExploreLayout({
   };
 
   const quotesWidth =
-    activePanel === "quotes" ? "w-3/4" : activePanel === "stats" ? "w-1/4" : "w-1/2";
+    activePanel === "quotes" ? "md:w-3/4" : activePanel === "stats" ? "md:w-1/4" : "md:w-1/2";
   const statsWidth =
-    activePanel === "stats" ? "w-3/4" : activePanel === "quotes" ? "w-1/4" : "w-1/2";
+    activePanel === "stats" ? "md:w-3/4" : activePanel === "quotes" ? "md:w-1/4" : "md:w-1/2";
 
   return (
     <main id="main-content" className="h-screen flex flex-col overflow-hidden overscroll-none">
       {/* Header */}
-      <div className="px-6 pt-8 pb-4">
+      <div className="px-6 pt-8 pb-4 flex items-center justify-between">
         <Link
           href="/"
           className="text-xs text-[var(--foreground)]/50 hover:text-[var(--foreground)]/70 transition-colors"
         >
           &larr; transmissions
         </Link>
+
+        {/* Mobile tab switcher */}
+        <div className="flex gap-2 md:hidden">
+          <button
+            onClick={() => setActivePanel("quotes")}
+            className={`text-xs px-3 py-1 rounded transition-colors ${
+              activePanel !== "stats"
+                ? "text-[var(--foreground)] border border-[var(--foreground)]/30"
+                : "text-[var(--foreground)]/40"
+            }`}
+          >
+            Archive
+          </button>
+          <button
+            onClick={() => setActivePanel("stats")}
+            className={`text-xs px-3 py-1 rounded transition-colors ${
+              activePanel === "stats"
+                ? "text-[var(--foreground)] border border-[var(--foreground)]/30"
+                : "text-[var(--foreground)]/40"
+            }`}
+          >
+            Stats
+          </button>
+        </div>
       </div>
 
       {/* Panels */}
-      <div className="flex-1 flex gap-6 px-6 pb-6 min-h-0">
+      <div className="flex-1 flex flex-col md:flex-row gap-6 px-6 pb-6 min-h-0">
         {/* Quotes panel */}
         <div
-          className={`${quotesWidth} relative transition-all duration-500 ease-in-out cursor-pointer rounded-l border border-[var(--foreground)]/10 p-6 overflow-y-auto overscroll-contain`}
+          className={`${quotesWidth} ${activePanel === "stats" ? "hidden md:block" : "flex-1"} relative transition-all duration-500 ease-in-out md:cursor-pointer rounded-l border border-[var(--foreground)]/10 p-6 overflow-y-auto overscroll-contain`}
           role="button"
           tabIndex={0}
           aria-label={activePanel === "quotes" ? "Quotes panel (expanded)" : "Expand quotes panel"}
@@ -83,7 +107,7 @@ export function ExploreLayout({
 
         {/* Stats panel */}
         <div
-          className={`${statsWidth} transition-all duration-500 ease-in-out cursor-pointer rounded-r border border-[var(--foreground)]/10 p-6 overflow-y-auto overscroll-contain`}
+          className={`${statsWidth} ${activePanel !== "stats" ? "hidden md:block" : "flex-1"} transition-all duration-500 ease-in-out md:cursor-pointer rounded-r border border-[var(--foreground)]/10 p-6 overflow-y-auto overscroll-contain`}
           role="button"
           tabIndex={0}
           aria-label={activePanel === "stats" ? "Stats panel (expanded)" : "Expand stats panel"}

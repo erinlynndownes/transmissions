@@ -21,6 +21,11 @@ legend {
   padding: 0;
 }
 
+html, body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
 body {
   background: linear-gradient(to bottom, #1a1917, #302e2a);
   color: var(--foreground);
