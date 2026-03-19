@@ -59,6 +59,3 @@ npm run dev
 | `/api/vote` | POST | Increment vote count |
 | `/api/stats` | GET | Aggregated counts |
 
-## Architecture
-
-See `docs/schema-and-storage-plan.md` for the full data model and storage design.
