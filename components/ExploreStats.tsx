@@ -32,6 +32,8 @@ const EVENT_TAG_LABELS: Record<string, string> = {
 const BAR_COLOR = "#a3bcd8";
 
 const GENDER_FILTER_OPTIONS = ["woman", "man", "non-binary"];
+const AGE_RANGE_OPTIONS = ["13-17", "18-24", "25-34", "35-44", "45-54", "55-64", "65+"];
+const EMPLOYMENT_OPTIONS = ["employed", "self-employed", "unemployed", "student", "retired"];
 
 function filterCrossDimensional(
   stats: Stats,
@@ -78,18 +80,9 @@ export function ExploreStats({
   const eventTags = stats.eventTag ?? {};
   const submissionCount = stats.total?.submissions ?? 0;
 
-  const genderOptions = useMemo(
-    () => GENDER_FILTER_OPTIONS.filter((g) => (stats.demo_gender ?? {})[g] != null),
-    [stats]
-  );
-  const ageOptions = useMemo(
-    () => Object.keys(stats.demo_ageRange ?? {}).sort(),
-    [stats]
-  );
-  const employmentOptions = useMemo(
-    () => Object.keys(stats.demo_employmentStatus ?? {}).sort(),
-    [stats]
-  );
+  const genderOptions = GENDER_FILTER_OPTIONS;
+  const ageOptions = AGE_RANGE_OPTIONS;
+  const employmentOptions = EMPLOYMENT_OPTIONS;
 
   const activeFilters = useMemo(() => {
     const filters: { dim: string; value: string }[] = [];

@@ -288,7 +288,7 @@ export function ConversationView() {
         <div ref={bottomRef} />
       </div>
 
-      {!conversationComplete && !loading && (
+      {!conversationComplete && (
         <div className="sticky bottom-0 pb-16">
           <div className="relative border border-[var(--foreground)]/10 rounded p-3">
             <div className="flex gap-3">
@@ -298,6 +298,7 @@ export function ConversationView() {
                 aria-label={t("placeholder")}
                 placeholder={t("placeholder")}
                 value={input}
+                readOnly={loading}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {

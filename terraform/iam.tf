@@ -37,6 +37,7 @@ resource "aws_iam_role_policy" "amplify_dynamodb" {
         ]
         Resource = [
           aws_dynamodb_table.transmissions.arn,
+          "${aws_dynamodb_table.transmissions.arn}/index/*",
           aws_dynamodb_table.transmissions_stats.arn,
         ]
       }
