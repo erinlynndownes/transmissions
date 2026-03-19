@@ -1,5 +1,15 @@
+import type { Metadata } from "next";
 import { ConversationView } from "@/components/ConversationView";
 import { InfoButton } from "@/components/InfoButton";
+
+export const metadata: Metadata = {
+  title: "talk — transmissions",
+  description: "Have an anonymous conversation with AI about how you feel about artificial intelligence.",
+  openGraph: {
+    title: "talk — transmissions",
+    description: "Have an anonymous conversation with AI about how you feel about artificial intelligence.",
+  },
+};
 
 export default function TalkPage() {
   return (

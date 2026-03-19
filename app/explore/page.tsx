@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import { getConversations, getStats } from "@/lib/storage";
 import { ConversationItem } from "@/lib/types";
 import { ExploreLayout } from "@/components/ExploreLayout";
 import { InfoButton } from "@/components/InfoButton";
+
+export const metadata: Metadata = {
+  title: "explore — transmissions",
+  description: "Browse anonymous conversations about AI — what people really think and feel.",
+  openGraph: {
+    title: "explore — transmissions",
+    description: "Browse anonymous conversations about AI — what people really think and feel.",
+  },
+};
 
 const EXPLORE_PAGE_SIZE = 50;
 
