@@ -262,7 +262,7 @@ export function ExploreQuotes({
                       </p>
                       {!collapsed && (
                         <div className="flex gap-2 mt-1">
-                          {q.categories.map((cat) => (
+                          {q.categories.filter((cat) => (CATEGORIES as readonly string[]).includes(cat)).map((cat) => (
                             <span
                               key={cat}
                               className="text-xs text-[var(--foreground)]/50 bg-[var(--foreground)]/5 px-2 py-0.5 rounded"

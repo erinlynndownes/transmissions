@@ -133,5 +133,15 @@ export async function extractSubmissionData(
     throw new Error(`Extraction response missing required fields: ${JSON.stringify(parsed).slice(0, 200)}`);
   }
 
+  const VALID_CATEGORIES = ["fear", "hope", "grief", "excitement", "anger", "uncertainty", "wonder", "other"];
+  const VALID_EVENT_TAGS = ["work_affected", "health_affected", "relationships_affected", "creative_affected", "education_affected", "financial_affected"];
+
+  parsed.categories = parsed.categories.filter((c: string) => VALID_CATEGORIES.includes(c));
+  parsed.eventTags = (parsed.eventTags ?? []).filter((t: string) => VALID_EVENT_TAGS.includes(t));
+
+  if (parsed.categories.length === 0) {
+    parsed.categories = ["other"];
+  }
+
   return parsed;
 }
