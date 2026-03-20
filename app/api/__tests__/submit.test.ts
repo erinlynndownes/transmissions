@@ -86,15 +86,20 @@ describe("POST /api/submit", () => {
     expect(data.quote).toBe("I feel things");
   });
 
-  it("passes region fields to saveSubmission", async () => {
+  it("resolves region from CloudFront header", async () => {
     const { saveSubmission } = await import("@/lib/storage");
-    await POST(postReq({
-      messages: makeMessages(4),
-      regionCountry: "US",
-      regionContinent: "North America",
-    }));
+    const req = new NextRequest("http://localhost/api/submit", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-forwarded-for": "127.0.0.1",
+        "cloudfront-viewer-country": "DE",
+      },
+      body: JSON.stringify({ messages: makeMessages(4) }),
+    });
+    await POST(req);
     expect(saveSubmission).toHaveBeenCalledWith(
-      expect.objectContaining({ regionCountry: "US", regionContinent: "North America" }),
+      expect.objectContaining({ regionCountry: "DE", regionContinent: "Europe" }),
       expect.anything()
     );
   });

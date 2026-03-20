@@ -165,11 +165,18 @@ export async function saveSubmission(
       statsUpdates.push({ PK: "STAT#eventTag", SK: tag });
     }
     if (input.regionContinent) {
-      statsUpdates.push({ PK: "STAT#continent", SK: input.regionContinent });
+      statsUpdates.push({ PK: "DEMO#continent", SK: input.regionContinent });
+      statsUpdates.push({ PK: "DEMO#total#continent", SK: input.regionContinent });
       for (const cat of extracted.categories) {
         statsUpdates.push({
-          PK: "STAT#category#continent",
+          PK: "DEMO#category#continent",
           SK: `${cat}#${input.regionContinent}`,
+        });
+      }
+      for (const tag of extracted.eventTags) {
+        statsUpdates.push({
+          PK: "DEMO#eventTag#continent",
+          SK: `${tag}#${input.regionContinent}`,
         });
       }
     }
@@ -349,9 +356,6 @@ export async function saveDemographics(
   if (input.employmentStatus) {
     updates.push({ PK: "DEMO#employmentStatus", SK: input.employmentStatus });
   }
-  if (input.regionContinent) {
-    updates.push({ PK: "DEMO#continent", SK: input.regionContinent });
-  }
   if (MOCK) {
     console.log("[MOCK] saveDemographics:", input);
     return;
@@ -364,7 +368,6 @@ export async function saveDemographics(
   if (input.gender) dims.push({ key: "gender", value: input.gender });
   if (input.ageRange) dims.push({ key: "ageRange", value: input.ageRange });
   if (input.employmentStatus) dims.push({ key: "employmentStatus", value: input.employmentStatus });
-  if (input.regionContinent) dims.push({ key: "continent", value: input.regionContinent });
 
   // Total submission count per demographic combination (for accurate filtered percentages)
   for (const d of dims) {
@@ -506,9 +509,13 @@ export async function updateModerationStatus(
       statsUpdates.push({ PK: "STAT#eventTag", SK: tag });
     }
     if (regionContinent) {
-      statsUpdates.push({ PK: "STAT#continent", SK: regionContinent });
+      statsUpdates.push({ PK: "DEMO#continent", SK: regionContinent });
+      statsUpdates.push({ PK: "DEMO#total#continent", SK: regionContinent });
       for (const cat of categories) {
-        statsUpdates.push({ PK: "STAT#category#continent", SK: `${cat}#${regionContinent}` });
+        statsUpdates.push({ PK: "DEMO#category#continent", SK: `${cat}#${regionContinent}` });
+      }
+      for (const tag of eventTags) {
+        statsUpdates.push({ PK: "DEMO#eventTag#continent", SK: `${tag}#${regionContinent}` });
       }
     }
     if (regionCountry) {

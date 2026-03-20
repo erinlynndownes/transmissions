@@ -188,10 +188,12 @@ describe("saveSubmission", () => {
     expect(keys).toContainEqual({ PK: "STAT#category", SK: "fear" });
     expect(keys).toContainEqual({ PK: "STAT#category", SK: "hope" });
     expect(keys).toContainEqual({ PK: "STAT#eventTag", SK: "work_affected" });
-    expect(keys).toContainEqual({ PK: "STAT#continent", SK: "Europe" });
+    expect(keys).toContainEqual({ PK: "DEMO#continent", SK: "Europe" });
+    expect(keys).toContainEqual({ PK: "DEMO#total#continent", SK: "Europe" });
     expect(keys).toContainEqual({ PK: "STAT#country", SK: "DE" });
-    expect(keys).toContainEqual({ PK: "STAT#category#continent", SK: "fear#Europe" });
-    expect(keys).toContainEqual({ PK: "STAT#category#continent", SK: "hope#Europe" });
+    expect(keys).toContainEqual({ PK: "DEMO#category#continent", SK: "fear#Europe" });
+    expect(keys).toContainEqual({ PK: "DEMO#category#continent", SK: "hope#Europe" });
+    expect(keys).toContainEqual({ PK: "DEMO#eventTag#continent", SK: "work_affected#Europe" });
   });
 
   it("returns correct shape", async () => {
@@ -212,6 +214,8 @@ describe("saveSubmission", () => {
 });
 
 describe("getConversation", () => {
+  const approvedMeta = { Items: [{ PK: "ALL", id: "abc", moderationStatus: "approved" }] };
+
   it("returns parsed conversation from S3", async () => {
     const record = {
       id: "abc",
@@ -219,6 +223,7 @@ describe("getConversation", () => {
       messages: [{ role: "user", content: "hi" }],
       extractedData: makeExtracted(),
     };
+    mockDynamoSend.mockResolvedValueOnce(approvedMeta);
     mockS3Send.mockResolvedValueOnce({
       Body: { transformToString: () => Promise.resolve(JSON.stringify(record)) },
     });
@@ -231,7 +236,17 @@ describe("getConversation", () => {
     });
   });
 
+  it("returns null when not approved", async () => {
+    mockDynamoSend.mockResolvedValueOnce({
+      Items: [{ PK: "ALL", id: "abc", moderationStatus: "pending_review" }],
+    });
+
+    const result = await getConversation("abc");
+    expect(result).toBeNull();
+  });
+
   it("returns null when S3 returns NoSuchKey", async () => {
+    mockDynamoSend.mockResolvedValueOnce(approvedMeta);
     const err = new Error("NoSuchKey");
     err.name = "NoSuchKey";
     mockS3Send.mockRejectedValueOnce(err);
@@ -241,12 +256,14 @@ describe("getConversation", () => {
   });
 
   it("returns null when Body is empty", async () => {
+    mockDynamoSend.mockResolvedValueOnce(approvedMeta);
     mockS3Send.mockResolvedValueOnce({ Body: { transformToString: () => Promise.resolve("") } });
     const result = await getConversation("empty");
     expect(result).toBeNull();
   });
 
   it("rethrows non-NoSuchKey errors", async () => {
+    mockDynamoSend.mockResolvedValueOnce(approvedMeta);
     const err = new Error("AccessDenied");
     err.name = "AccessDenied";
     mockS3Send.mockRejectedValueOnce(err);
@@ -430,7 +447,6 @@ describe("saveDemographics", () => {
     expect(keys).toContainEqual({ PK: "DEMO#gender", SK: "woman" });
     expect(keys).toContainEqual({ PK: "DEMO#ageRange", SK: "25-34" });
     expect(keys).toContainEqual({ PK: "DEMO#employmentStatus", SK: "employed" });
-    expect(keys).toContainEqual({ PK: "DEMO#continent", SK: "Europe" });
   });
 
   it("creates pairwise category × demographic counters", async () => {
@@ -497,9 +513,10 @@ describe("saveDemographics", () => {
   it("generates correct total update count", async () => {
     // 2 categories, 1 eventTag, 3 dims (gender, ageRange, employment)
     // Base: 3 (gender + ageRange + employment)
-    // Per category: 3 pairwise + 3 two-way combos + 1 three-way = 7 per cat × 2 = 14
+    // Totals: 3 single + 3 two-way + 1 three-way = 7
+    // Per category: 3 single + 3 two-way + 1 three-way = 7 per cat × 2 = 14
     // Per eventTag: same 7 × 1 = 7
-    // Total: 3 + 14 + 7 = 24
+    // Total: 3 + 7 + 14 + 7 = 31
     await saveDemographics({
       categories: ["fear", "hope"],
       eventTags: ["work_affected"],
@@ -508,7 +525,7 @@ describe("saveDemographics", () => {
       employmentStatus: "employed",
     });
 
-    expect(updateCallArgs).toHaveLength(24);
+    expect(updateCallArgs).toHaveLength(31);
   });
 
   it("skips cross-dimensional when no demographics provided", async () => {

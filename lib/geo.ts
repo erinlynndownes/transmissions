@@ -22,6 +22,58 @@ export const CONTINENTS = [
   "Oceania", "South America",
 ] as const;
 
+// ISO 3166-1 alpha-2 country code → continent
+export const CODE_TO_CONTINENT: Record<string, string> = {
+  // Africa
+  DZ: "Africa", AO: "Africa", BJ: "Africa", BW: "Africa", BF: "Africa",
+  BI: "Africa", CM: "Africa", CF: "Africa", TD: "Africa", CG: "Africa",
+  CD: "Africa", CI: "Africa", DJ: "Africa", EG: "Africa", GQ: "Africa",
+  ER: "Africa", SZ: "Africa", ET: "Africa", GA: "Africa", GM: "Africa",
+  GH: "Africa", GN: "Africa", GW: "Africa", KE: "Africa", LS: "Africa",
+  LR: "Africa", LY: "Africa", MG: "Africa", MW: "Africa", ML: "Africa",
+  MR: "Africa", MA: "Africa", MZ: "Africa", NA: "Africa", NE: "Africa",
+  NG: "Africa", RW: "Africa", SS: "Africa", SN: "Africa", SL: "Africa",
+  SO: "Africa", ZA: "Africa", SD: "Africa", TZ: "Africa", TG: "Africa",
+  TN: "Africa", UG: "Africa", ZM: "Africa", ZW: "Africa",
+  // Asia
+  AF: "Asia", AM: "Asia", AZ: "Asia", BD: "Asia", BT: "Asia", BN: "Asia",
+  KH: "Asia", CN: "Asia", CY: "Asia", GE: "Asia", IN: "Asia", ID: "Asia",
+  IR: "Asia", IQ: "Asia", IL: "Asia", JP: "Asia", JO: "Asia", KZ: "Asia",
+  KW: "Asia", KG: "Asia", LA: "Asia", LB: "Asia", MY: "Asia", MN: "Asia",
+  MM: "Asia", NP: "Asia", KP: "Asia", OM: "Asia", PK: "Asia", PS: "Asia",
+  PH: "Asia", QA: "Asia", RU: "Asia", SA: "Asia", KR: "Asia", LK: "Asia",
+  SY: "Asia", TW: "Asia", TJ: "Asia", TH: "Asia", TL: "Asia", TR: "Asia",
+  TM: "Asia", AE: "Asia", UZ: "Asia", VN: "Asia", YE: "Asia",
+  // Europe
+  AL: "Europe", AT: "Europe", BY: "Europe", BE: "Europe", BA: "Europe",
+  BG: "Europe", HR: "Europe", CZ: "Europe", DK: "Europe", EE: "Europe",
+  FI: "Europe", FR: "Europe", DE: "Europe", GR: "Europe", HU: "Europe",
+  IS: "Europe", IE: "Europe", IT: "Europe", XK: "Europe", LV: "Europe",
+  LT: "Europe", LU: "Europe", MK: "Europe", MD: "Europe", ME: "Europe",
+  NL: "Europe", NO: "Europe", PL: "Europe", PT: "Europe", RO: "Europe",
+  RS: "Europe", SK: "Europe", SI: "Europe", ES: "Europe", SE: "Europe",
+  CH: "Europe", UA: "Europe", GB: "Europe",
+  // North America
+  BS: "North America", BZ: "North America", CA: "North America",
+  CR: "North America", CU: "North America", DO: "North America",
+  SV: "North America", GL: "North America", GT: "North America",
+  HT: "North America", HN: "North America", JM: "North America",
+  MX: "North America", NI: "North America", PA: "North America",
+  PR: "North America", TT: "North America", US: "North America",
+  // South America
+  AR: "South America", BO: "South America", BR: "South America",
+  CL: "South America", CO: "South America", EC: "South America",
+  GY: "South America", PY: "South America", PE: "South America",
+  SR: "South America", UY: "South America", VE: "South America",
+  // Oceania
+  AU: "Oceania", FJ: "Oceania", NC: "Oceania", NZ: "Oceania",
+  PG: "Oceania", SB: "Oceania", VU: "Oceania",
+};
+
+export function continentFromCode(code: string): string | undefined {
+  return CODE_TO_CONTINENT[code.toUpperCase()];
+}
+
 // Map country names (from world-atlas 110m topojson) to continent names
 export const NAME_TO_CONTINENT: Record<string, string> = {
   // Africa

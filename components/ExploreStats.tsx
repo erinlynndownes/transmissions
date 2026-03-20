@@ -84,7 +84,8 @@ export function ExploreStats({
   const ageOptions = AGE_RANGE_OPTIONS;
   const employmentOptions = EMPLOYMENT_OPTIONS;
 
-  const activeFilters = useMemo(() => {
+  // All filters (including continent) use DEMO# keys
+  const demoFilters = useMemo(() => {
     const filters: { dim: string; value: string }[] = [];
     if (filterGender) filters.push({ dim: "gender", value: filterGender });
     if (filterAge) filters.push({ dim: "ageRange", value: filterAge });
@@ -94,16 +95,16 @@ export function ExploreStats({
   }, [filterGender, filterAge, filterEmployment, filterContinent]);
 
   const filteredCategories = useMemo(
-    () => filterCrossDimensional(stats, "category", activeFilters, categories),
-    [stats, activeFilters, categories]
+    () => filterCrossDimensional(stats, "category", demoFilters, categories),
+    [stats, demoFilters, categories]
   );
 
   const filteredSubmissionCount = useMemo(() => {
-    if (activeFilters.length === 0) return submissionCount;
-    const key = `demo_total#${activeFilters.map((f) => f.dim).join("#")}`;
-    const value = activeFilters.map((f) => f.value).join("#");
-    return (stats[key] ?? {})[value] ?? submissionCount;
-  }, [activeFilters, stats, submissionCount]);
+    if (demoFilters.length === 0) return submissionCount;
+    const key = `demo_total#${demoFilters.map((f) => f.dim).join("#")}`;
+    const value = demoFilters.map((f) => f.value).join("#");
+    return (stats[key] ?? {})[value] ?? 0;
+  }, [demoFilters, stats, submissionCount]);
 
   const categoryData = Object.keys(CATEGORY_COLORS)
     .map((cat) => {
@@ -118,8 +119,8 @@ export function ExploreStats({
     .sort((a, b) => b.value - a.value);
 
   const filteredEventTags = useMemo(
-    () => filterCrossDimensional(stats, "eventTag", activeFilters, eventTags),
-    [stats, activeFilters, eventTags]
+    () => filterCrossDimensional(stats, "eventTag", demoFilters, eventTags),
+    [stats, demoFilters, eventTags]
   );
 
   const eventTagEntries = Object.keys(EVENT_TAG_LABELS)
@@ -178,7 +179,7 @@ export function ExploreStats({
                 color: d.color,
               }))}
               size={120}
-              centerValue={submissionCount}
+              centerValue={filteredSubmissionCount}
             />
           )}
         </div>
@@ -255,7 +256,7 @@ export function ExploreStats({
                   value: d.value,
                   color: d.color,
                 }))}
-                centerValue={submissionCount}
+                centerValue={filteredSubmissionCount}
               />
             )}
             <div className="flex-1 space-y-1.5">

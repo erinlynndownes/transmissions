@@ -4,6 +4,7 @@ import { saveSubmission } from "@/lib/storage";
 import { checkRateLimit } from "@/lib/ratelimit";
 import { getClientIp, isAnthropicQuotaError, quotaExhaustedResponse } from "@/lib/api-utils";
 import { Message, SubmissionInput } from "@/lib/types";
+import { continentFromCode } from "@/lib/geo";
 
 const RATE_LIMIT_MAX = 3;
 const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
@@ -21,7 +22,12 @@ export async function POST(req: NextRequest) {
   }
 
   const body: SubmissionInput = await req.json();
-  const { messages, regionSubdivision, regionCountry, regionContinent } = body;
+  const { messages } = body;
+
+  // Detect region from CloudFront geo headers
+  const cfCountry = req.headers.get("cloudfront-viewer-country") ?? undefined;
+  const regionCountry = cfCountry?.toUpperCase();
+  const regionContinent = regionCountry ? continentFromCode(regionCountry) : undefined;
 
   if (!messages || !Array.isArray(messages)) {
     return NextResponse.json({ error: "Invalid messages" }, { status: 400 });
@@ -39,7 +45,7 @@ export async function POST(req: NextRequest) {
     const extracted = await extractSubmissionData(messages);
 
     const result = await saveSubmission(
-      { messages, regionSubdivision, regionCountry, regionContinent },
+      { messages, regionCountry, regionContinent },
       extracted
     );
 
