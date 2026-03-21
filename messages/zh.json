@@ -8,7 +8,7 @@
   },
   "talk": {
     "beforeWeBegin": "在我们开始之前",
-    "consent1": "这是一段关于你对人工智能感受的短暂对话。经你允许，你的话语将被匿名保存并公开展示，供他人阅读。",
+    "consent1": "这是一段简短的对话，大约6个问题，关于你对人工智能的感受。最后，你可以选择是否匿名分享你的话语供他人阅读。",
     "consent2": "请不要包含任何你不希望被展示的个人信息。不要包含姓名、地点或可识别的细节。事后无法编辑。",
     "consentButton": "我理解了，我们谈谈吧",
     "placeholder": "请说吧...",
@@ -16,7 +16,15 @@
     "transmissionReceived": "传输已接收。你的话语现在已成为记录的一部分。",
     "exploreOthers": "探索他人说了什么",
     "backToBeginning": "回到开始",
-    "submissionId": "提交ID"
+    "submissionId": "提交ID",
+    "skipToEnd": "跳到最后一个问题",
+    "sharePrompt": "分享你的话语？",
+    "shareYes": "是的，分享",
+    "shareNo": "不了，谢谢",
+    "declinedMessage": "感谢这次对话。",
+    "rateLimited": "你今天已经分享了足够多。",
+    "rateLimited2": "明天再来添加你的声音吧。",
+    "rateLimitedExplore": "在此期间，探索一下其他人说了什么。"
   },
   "explore": {
     "voices": "档案",

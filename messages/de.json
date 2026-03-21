@@ -8,7 +8,7 @@
   },
   "talk": {
     "beforeWeBegin": "Bevor wir beginnen",
-    "consent1": "Dies ist ein kurzes Gespräch darüber, was Sie gegenüber künstlicher Intelligenz empfinden. Mit Ihrer Erlaubnis werden Ihre Worte anonym gespeichert und öffentlich angezeigt, damit andere sie lesen können.",
+    "consent1": "Dies ist ein kurzes Gespräch, etwa 6 Fragen, dazu, was Sie gegenüber künstlicher Intelligenz empfinden. Am Ende entscheiden Sie, ob Sie Ihre Worte anonym teilen möchten, damit andere sie lesen können.",
     "consent2": "Bitte geben Sie nichts Persönliches an, das Sie nicht öffentlich sehen möchten. Keine Namen, Orte oder identifizierende Details. Sie können es nachträglich nicht bearbeiten.",
     "consentButton": "Verstanden, lass uns reden",
     "placeholder": "Nur zu...",
@@ -16,7 +16,15 @@
     "transmissionReceived": "Übertragung empfangen. Ihre Worte sind jetzt Teil der Aufzeichnung.",
     "exploreOthers": "entdecken, was andere gesagt haben",
     "backToBeginning": "zurück zum Anfang",
-    "submissionId": "Einreichungs-ID"
+    "submissionId": "Einreichungs-ID",
+    "skipToEnd": "zur letzten Frage springen",
+    "sharePrompt": "Ihre Worte teilen?",
+    "shareYes": "ja, teilen",
+    "shareNo": "nein danke",
+    "declinedMessage": "Danke für das Gespräch.",
+    "rateLimited": "Sie haben heute genug geteilt.",
+    "rateLimited2": "Kommen Sie morgen wieder, um Ihre Stimme erneut hinzuzufügen.",
+    "rateLimitedExplore": "In der Zwischenzeit entdecken Sie, was andere gesagt haben."
   },
   "explore": {
     "voices": "Archiv",

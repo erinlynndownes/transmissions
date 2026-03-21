@@ -6,9 +6,9 @@ import { getClientIp, isAnthropicQuotaError, quotaExhaustedResponse } from "@/li
 import { Message, SubmissionInput } from "@/lib/types";
 import { continentFromCode } from "@/lib/geo";
 
-const RATE_LIMIT_MAX = 3;
+const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
-const MIN_USER_MESSAGES = 4;
+const MIN_USER_MESSAGES = 2;
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);

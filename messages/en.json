@@ -8,7 +8,7 @@
   },
   "talk": {
     "beforeWeBegin": "Before we begin",
-    "consent1": "This is a short conversation about how you feel about AI. With your permission, your words will be stored anonymously and displayed publicly for others to read.",
+    "consent1": "This is a short conversation, about 6 questions, regarding how you feel about AI. At the end, you'll choose whether to share your words anonymously for others to read.",
     "consent2": "Please don't include anything personal you wouldn't want shown. No names, locations, or identifying details. You can't edit it after the fact.",
     "consentButton": "I understand, let's talk",
     "placeholder": "Go ahead...",
@@ -16,7 +16,15 @@
     "transmissionReceived": "Transmission received. Your words are part of the record now.",
     "exploreOthers": "explore what others said",
     "backToBeginning": "back to the beginning",
-    "submissionId": "Submission ID"
+    "submissionId": "Submission ID",
+    "skipToEnd": "skip to final question",
+    "sharePrompt": "Share your words?",
+    "shareYes": "yes, share",
+    "shareNo": "no thanks",
+    "declinedMessage": "Thanks for the conversation.",
+    "rateLimited": "You've shared enough for today.",
+    "rateLimited2": "Come back tomorrow to add your voice again.",
+    "rateLimitedExplore": "In the meantime, explore what others have said."
   },
   "explore": {
     "voices": "Archive",

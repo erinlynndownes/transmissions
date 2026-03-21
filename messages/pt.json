@@ -8,7 +8,7 @@
   },
   "talk": {
     "beforeWeBegin": "Antes de começar",
-    "consent1": "Esta é uma breve conversa sobre o que você sente em relação à inteligência artificial. Com sua permissão, suas palavras serão armazenadas anonimamente e exibidas publicamente para que outros leiam.",
+    "consent1": "Esta é uma breve conversa, cerca de 6 perguntas, a respeito do que você sente em relação à inteligência artificial. No final, você escolherá se quer compartilhar suas palavras anonimamente para que outros leiam.",
     "consent2": "Por favor, não inclua nada pessoal que você não queira que seja exibido. Sem nomes, locais ou detalhes identificadores. Você não poderá editar depois.",
     "consentButton": "Entendi, vamos conversar",
     "placeholder": "Pode falar...",
@@ -16,7 +16,15 @@
     "transmissionReceived": "Transmissão recebida. Suas palavras agora fazem parte do registro.",
     "exploreOthers": "explore o que outros disseram",
     "backToBeginning": "voltar ao início",
-    "submissionId": "ID de envio"
+    "submissionId": "ID de envio",
+    "skipToEnd": "pular para a pergunta final",
+    "sharePrompt": "Compartilhar suas palavras?",
+    "shareYes": "sim, compartilhar",
+    "shareNo": "não, obrigado",
+    "declinedMessage": "Obrigado pela conversa.",
+    "rateLimited": "Você já compartilhou o suficiente por hoje.",
+    "rateLimited2": "Volte amanhã para adicionar sua voz novamente.",
+    "rateLimitedExplore": "Enquanto isso, explore o que outros disseram."
   },
   "explore": {
     "voices": "Arquivo",

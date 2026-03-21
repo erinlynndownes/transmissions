@@ -6,6 +6,8 @@ import { Message } from "@/lib/types";
 
 const RATE_LIMIT_MAX = 30;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const DAILY_CONVERSATION_MAX = 5;
+const DAILY_WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
 const MAX_MESSAGE_LENGTH = 5000;
 const MAX_USER_MESSAGES = 16;
 
@@ -31,6 +33,17 @@ export async function POST(req: NextRequest) {
   }
 
   const userMessageCount = messages.filter((m) => m.role === "user").length;
+
+  if (userMessageCount === 1) {
+    const dailyLimited = checkRateLimit(`conversation-daily:${ip}`, DAILY_CONVERSATION_MAX, DAILY_WINDOW_MS);
+    if (dailyLimited) {
+      return NextResponse.json(
+        { error: "Too many conversations. Try again later." },
+        { status: 429 }
+      );
+    }
+  }
+
   if (userMessageCount > MAX_USER_MESSAGES) {
     return NextResponse.json({ error: "Conversation limit reached" }, { status: 400 });
   }

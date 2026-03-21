@@ -91,6 +91,7 @@ export function ConversationView() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [conversationComplete, setConversationComplete] = useState(false);
+  const [shareDecision, setShareDecision] = useState<"shared" | "declined" | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [eventTags, setEventTags] = useState<string[]>([]);
   const [regionContinent, setRegionContinent] = useState<string | undefined>();
@@ -98,6 +99,7 @@ export function ConversationView() {
   const [latestAssistantIndex, setLatestAssistantIndex] = useState(-1);
   const bottomRef = useRef<HTMLDivElement>(null);
   const [restored, setRestored] = useState(false);
+  const [rateLimited, setRateLimited] = useState(false);
 
   const openingMessage = tHome("question");
 
@@ -109,6 +111,11 @@ export function ConversationView() {
       setLatestAssistantIndex(-1);
     }
     setRestored(true);
+
+    fetch("/api/check-limit")
+      .then((res) => res.json())
+      .then((data) => { if (data.limited) setRateLimited(true); })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -180,6 +187,13 @@ export function ConversationView() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: updated }),
       });
+      if (res.status === 429) {
+        setMessages(updated.slice(0, -1));
+        setRateLimited(true);
+        setConversationComplete(true);
+        clearSession();
+        return;
+      }
       const data = await res.json();
       if (!res.ok || !data.reply) {
         setMessages(updated.slice(0, -1));
@@ -202,7 +216,67 @@ export function ConversationView() {
 
       if (isComplete) {
         setConversationComplete(true);
-        submitConversation(newMessages);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const userMessageCount = messages.filter((m) => m.role === "user").length;
+
+  function handleShare() {
+    setShareDecision("shared");
+    submitConversation(messages);
+  }
+
+  function handleDecline() {
+    setShareDecision("declined");
+    clearSession();
+  }
+
+  async function sendSkipMessage() {
+    if (loading) return;
+    const userMessage: Message = { role: "user", content: ">>" };
+    const updated = [...messages, userMessage];
+    setMessages(updated);
+    setInput("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/conversation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: updated }),
+      });
+      if (res.status === 429) {
+        setMessages(updated.slice(0, -1));
+        setRateLimited(true);
+        setConversationComplete(true);
+        clearSession();
+        return;
+      }
+      const data = await res.json();
+      if (!res.ok || !data.reply) {
+        setMessages(updated.slice(0, -1));
+        return;
+      }
+      let reply: string = data.reply;
+
+      let isComplete = false;
+      if (reply.includes("[END]")) {
+        reply = reply.replace(/\s*\[END\]\s*/g, "").trim();
+        isComplete = true;
+      }
+
+      const newMessages = [
+        ...updated,
+        { role: "assistant" as const, content: reply },
+      ];
+      setMessages(newMessages);
+      setLatestAssistantIndex(newMessages.length - 1);
+
+      if (isComplete) {
+        setConversationComplete(true);
       }
     } finally {
       setLoading(false);
@@ -214,7 +288,29 @@ export function ConversationView() {
     -1
   );
 
+  const closingQuestion = tHome("closingQuestion");
+  const lastAssistantMessage = [...messages].reverse().find((m) => m.role === "assistant");
+  const isOnFinalQuestion = lastAssistantMessage?.content.includes(closingQuestion) ?? false;
+
   if (!consented) {
+    if (rateLimited) {
+      return (
+        <div className="max-w-lg mx-auto px-6 flex flex-col items-center justify-center text-center gap-8 min-h-screen">
+          <div className="text-sm text-neutral-400 leading-relaxed space-y-4">
+            <p>{t("rateLimited")}</p>
+            <p>{t("rateLimited2")}</p>
+            <p>{t("rateLimitedExplore")}</p>
+          </div>
+          <a
+            href="/explore"
+            className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] rounded transition-colors text-center text-sm"
+          >
+            {t("exploreOthers")}
+          </a>
+        </div>
+      );
+    }
+
     return (
       <div className="max-w-lg mx-auto px-6 flex flex-col items-center justify-center text-center gap-8 min-h-screen">
         <h2 className="text-2xl font-light text-neutral-100">
@@ -238,6 +334,7 @@ export function ConversationView() {
     <div id="main-content" className="max-w-2xl mx-auto px-6 pt-36 pb-12 flex flex-col min-h-screen">
       <div className="flex-1 space-y-6 mb-8">
         {messages.map((m, i) => {
+          if (m.role === "user" && m.content === ">>") return null;
           const key = `${m.role}-${i}-${m.content.slice(0, 20)}`;
           if (m.role === "assistant") {
             return (
@@ -262,24 +359,66 @@ export function ConversationView() {
           )}
         </div>
 
-        {conversationComplete && (
-          <div className="animate-fade-in">
-            <p className="text-sm text-neutral-400 mt-8">
-              {t("transmissionReceived")}
-            </p>
-            <DemographicsSection categories={categories} eventTags={eventTags} submissionId={submissionId} regionContinent={regionContinent} />
-            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center text-sm">
+        {conversationComplete && rateLimited && (
+          <div className="animate-fade-in mt-8 text-center space-y-6">
+            <p className="text-sm text-neutral-400">{t("rateLimited")}</p>
+            <div className="flex justify-center text-sm">
               <a
                 href="/explore"
                 className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] rounded transition-colors text-center"
               >
                 {t("exploreOthers")}
               </a>
+            </div>
+          </div>
+        )}
+
+        {conversationComplete && !rateLimited && shareDecision === null && (
+          <div className="animate-fade-in mt-8 text-center space-y-4">
+            <p className="text-lg text-neutral-200">{t("sharePrompt")}</p>
+            <div className="flex gap-4 justify-center text-sm">
+              <button
+                onClick={handleShare}
+                className="px-8 py-3 bg-neutral-100 hover:bg-white text-neutral-900 rounded transition-colors"
+              >
+                {t("shareYes")}
+              </button>
+              <button
+                onClick={handleDecline}
+                className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] rounded transition-colors"
+              >
+                {t("shareNo")}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {conversationComplete && shareDecision === "shared" && (
+          <div className="animate-fade-in">
+            <p className="text-sm text-neutral-400 mt-8">
+              {t("transmissionReceived")}
+            </p>
+            <DemographicsSection categories={categories} eventTags={eventTags} submissionId={submissionId} regionContinent={regionContinent} />
+            <div className="mt-10 flex justify-center text-sm">
               <a
-                href="/"
+                href="/explore"
                 className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] rounded transition-colors text-center"
               >
-                {t("backToBeginning")}
+                {t("exploreOthers")}
+              </a>
+            </div>
+          </div>
+        )}
+
+        {conversationComplete && shareDecision === "declined" && (
+          <div className="animate-fade-in mt-8 text-center space-y-6">
+            <p className="text-sm text-neutral-400">{t("declinedMessage")}</p>
+            <div className="flex justify-center text-sm">
+              <a
+                href="/explore"
+                className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] rounded transition-colors text-center"
+              >
+                {t("exploreOthers")}
               </a>
             </div>
           </div>
@@ -318,6 +457,16 @@ export function ConversationView() {
               </div>
             </div>
           </div>
+          {userMessageCount >= 3 && !loading && !isOnFinalQuestion && (
+            <div className="mt-2 text-center">
+              <button
+                onClick={sendSkipMessage}
+                className="text-xs text-neutral-500 hover:text-neutral-400 transition-colors"
+              >
+                {t("skipToEnd")} &raquo;
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

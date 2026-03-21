@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Category } from "@/lib/types";
 import { ToggleButton } from "./ToggleButton";
 
-const GENDER_OPTIONS = ["woman", "man", "non-binary", "other", "prefer not to say"];
+const GENDER_OPTIONS = ["woman", "man", "non-binary", "other"];
 const AGE_RANGES = ["13-17", "18-24", "25-34", "35-44", "45-54", "55-64", "65+"];
 const EMPLOYMENT_OPTIONS = [
   "employed",

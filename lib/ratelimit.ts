@@ -3,7 +3,11 @@ type RateLimitEntry = {
   resetAt: number;
 };
 
-const store = new Map<string, RateLimitEntry>();
+const globalStore = globalThis as unknown as { __rateLimitStore?: Map<string, RateLimitEntry> };
+if (!globalStore.__rateLimitStore) {
+  globalStore.__rateLimitStore = new Map<string, RateLimitEntry>();
+}
+const store = globalStore.__rateLimitStore;
 
 /**
  * In-memory rate limiter. Returns true if the request should be blocked.
@@ -28,4 +32,18 @@ export function checkRateLimit(
   }
 
   return false;
+}
+
+export function peekRateLimit(
+  key: string,
+  maxRequests: number
+): boolean {
+  const now = Date.now();
+  const entry = store.get(key);
+
+  if (!entry || now > entry.resetAt) {
+    return false;
+  }
+
+  return entry.count >= maxRequests;
 }

@@ -8,7 +8,7 @@
   },
   "talk": {
     "beforeWeBegin": "始める前に",
-    "consent1": "これはAIについてあなたがどう感じているかについての短い会話です。あなたの許可を得て、言葉は匿名で保存され、他の人が読めるよう公開されます。",
+    "consent1": "AIに対するあなたの気持ちについて、約6つの質問からなる短い会話です。最後に、あなたの言葉を匿名で共有するかどうかを選べます。",
     "consent2": "公開されたくない個人情報は含めないでください。名前、場所、身元が特定できる詳細は避けてください。後から編集することはできません。",
     "consentButton": "理解しました、話しましょう",
     "placeholder": "どうぞ...",
@@ -16,7 +16,15 @@
     "transmissionReceived": "トランスミッションを受信しました。あなたの言葉は記録の一部になりました。",
     "exploreOthers": "他の人の声を探る",
     "backToBeginning": "最初に戻る",
-    "submissionId": "提出ID"
+    "submissionId": "提出ID",
+    "skipToEnd": "最後の質問へスキップ",
+    "sharePrompt": "あなたの言葉を共有しますか？",
+    "shareYes": "はい、共有する",
+    "shareNo": "いいえ、結構です",
+    "declinedMessage": "会話をありがとうございました。",
+    "rateLimited": "今日は十分に共有しました。",
+    "rateLimited2": "明日またお越しください。",
+    "rateLimitedExplore": "それまでの間、他の人の声を探ってみてください。"
   },
   "explore": {
     "voices": "アーカイブ",
