@@ -21,6 +21,7 @@ import { v4 as uuidv4 } from "uuid";
 import { filterMockItems, getMockStats, getMockConversation } from "./mock-data";
 import { combinations } from "./utils";
 import { notifyPendingReview } from "./notify";
+import { logger, serializeError } from "./logger";
 
 const MOCK = process.env.MOCK_STORAGE === "true";
 
@@ -41,7 +42,7 @@ export async function saveSubmission(
   const id = uuidv4();
 
   if (MOCK) {
-    console.log("[MOCK] saveSubmission:", { id, quote: extracted.quote });
+    logger.info("mock_save_submission", { id });
     return { id, quote: extracted.quote, poignancyScore: extracted.poignancyScore, categories: extracted.categories, eventTags: extracted.eventTags, regionContinent: input.regionContinent };
   }
 
@@ -198,7 +199,7 @@ export async function saveSubmission(
       )
     );
     for (const r of statsResults) {
-      if (r.status === "rejected") console.error("[stats] counter update failed:", r.reason);
+      if (r.status === "rejected") logger.error("stats_counter_update_failed", { error: serializeError(r.reason) });
     }
   }
 
@@ -357,7 +358,7 @@ export async function saveDemographics(
     updates.push({ PK: "DEMO#employmentStatus", SK: input.employmentStatus });
   }
   if (MOCK) {
-    console.log("[MOCK] saveDemographics:", input);
+    logger.info("mock_save_demographics");
     return;
   }
 
@@ -432,7 +433,7 @@ export async function saveDemographics(
     )
   );
   for (const r of results) {
-    if (r.status === "rejected") console.error("[demographics] counter update failed:", r.reason);
+    if (r.status === "rejected") logger.error("demographics_counter_update_failed", { error: serializeError(r.reason) });
   }
 }
 
@@ -457,7 +458,7 @@ export async function updateModerationStatus(
   status: ModerationStatus
 ): Promise<void> {
   if (MOCK) {
-    console.log("[MOCK] updateModerationStatus:", { id, status });
+    logger.info("mock_update_moderation_status", { id, status });
     return;
   }
 
@@ -488,7 +489,7 @@ export async function updateModerationStatus(
 
   const results = await Promise.allSettled(updates);
   for (const r of results) {
-    if (r.status === "rejected") console.error("[moderation] status update failed:", r.reason);
+    if (r.status === "rejected") logger.error("moderation_status_update_failed", { error: serializeError(r.reason) });
   }
 
   // When approving a previously pending item, increment stats that were skipped at submission time.
@@ -536,14 +537,14 @@ export async function updateModerationStatus(
       )
     );
     for (const r of statsResults) {
-      if (r.status === "rejected") console.error("[stats] approval counter update failed:", r.reason);
+      if (r.status === "rejected") logger.error("stats_approval_counter_update_failed", { error: serializeError(r.reason) });
     }
   }
 }
 
 export async function incrementDropoff(userMessageCount: number): Promise<void> {
   if (MOCK) {
-    console.log("[MOCK] incrementDropoff:", userMessageCount);
+    logger.info("mock_increment_dropoff", { userMessageCount });
     return;
   }
 

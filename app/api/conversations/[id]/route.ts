@@ -1,23 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getConversation } from "@/lib/storage";
+import { withLogging } from "@/lib/logger";
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { id } = await params;
+export const GET = withLogging(
+  "/api/conversations/[id]",
+  async (_req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+    const { id } = await params;
 
-  if (!id) {
-    return NextResponse.json({ error: "Missing id" }, { status: 400 });
+    if (!id) {
+      return NextResponse.json({ error: "Missing id" }, { status: 400 });
+    }
+
+    const conversation = await getConversation(id);
+
+    if (!conversation) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(conversation, {
+      headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
+    });
   }
-
-  const conversation = await getConversation(id);
-
-  if (!conversation) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
-
-  return NextResponse.json(conversation, {
-    headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
-  });
-}
+);

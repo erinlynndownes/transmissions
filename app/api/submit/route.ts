@@ -3,6 +3,7 @@ import { extractSubmissionData } from "@/lib/claude";
 import { saveSubmission } from "@/lib/storage";
 import { checkRateLimit } from "@/lib/ratelimit";
 import { getClientIp, isAnthropicQuotaError, quotaExhaustedResponse } from "@/lib/api-utils";
+import { withLogging } from "@/lib/logger";
 import { Message, SubmissionInput } from "@/lib/types";
 import { continentFromCode } from "@/lib/geo";
 
@@ -10,7 +11,7 @@ const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
 const MIN_USER_MESSAGES = 2;
 
-export async function POST(req: NextRequest) {
+export const POST = withLogging("/api/submit", async (req: NextRequest) => {
   const ip = getClientIp(req);
 
   const limited = checkRateLimit(`submit:${ip}`, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS);
@@ -54,4 +55,4 @@ export async function POST(req: NextRequest) {
     if (isAnthropicQuotaError(error)) return quotaExhaustedResponse();
     throw error;
   }
-}
+});

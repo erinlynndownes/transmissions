@@ -1,4 +1,5 @@
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import { logger, serializeError } from "./logger";
 
 const MOCK = process.env.MOCK_STORAGE === "true";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
@@ -13,12 +14,12 @@ export async function notifyPendingReview(submission: {
   poignancyScore: number;
 }): Promise<void> {
   if (MOCK) {
-    console.log("[MOCK] notifyPendingReview:", submission.id);
+    logger.info("mock_notify_pending_review", { submissionId: submission.id });
     return;
   }
 
   if (!ADMIN_EMAIL) {
-    console.warn("[notify] ADMIN_EMAIL not configured, skipping notification");
+    logger.warn("notify_skipped_no_admin_email");
     return;
   }
 
@@ -59,6 +60,6 @@ export async function notifyPendingReview(submission: {
       })
     );
   } catch (error) {
-    console.error("[notify] Failed to send review notification:", error);
+    logger.error("notify_failed", { error: serializeError(error) });
   }
 }

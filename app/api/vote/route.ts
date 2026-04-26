@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { incrementVote } from "@/lib/storage";
 import { checkRateLimit } from "@/lib/ratelimit";
 import { getClientIp } from "@/lib/api-utils";
+import { withLogging } from "@/lib/logger";
 
 const RATE_LIMIT_MAX = 1;
 const RATE_LIMIT_WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-export async function POST(req: NextRequest) {
+export const POST = withLogging("/api/vote", async (req: NextRequest) => {
   const ip = getClientIp(req);
 
   const { id, createdAt }: { id: string; createdAt: string } = await req.json();
@@ -28,4 +29,4 @@ export async function POST(req: NextRequest) {
 
   const voteCount = await incrementVote(id, createdAt);
   return NextResponse.json({ voteCount });
-}
+});

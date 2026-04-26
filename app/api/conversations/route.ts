@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getConversations } from "@/lib/storage";
+import { withLogging } from "@/lib/logger";
 import { CATEGORIES, EVENT_TAGS, BEATS, Category, EventTag, Beat, FilterParams } from "@/lib/types";
 
 const VALID_CATEGORIES = new Set<string>(CATEGORIES);
 const VALID_EVENT_TAGS = new Set<string>(EVENT_TAGS);
 const VALID_BEATS = new Set<string>(BEATS);
 
-export async function GET(req: NextRequest) {
+export const GET = withLogging("/api/conversations", async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
 
   const params: FilterParams = {};
@@ -60,4 +61,4 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(result, {
     headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" },
   });
-}
+});
