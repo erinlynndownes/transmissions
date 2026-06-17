@@ -1,4 +1,4 @@
-export default function ExploreLoading() {
+export function ExploreLoading() {
   return (
     <main className="h-screen flex flex-col overflow-hidden overscroll-none">
       {/* Header */}
