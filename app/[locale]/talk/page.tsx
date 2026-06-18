@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
 import { ConversationView } from "@/components/ConversationView";
 import { InfoButton } from "@/components/InfoButton";
 
@@ -11,7 +12,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TalkPage() {
+export default async function TalkPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <div className="min-h-screen relative">
       <InfoButton />

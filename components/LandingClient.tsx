@@ -1,34 +1,51 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getConversations } from "@/lib/storage";
-import { RotatingQuote } from "@/components/RotatingQuote";
-import { InfoButton } from "@/components/InfoButton";
+import { useTranslations } from "next-intl";
 import { ConversationItem } from "@/lib/types";
-import { getTranslations } from "next-intl/server";
+import { RotatingQuote } from "./RotatingQuote";
+import { InfoButton } from "./InfoButton";
 
 const QUOTE_THRESHOLD = 10;
 const CAROUSEL_MIN_POIGNANCY = 5;
 const CLOSING_QUESTION_PROBABILITY = 0.5;
 
-export const revalidate = 300;
+type ConversationsResponse = { items: ConversationItem[]; cursor?: string };
 
-export default async function Home() {
-  const t = await getTranslations("home");
+export function LandingClient() {
+  const t = useTranslations("home");
+  const [carouselQuotes, setCarouselQuotes] = useState<ConversationItem[]>([]);
+  // Render the regular question on the server / first client render to avoid hydration mismatch.
+  // After mount, possibly switch to the closing variant.
+  const [isClosing, setIsClosing] = useState(false);
 
-  const isClosing = Math.random() < CLOSING_QUESTION_PROBABILITY;
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsClosing(Math.random() < CLOSING_QUESTION_PROBABILITY);
+
+    const controller = new AbortController();
+    fetch("/api/conversations?limit=100", { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error("fetch_failed");
+        return res.json() as Promise<ConversationsResponse>;
+      })
+      .then((data) => {
+        const filtered = data.items
+          .filter((q) => q.poignancyScore >= CAROUSEL_MIN_POIGNANCY)
+          .sort((a, b) => b.poignancyScore - a.poignancyScore)
+          .slice(0, 20);
+        setCarouselQuotes(filtered);
+      })
+      .catch((err) => {
+        if (err.name === "AbortError") return;
+        // Silent fail — page still works without quotes
+      });
+
+    return () => controller.abort();
+  }, []);
+
   const question = isClosing ? t("closingQuestion") : t("question");
-
-  let quotes: ConversationItem[] = [];
-  try {
-    const result = await getConversations({ limit: 100 });
-    quotes = result.items;
-  } catch {
-    // DynamoDB not set up yet — show empty state
-  }
-
-  const carouselQuotes = quotes
-    .filter((q) => q.poignancyScore >= CAROUSEL_MIN_POIGNANCY)
-    .sort((a, b) => b.poignancyScore - a.poignancyScore)
-    .slice(0, 20);
   const hasEnoughQuotes = carouselQuotes.length >= QUOTE_THRESHOLD;
 
   return (

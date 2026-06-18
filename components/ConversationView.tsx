@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Message, Category } from "@/lib/types";
 import { DemographicsSection } from "./DemographicsSection";
@@ -301,12 +302,12 @@ export function ConversationView() {
             <p>{t("rateLimited2")}</p>
             <p>{t("rateLimitedExplore")}</p>
           </div>
-          <a
+          <Link
             href="/explore"
             className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] rounded transition-colors text-center text-sm"
           >
             {t("exploreOthers")}
-          </a>
+          </Link>
         </div>
       );
     }
@@ -363,12 +364,12 @@ export function ConversationView() {
           <div className="animate-fade-in mt-8 text-center space-y-6">
             <p className="text-sm text-neutral-400">{t("rateLimited")}</p>
             <div className="flex justify-center text-sm">
-              <a
+              <Link
                 href="/explore"
                 className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] rounded transition-colors text-center"
               >
                 {t("exploreOthers")}
-              </a>
+              </Link>
             </div>
           </div>
         )}
@@ -400,12 +401,12 @@ export function ConversationView() {
             </p>
             <DemographicsSection categories={categories} eventTags={eventTags} submissionId={submissionId} regionContinent={regionContinent} />
             <div className="mt-10 flex justify-center text-sm">
-              <a
+              <Link
                 href="/explore"
                 className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] rounded transition-colors text-center"
               >
                 {t("exploreOthers")}
-              </a>
+              </Link>
             </div>
           </div>
         )}
@@ -414,12 +415,12 @@ export function ConversationView() {
           <div className="animate-fade-in mt-8 text-center space-y-6">
             <p className="text-sm text-neutral-400">{t("declinedMessage")}</p>
             <div className="flex justify-center text-sm">
-              <a
+              <Link
                 href="/explore"
                 className="px-8 py-3 border border-[var(--foreground)]/30 hover:border-[var(--foreground)]/60 text-[var(--foreground)]/70 hover:text-[var(--foreground)] rounded transition-colors text-center"
               >
                 {t("exploreOthers")}
-              </a>
+              </Link>
             </div>
           </div>
         )}
